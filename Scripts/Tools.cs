@@ -17,3 +17,10 @@ public static class Tools
         return move_normal;
     }
 }
+public static class ToolsUtility
+{
+    public static Dictionary<BaseTile.TerrainType, float[]> MoveCostForUnits = new Dictionary<BaseTile.TerrainType, float[]>
+    {
+
+    };
+}
