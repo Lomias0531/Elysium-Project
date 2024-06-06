@@ -98,7 +98,7 @@ public class MapController : Singletion<MapController>
 
                 var tile = Instantiate(tileTemplate, tileContainer);
                 tile.originalPos = new Vector2Int(x, y);
-                tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y], Mathf.Sqrt(3) * y / 2);
+                tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), 0, 0.866025404f * y);
 
 
                 tile.InitHex();
@@ -129,6 +129,10 @@ public class MapController : Singletion<MapController>
         foreach (var tile in mapTiles)
         {
             tile.Value.GetAdjacentTiles();
+        }
+        foreach (var tile in mapTiles)
+        {
+            tile.Value.BlendAdjTileColor();
         }
     }
 }
