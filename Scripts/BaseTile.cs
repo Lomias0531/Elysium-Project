@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -24,6 +24,11 @@ public class BaseTile : MonoBehaviour
     List<Color> colors = new List<Color>();
 
     public Dictionary<HexDirection, BaseTile> adjacentTiles = new Dictionary<HexDirection, BaseTile>();
+
+    public GameObject indicator;
+    public MeshRenderer indicatorRenderer;
+    public bool isMarked = false;
+    public TileSelectionType curSelectionType = TileSelectionType.None;
 
     Vector3[] corners =
     {
@@ -54,10 +59,25 @@ public class BaseTile : MonoBehaviour
     {
         NE, E, SE, SW, W, NW
     }
+    public enum TileSelectionType
+    {
+        None,
+        Hover,
+        Moveable,
+        Attackable,
+        Interactable,
+    }
+    public enum TerrainType
+    {
+        None,
+        Water,
+        Plain,
+        Rocks,
+    }
     // Start is called before the first frame update
     void Start()
     {
-
+        MarkTile(TileSelectionType.None);
     }
 
     // Update is called once per frame
@@ -65,6 +85,7 @@ public class BaseTile : MonoBehaviour
     {
 
     }
+    #region Create Mesh
     public void InitHex()
     {
         GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
@@ -194,6 +215,49 @@ public class BaseTile : MonoBehaviour
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 1);
             triangles.Add(vertexIndex + 2);
+        }
+    }
+    #endregion
+
+    public void MarkTile(TileSelectionType type)
+    {
+        if(type != TileSelectionType.None)
+        {
+            indicator.transform.DOScale(0.45f, 0.3f);
+            indicator.transform.DOMoveY(this.gameObject.transform.position.y + 0.1f, 0.4f);
+        }
+        else
+        {
+            indicator.transform.DOScale(0f, 0.3f);
+            indicator.transform.DOMoveY(this.gameObject.transform.position.y -0.1f, 0.4f);
+        }
+        switch(type)
+        {
+            case TileSelectionType.None:
+                {
+                    indicatorRenderer.material.color = new Color(1, 1, 1, 1f);
+                    break;
+                }
+            case TileSelectionType.Hover:
+                {
+                    indicatorRenderer.material.color = new Color(1, 0.92f, 0.016f, 1f);
+                    break;
+                }
+            case TileSelectionType.Moveable:
+                {
+                    indicatorRenderer.material.color = new Color(0, 1, 0, 1f);
+                    break;
+                }
+            case TileSelectionType.Attackable:
+                {
+                    indicatorRenderer.material.color = new Color(1, 0, 0, 1f);
+                    break;
+                }
+            case TileSelectionType.Interactable:
+                {
+                    indicatorRenderer.material.color = new Color(0, 1, 1, 1f);
+                    break;
+                }
         }
     }
 }

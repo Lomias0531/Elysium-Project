@@ -346,8 +346,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapScaleSpeed: 100
-  minScale: 5
-  maxScale: 20
+  minScale: 4
+  maxScale: 25
   obj_CameraFocusDummy: {fileID: 0}
   camHeight: 0
 --- !u!1 &1486776328
@@ -360,8 +360,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1486776329}
   - component: {fileID: 1486776330}
+  - component: {fileID: 1486776331}
   m_Layer: 0
-  m_Name: MapController
+  m_Name: Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -398,3 +399,15 @@ MonoBehaviour:
   tileContainer: {fileID: 655979241}
   mapWidth: 50
   mapHeight: 50
+--- !u!114 &1486776331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486776328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d821817ade3e3b44ba88cdce6032fe30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

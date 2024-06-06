@@ -98,14 +98,25 @@ public class MapController : Singletion<MapController>
 
                 var tile = Instantiate(tileTemplate, tileContainer);
                 tile.originalPos = new Vector2Int(x, y);
-                tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), 0, 0.866025404f * y);
 
 
                 tile.InitHex();
 
-                if (noiseMap[x, y] < 0.3) tile.PaintTile(Color.blue);
-                if (noiseMap[x, y] >= 0.3 && noiseMap[x, y] < 0.6) tile.PaintTile(Color.green);
-                if (noiseMap[x, y] >= 0.6) tile.PaintTile(Color.yellow);
+                if (noiseMap[x, y] < 0.3)
+                {
+                    tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), 0, 0.866025404f * y);
+                    tile.PaintTile(Color.blue);
+                }
+                if (noiseMap[x, y] >= 0.3 && noiseMap[x, y] < 0.6)
+                {
+                    tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y], 0.866025404f * y);
+                    tile.PaintTile(Color.green);
+                }
+                if (noiseMap[x, y] >= 0.6)
+                {
+                    tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y] * 2f, 0.866025404f * y);
+                    tile.PaintTile(Color.gray);
+                }
 
                 tileToAlign.Add(tile);
             }
