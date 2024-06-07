@@ -12,11 +12,15 @@ public class MapController : Singletion<MapController>
 
     int curSeed;
     public Dictionary<Vector3Int,BaseTile> mapTiles = new Dictionary<Vector3Int, BaseTile> ();
+
+    public List<GameObject> treesTemplate = new List<GameObject> ();
+    public List<GameObject> rocksTemplate = new List<GameObject> ();
+    public List<GameObject> metalTemplate = new List<GameObject> ();
     // Start is called before the first frame update
     void Start()
     {
         curSeed = UnityEngine.Random.Range(0, 3000);
-        GenerateMap(mapWidth, mapHeight, curSeed, 10f, 1, 0.3f, 8f, new Vector2(0, 0));
+        GenerateMap(mapWidth, mapHeight, curSeed, 15f, 1, 0.3f, 8f, new Vector2(0, 0));
     }
 
     // Update is called once per frame
@@ -24,6 +28,7 @@ public class MapController : Singletion<MapController>
     {
         
     }
+    #region Generation
     public void GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
     {
         float minHeight = Mathf.Infinity;
@@ -107,12 +112,12 @@ public class MapController : Singletion<MapController>
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), 0, 0.866025404f * y);
                     tile.PaintTile(Color.blue);
                 }
-                if (noiseMap[x, y] >= 0.3 && noiseMap[x, y] < 0.6)
+                if (noiseMap[x, y] >= 0.3 && noiseMap[x, y] < 0.7)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y], 0.866025404f * y);
                     tile.PaintTile(Color.green);
                 }
-                if (noiseMap[x, y] >= 0.6)
+                if (noiseMap[x, y] >= 0.7)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y] * 2f, 0.866025404f * y);
                     tile.PaintTile(Color.gray);
@@ -146,4 +151,5 @@ public class MapController : Singletion<MapController>
             tile.Value.BlendAdjTileColor();
         }
     }
+    #endregion
 }

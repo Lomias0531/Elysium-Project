@@ -520,8 +520,8 @@
     ],
     "m_VertexContext": {
         "m_Position": {
-            "x": 2245.999755859375,
-            "y": 9.99996280670166
+            "x": 2246.0,
+            "y": 3.0
         },
         "m_Blocks": [
             {
@@ -1023,10 +1023,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 1544.9998779296875,
-            "y": -292.0,
-            "width": 208.0,
-            "height": 301.9999084472656
+            "x": 1582.0,
+            "y": -293.0,
+            "width": 126.0,
+            "height": 118.0
         }
     },
     "m_Slots": [
@@ -2643,12 +2643,12 @@
         "m_Id": "710298e2425844df96170d0ea7c8fef7"
     },
     "m_AllowMaterialOverride": false,
-    "m_SurfaceType": 0,
+    "m_SurfaceType": 1,
     "m_ZWriteControl": 0,
     "m_ZTestMode": 4,
     "m_AlphaMode": 0,
     "m_RenderFace": 2,
-    "m_AlphaClip": false,
+    "m_AlphaClip": true,
     "m_CustomEditorGUI": ""
 }
 
@@ -2713,9 +2713,9 @@
         "m_Position": {
             "serializedVersion": "2",
             "x": 959.0000610351563,
-            "y": -161.00003051757813,
-            "width": 126.00006103515625,
-            "height": 118.00003051757813
+            "y": -161.00001525878907,
+            "width": 125.99993896484375,
+            "height": 118.00001525878906
         }
     },
     "m_Slots": [
@@ -3654,7 +3654,7 @@
     "m_ShaderOutputName": "B",
     "m_StageCapability": 3,
     "m_Value": {
-        "x": 0.30000001192092898,
+        "x": 0.5,
         "y": 2.0,
         "z": 2.0,
         "w": 2.0

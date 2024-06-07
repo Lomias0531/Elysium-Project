@@ -44,52 +44,6 @@ public class PlayerController : MonoBehaviour
                     selectedTile.MarkTile(BaseTile.TileSelectionType.Hover);
                     lastSelectedTile = selectedTile;
 
-                    //if (lastSelectedTile != null && !(MoveTileIndicator.ContainsKey(lastSelectedTile.pos) || AttackTileIndicator.ContainsKey(lastSelectedTile.pos)))
-                    //{
-                    //    lastSelectedTile.SwitchTileStatus(TileStatus.None);
-                    //}
-
-                    //var unit = selectedTile.GetUnitOnThisTile();
-                    //if (unit != null)
-                    //{
-                    //    if (unit.isExposed[(int)CombatController.Instance.myTeam])
-                    //    {
-                    //        if (unit.model.Team == CombatController.Instance.myTeam)
-                    //        {
-                    //            selectedTile.SwitchTileStatus(TileStatus.Mobilable);
-                    //        }
-                    //        else
-                    //        {
-                    //            selectedTile.SwitchTileStatus(TileStatus.Attackable);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        selectedTile.SwitchTileStatus(TileStatus.Float);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    selectedTile.SwitchTileStatus(TileStatus.Float);
-                    //}
-
-                    //lastSelectedTile = selectedTile;
-
-                    //lastSelectedTile.OnSelected();
-
-                    //var hover = lastSelectedTile.GetUnitOnThisTile();
-                    //if (hover != null)
-                    //{
-                    //    if (hover.isExposed[(int)CombatController.Instance.myTeam])
-                    //    {
-                    //        hoverdUnit = hover;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    hoverdUnit = null;
-                    //}
-
                     break;
                 }
             }

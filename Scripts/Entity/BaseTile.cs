@@ -29,6 +29,7 @@ public class BaseTile : MonoBehaviour
     public MeshRenderer indicatorRenderer;
     public bool isMarked = false;
     public TileSelectionType curSelectionType = TileSelectionType.None;
+    public TerrainType terrainType;
 
     Vector3[] corners =
     {
@@ -69,11 +70,30 @@ public class BaseTile : MonoBehaviour
     }
     public enum TerrainType
     {
-        None,
+        Void,
+        Barrier,
         Water,
         Plain,
         Rocks,
+        Swamp,
+        Road,
+        Snowfield,
     }
+
+    /// <summary>
+    /// F权重，根据具体规则设置，我们这里先求和来用
+    /// </summary>
+    public float F => g + h;
+
+    /// <summary>
+    /// 从起点地格到此地格的成本
+    /// </summary>
+    public float g;
+
+    /// <summary>
+    /// 从这个地格到目的地的估计费用
+    /// </summary>
+    public float h;
     // Start is called before the first frame update
     void Start()
     {

@@ -3,7 +3,27 @@ guid: ade7c7aa55950a844a36c4d4ecdb4d97
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cabina
+    second: {fileID: 2100000, guid: 409c05aed5c111845be3391107963576, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Clima
+    second: {fileID: 2100000, guid: ed9abe58a0e825743bc3848a29a52e9a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Complementos
+    second: {fileID: 2100000, guid: 7f841e59e3e9e0c4bb0318b4ee8c3071, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Terminal
+    second: {fileID: 2100000, guid: 5d85758fad8425b42bc056c1c989f203, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

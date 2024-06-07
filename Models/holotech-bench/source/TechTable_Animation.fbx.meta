@@ -3,7 +3,27 @@ guid: 64e9e93c25ecfd24aace6b303936b9fb
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_Hologram_Decals
+    second: {fileID: 2100000, guid: df1bc9063ed6bda409de086468fa63f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_Hologram_Planet
+    second: {fileID: 2100000, guid: 9c0872087fabc4143a829576ecc678a5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_TechTable_Body
+    second: {fileID: 2100000, guid: 1484208ca7f7d8b479ac17bf4fd293a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_TechTable_Detail
+    second: {fileID: 2100000, guid: 59f58fd8ca98fd545b1480ad2f0a7bad, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
