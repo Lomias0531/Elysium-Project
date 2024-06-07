@@ -109,7 +109,7 @@ public class MapController : Singletion<MapController>
 
                 if (noiseMap[x, y] < 0.3)
                 {
-                    tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), 0, 0.866025404f * y);
+                    tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), -noiseMap[x, y], 0.866025404f * y);
                     tile.PaintTile(Color.blue);
                 }
                 if (noiseMap[x, y] >= 0.3 && noiseMap[x, y] < 0.7)
