@@ -397,8 +397,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileTemplate: {fileID: 4319231071276359840, guid: c43c98d5773de044389ca814a6ed8e27, type: 3}
   tileContainer: {fileID: 655979241}
-  mapWidth: 100
-  mapHeight: 100
+  mapWidth: 50
+  mapHeight: 50
   treesTemplate: []
   rocksTemplate: []
   metalTemplate: []
