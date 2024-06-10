@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MapController : Singletion<MapController>
 {
@@ -16,6 +17,9 @@ public class MapController : Singletion<MapController>
     public List<GameObject> treesTemplate = new List<GameObject> ();
     public List<GameObject> rocksTemplate = new List<GameObject> ();
     public List<GameObject> metalTemplate = new List<GameObject> ();
+    public GameObject waterTemplate;
+    GameObject water;
+    float lastWaterLevel = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,9 +28,19 @@ public class MapController : Singletion<MapController>
     }
 
     // Update is called once per frame
-    void Update()   
+    async void Update()   
     {
-        
+        if(water != null)
+        {
+            float sampleX = 0.5f + Time.deltaTime * 50f;
+            float sampleY = 0.5f + Time.deltaTime * 50f;
+
+            float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 100;
+            var waterLevel = perlinValue - Mathf.Floor(perlinValue);
+            var value = Mathf.Lerp(lastWaterLevel, waterLevel, 0.05f);
+            lastWaterLevel = value;
+            water.transform.position = new Vector3(25, 0.2f + value * 0.1f, 25);
+        }
     }
     #region Generation
     public void GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
@@ -128,6 +142,9 @@ public class MapController : Singletion<MapController>
         }
 
         RefreshTileCoord(tileToAlign);
+
+        water = GameObject.Instantiate(waterTemplate, tileContainer);
+        water.transform.localPosition = new Vector3(25, 0.2f, 25);
     }
     void RefreshTileCoord(List<BaseTile> tiles)
     {

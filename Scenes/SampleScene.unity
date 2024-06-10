@@ -402,6 +402,7 @@ MonoBehaviour:
   treesTemplate: []
   rocksTemplate: []
   metalTemplate: []
+  waterTemplate: {fileID: 5975395118864009416, guid: df810f1e36907604a95b2d5fee071538, type: 3}
 --- !u!114 &1486776331
 MonoBehaviour:
   m_ObjectHideFlags: 0
