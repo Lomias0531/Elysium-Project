@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class BaseResource : BaseObj
 {
+    public List<GameObject> objPos = new List<GameObject>();
+    public enum ResourceType
+    {
+        Tree,
+        Rock,
+        Iron,
+    }
     public override void OnInteracted()
     {
         
@@ -19,5 +26,23 @@ public class BaseResource : BaseObj
     void Update()
     {
         
+    }
+    public void InitResource(ResourceType type)
+    {
+        switch(type)
+        {
+            case ResourceType.Tree:
+                {
+                    break;
+                }
+            case ResourceType.Rock:
+                {
+                    break;
+                }
+            case ResourceType.Iron:
+                {
+                    break;
+                }
+        }
     }
 }

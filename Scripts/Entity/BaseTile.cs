@@ -186,6 +186,7 @@ public class BaseTile : MonoBehaviour
         hexMesh.triangles = triangles.ToArray();
 
         hexMesh.RecalculateNormals();
+        hexMesh.RecalculateTangents();
         hexMesh.SetColors(colors);
     }
     void GetAdjTile(HexDirection dir)

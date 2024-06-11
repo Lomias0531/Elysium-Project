@@ -1,0 +1,1 @@
+{"TextPath":"D:\\Projects\\FishSqueezer\\bin\\Release\\net8.0-windows\\publish\\\\text.txt","StartUpLocation":"2071, 1162","WindowSize":"300, 50","BackgroundColor":"#262626","FontColor":"#8a8a8a","Anchor":3}

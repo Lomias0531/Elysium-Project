@@ -13,6 +13,8 @@ public class MapController : Singletion<MapController>
 
     int curSeed;
     public Dictionary<Vector3Int,BaseTile> mapTiles = new Dictionary<Vector3Int, BaseTile> ();
+    public Dictionary<string, BaseResource> resourcesDic = new Dictionary<string, BaseResource> ();
+    public Dictionary<string, BaseObj> entityDic = new Dictionary<string, BaseObj> ();
 
     public List<GameObject> treesTemplate = new List<GameObject> ();
     public List<GameObject> rocksTemplate = new List<GameObject> ();
@@ -121,10 +123,15 @@ public class MapController : Singletion<MapController>
 
                 tile.InitHex();
 
-                if (noiseMap[x, y] < 0.3)
+                if (noiseMap[x, y] < 0.2)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), -noiseMap[x, y], 0.866025404f * y);
                     tile.PaintTile(Color.blue);
+                }
+                if (noiseMap[x, y] >= 0.2 && noiseMap[x, y] < 0.3)
+                {
+                    tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y] * 0.5f, 0.866025404f * y);
+                    tile.PaintTile(Color.yellow);
                 }
                 if (noiseMap[x, y] >= 0.3 && noiseMap[x, y] < 0.7)
                 {
@@ -143,8 +150,8 @@ public class MapController : Singletion<MapController>
 
         RefreshTileCoord(tileToAlign);
 
-        water = GameObject.Instantiate(waterTemplate, tileContainer);
-        water.transform.localPosition = new Vector3(25, 0.2f, 25);
+        GenerateWater();
+        GenerateResources();
     }
     void RefreshTileCoord(List<BaseTile> tiles)
     {
@@ -167,6 +174,15 @@ public class MapController : Singletion<MapController>
         {
             tile.Value.BlendAdjTileColor();
         }
+    }
+    void GenerateWater()
+    {
+        water = GameObject.Instantiate(waterTemplate, tileContainer);
+        water.transform.localPosition = new Vector3(25, 0.2f, 25);
+    }
+    void GenerateResources()
+    {
+
     }
     #endregion
 }

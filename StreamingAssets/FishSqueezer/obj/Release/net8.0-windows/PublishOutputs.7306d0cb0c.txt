@@ -1,0 +1,8 @@
+D:\Projects\FishSqueezer\bin\Release\net8.0-windows\publish\FishSqueezer.exe
+D:\Projects\FishSqueezer\bin\Release\net8.0-windows\publish\FishSqueezer.dll
+D:\Projects\FishSqueezer\bin\Release\net8.0-windows\publish\FishSqueezer.deps.json
+D:\Projects\FishSqueezer\bin\Release\net8.0-windows\publish\FishSqueezer.runtimeconfig.json
+D:\Projects\FishSqueezer\bin\Release\net8.0-windows\publish\FishSqueezer.pdb
+D:\Projects\FishSqueezer\bin\Release\net8.0-windows\publish\Microsoft.Office.Interop.Word.dll
+D:\Projects\FishSqueezer\bin\Release\net8.0-windows\publish\Office.dll
+D:\Projects\FishSqueezer\bin\Release\net8.0-windows\publish\Newtonsoft.Json.dll
