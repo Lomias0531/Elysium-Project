@@ -21,7 +21,7 @@ public class MapController : Singletion<MapController>
     public List<GameObject> metalTemplate = new List<GameObject> ();
     public GameObject waterTemplate;
     GameObject water;
-    float lastWaterLevel = 0;
+    float waveTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,14 +34,10 @@ public class MapController : Singletion<MapController>
     {
         if(water != null)
         {
-            float sampleX = 0.5f + Time.deltaTime * 50f;
-            float sampleY = 0.5f + Time.deltaTime * 50f;
-
-            float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 100;
-            var waterLevel = perlinValue - Mathf.Floor(perlinValue);
-            var value = Mathf.Lerp(lastWaterLevel, waterLevel, 0.05f);
-            lastWaterLevel = value;
-            water.transform.position = new Vector3(25, 0.2f + value * 0.1f, 25);
+            waveTime += Time.deltaTime * 0.4f;
+            if (waveTime > 360) waveTime = 0;
+            var value = 0.2f + (Mathf.Sin(Mathf.PI * 0.5f * waveTime) + 0.5f * Mathf.Sin(2f * Mathf.PI * waveTime)) * 0.1f;
+            water.transform.position = new Vector3(25, value, 25);
         }
     }
     #region Generation
