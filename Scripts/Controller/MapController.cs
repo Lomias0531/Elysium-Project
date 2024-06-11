@@ -36,7 +36,7 @@ public class MapController : Singletion<MapController>
         {
             waveTime += Time.deltaTime * 0.4f;
             if (waveTime > 360) waveTime = 0;
-            var value = 0.2f + (Mathf.Sin(Mathf.PI * 0.5f * waveTime) + 0.5f * Mathf.Sin(2f * Mathf.PI * waveTime)) * 0.1f;
+            var value = 0.25f + (Mathf.Sin(Mathf.PI * 0.5f * waveTime) * 0.5f + 0.5f * Mathf.Sin(2f * Mathf.PI * waveTime)) * 0.05f;
             water.transform.position = new Vector3(25, value, 25);
         }
     }
