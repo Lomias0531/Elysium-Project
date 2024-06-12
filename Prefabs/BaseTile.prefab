@@ -107,6 +107,7 @@ MonoBehaviour:
   isMarked: 0
   curSelectionType: 0
   terrainType: 0
+  terrainIndex: 0
   g: 0
   h: 0
 --- !u!64 &6071488763670294859
@@ -224,7 +225,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7202271454713460447, guid: ccd8aac24f43a0647850c07886693a5e, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7202271454713460447, guid: ccd8aac24f43a0647850c07886693a5e, type: 3}
       propertyPath: m_Materials.Array.data[0]

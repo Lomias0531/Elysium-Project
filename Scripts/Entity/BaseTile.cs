@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -10,6 +11,7 @@ public class BaseTile : MonoBehaviour
 {
     Mesh hexMesh;
     List<Vector3> vertices;
+    List<Vector3> terrainTypes;
     List<int> triangles;
 
     const float outerRadius = 0.5f;
@@ -30,6 +32,7 @@ public class BaseTile : MonoBehaviour
     public bool isMarked = false;
     public TileSelectionType curSelectionType = TileSelectionType.None;
     public TerrainType terrainType;
+    public float terrainIndex;
 
     Vector3[] corners =
     {
@@ -112,6 +115,7 @@ public class BaseTile : MonoBehaviour
         hexMesh.name = "Hex Mesh";
         vertices = new List<Vector3>();
         triangles = new List<int>();
+        terrainTypes = new List<Vector3>();
 
         //var center = this.transform.position;
 
@@ -136,16 +140,21 @@ public class BaseTile : MonoBehaviour
         triangles.Add(vertexIndex);
         triangles.Add(vertexIndex + 1);
         triangles.Add(vertexIndex + 2);
+
+        terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
     }
 
-    public void PaintTile(Color _color)
+    public void PaintTile(Color _color, float _terrainIndex)
     {
-        color = _color;
+        color = Color.white;
+        terrainIndex = _terrainIndex;
 
         colors = new List<Color>();
+        terrainTypes = new List<Vector3>();
         for (int i = 0; i < vertices.Count; i++)
         {
             colors.Add(color);
+            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
         }
 
         hexMesh.SetColors(colors);
@@ -170,9 +179,11 @@ public class BaseTile : MonoBehaviour
     public void BlendAdjTileColor()
     {
         colors.Clear();
+        terrainTypes.Clear();
         for (int i = 0; i < vertices.Count; i++)
         {
             colors.Add(color);
+            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
         }
 
         GetAdjTile(HexDirection.NE);
@@ -185,9 +196,10 @@ public class BaseTile : MonoBehaviour
         hexMesh.vertices = vertices.ToArray();
         hexMesh.triangles = triangles.ToArray();
 
+        hexMesh.SetColors(colors);
+        hexMesh.SetUVs(2, terrainTypes);
         hexMesh.RecalculateNormals();
         hexMesh.RecalculateTangents();
-        hexMesh.SetColors(colors);
     }
     void GetAdjTile(HexDirection dir)
     {
@@ -198,16 +210,22 @@ public class BaseTile : MonoBehaviour
 
             var v1 = corners[(int)dir];
             vertices.Add(v1);
-            colors.Add(color);
             var v2 = corners[(int)dir + 1];
             vertices.Add(v2);
-            colors.Add(color);
             var v3 = extendCorners[(int)dir * 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
             vertices.Add(v3);
-            colors.Add(adjacentTiles[dir].color);
             var v4 = extendCorners[(int)dir * 2 + 1] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
             vertices.Add(v4);
+
+            colors.Add(color);
+            colors.Add(color);
             colors.Add(adjacentTiles[dir].color);
+            colors.Add(adjacentTiles[dir].color);
+
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
 
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 2);
@@ -225,13 +243,18 @@ public class BaseTile : MonoBehaviour
 
             var v1 = corners[(int)dir + 1];
             vertices.Add(v1);
-            colors.Add(color);
             var v2 = extendCorners[(int)dir*2 + 1] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
             vertices.Add(v2);
-            colors.Add(adjacentTiles[dir].color);
             var v3 = extendCorners[(int)dir*2 + 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir + 1].gameObject.transform.localPosition.y, 0);
             vertices.Add(v3);
+
+            colors.Add(color);
+            colors.Add(adjacentTiles[dir].color);
             colors.Add(adjacentTiles[dir + 1].color);
+
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
 
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 1);
