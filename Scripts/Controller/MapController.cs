@@ -116,6 +116,7 @@ public class MapController : Singletion<MapController>
                 var tile = Instantiate(tileTemplate, tileContainer);
                 tile.originalPos = new Vector2Int(x, y);
 
+                noiseMap[x, y] = Mathf.Ceil(noiseMap[x, y] / 0.1f) * 0.1f;
 
                 tile.InitHex();
 
