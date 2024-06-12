@@ -11,7 +11,7 @@ public class BaseTile : MonoBehaviour
 {
     Mesh hexMesh;
     List<Vector3> vertices;
-    [SerializeField]
+    [NonSerialized]
     List<Vector3> terrainTypes;
     List<int> triangles;
 
@@ -23,7 +23,7 @@ public class BaseTile : MonoBehaviour
     public Vector2Int originalPos;
     public Vector3Int Pos;
     public Color color;
-    [SerializeField]
+    [NonSerialized]
     List<Color> colors = new List<Color>();
 
     public Dictionary<HexDirection, BaseTile> adjacentTiles = new Dictionary<HexDirection, BaseTile>();
@@ -50,15 +50,15 @@ public class BaseTile : MonoBehaviour
         new Vector3(extendDistanceX, 0 ,outerRadius + extendDistanceZ),
         new Vector3(innerRadius + extendDistanceX, 0 ,0.5f*outerRadius + extendDistanceZ),
         new Vector3(innerRadius + extendDistanceX * 2f, 0, 0.5f * outerRadius),
-        new Vector3(innerRadius + extendDistanceX * 2f, 0, -0.5f*outerRadius),
-        new Vector3(innerRadius + extendDistanceX, 0, -0.5f*outerRadius - extendDistanceZ),
+        new Vector3(innerRadius + extendDistanceX * 2f, 0, -0.5f * outerRadius),
+        new Vector3(innerRadius + extendDistanceX, 0, -0.5f * outerRadius - extendDistanceZ),
         new Vector3(extendDistanceX, 0, -outerRadius - extendDistanceZ),
         new Vector3(-extendDistanceX, 0, -outerRadius - extendDistanceZ),
-        new Vector3(-innerRadius - extendDistanceX, 0, -0.5f*outerRadius - extendDistanceZ),
+        new Vector3(-innerRadius - extendDistanceX, 0, -0.5f * outerRadius - extendDistanceZ),
         new Vector3(-innerRadius - extendDistanceX * 2f, 0, -0.5f * outerRadius),
         new Vector3(-innerRadius - extendDistanceX * 2f, 0, 0.5f * outerRadius),
         new Vector3(-innerRadius - extendDistanceX, 0, 0.5f * outerRadius + extendDistanceZ),
-        new Vector3(-extendDistanceX, 0, outerRadius * extendDistanceZ),
+        new Vector3(-extendDistanceX, 0, outerRadius + extendDistanceZ),
     };
     public enum HexDirection
     {
@@ -182,14 +182,11 @@ public class BaseTile : MonoBehaviour
         GetAdjTriangles(HexDirection.NE);
         GetAdjTriangles(HexDirection.E);
 
-        hexMesh.vertices = vertices.ToArray();
-        hexMesh.triangles = triangles.ToArray();
-
-        //hexMesh.SetColors(colors);
-        hexMesh.SetUVs(2, terrainTypes);
-
+        hexMesh.SetVertices(vertices);
+        hexMesh.SetTriangles(triangles, 0);
         hexMesh.RecalculateNormals();
-        //hexMesh.RecalculateTangents();
+        hexMesh.SetColors(colors);
+        hexMesh.SetUVs(2, terrainTypes);
     }
     void GetAdjTile(HexDirection dir)
     {
@@ -212,10 +209,15 @@ public class BaseTile : MonoBehaviour
             colors.Add(adjacentTiles[dir].color);
             colors.Add(adjacentTiles[dir].color);
 
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+
+            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
+            terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
 
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 2);
@@ -242,9 +244,13 @@ public class BaseTile : MonoBehaviour
             colors.Add(adjacentTiles[dir].color);
             colors.Add(adjacentTiles[dir + 1].color);
 
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+
+            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
+            terrainTypes.Add(new Vector3(adjacentTiles[dir + 1].terrainIndex, adjacentTiles[dir + 1].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
 
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 1);
