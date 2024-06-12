@@ -11,6 +11,7 @@ public class BaseTile : MonoBehaviour
 {
     Mesh hexMesh;
     List<Vector3> vertices;
+    [SerializeField]
     List<Vector3> terrainTypes;
     List<int> triangles;
 
@@ -140,24 +141,12 @@ public class BaseTile : MonoBehaviour
         triangles.Add(vertexIndex);
         triangles.Add(vertexIndex + 1);
         triangles.Add(vertexIndex + 2);
-
-        terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
     }
 
     public void PaintTile(Color _color, float _terrainIndex)
     {
-        color = Color.white;
+        color = _color;
         terrainIndex = _terrainIndex;
-
-        colors = new List<Color>();
-        terrainTypes = new List<Vector3>();
-        for (int i = 0; i < vertices.Count; i++)
-        {
-            colors.Add(color);
-            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
-        }
-
-        hexMesh.SetColors(colors);
     }
     public void GetAdjacentTiles()
     {
@@ -196,10 +185,11 @@ public class BaseTile : MonoBehaviour
         hexMesh.vertices = vertices.ToArray();
         hexMesh.triangles = triangles.ToArray();
 
-        hexMesh.SetColors(colors);
+        //hexMesh.SetColors(colors);
         hexMesh.SetUVs(2, terrainTypes);
+
         hexMesh.RecalculateNormals();
-        hexMesh.RecalculateTangents();
+        //hexMesh.RecalculateTangents();
     }
     void GetAdjTile(HexDirection dir)
     {
