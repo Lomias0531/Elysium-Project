@@ -399,9 +399,21 @@ MonoBehaviour:
   tileContainer: {fileID: 655979241}
   mapWidth: 50
   mapHeight: 50
-  treesTemplate: []
-  rocksTemplate: []
-  metalTemplate: []
+  treesTemplate:
+  - {fileID: 6920058590620085306, guid: 20837263a7b57be4a9b6637a8d365fd8, type: 3}
+  - {fileID: 727632308619620236, guid: 644623dea157a164c80fa934f872cc04, type: 3}
+  - {fileID: 5809089146051724890, guid: f7800726d20ca234e8740b50049712bd, type: 3}
+  - {fileID: 6238373567539690591, guid: 06fedc535a86512479083c0306647a52, type: 3}
+  - {fileID: 1870055117394663451, guid: f366cb3cb917b88458e2e96c7b58d2cb, type: 3}
+  - {fileID: 8768886680799307399, guid: ea340aec977e313439a05a6faa80ebaa, type: 3}
+  rocksTemplate:
+  - {fileID: 1123455833538496295, guid: 9ac69a5bfeba7714cba60a519710b6ee, type: 3}
+  - {fileID: 6415786325481023713, guid: 8c778ad2a98f199429419259cd42395c, type: 3}
+  - {fileID: 188349280638060777, guid: 7b37f24f6765c4548a018685c69eeb6b, type: 3}
+  - {fileID: 8582541013337583830, guid: db2d1079c7b38e94dbf9940e51de2cbf, type: 3}
+  metalTemplate:
+  - {fileID: 4232149604463587550, guid: c1c417e94a7c08f4cae8c291a377b414, type: 3}
+  - {fileID: 732370158558335634, guid: 66754c161ab57744cac8b11bf6b394bb, type: 3}
   waterTemplate: {fileID: 5975395118864009416, guid: df810f1e36907604a95b2d5fee071538, type: 3}
 --- !u!114 &1486776331
 MonoBehaviour:

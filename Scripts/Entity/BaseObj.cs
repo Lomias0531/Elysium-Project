@@ -36,4 +36,5 @@ public abstract class BaseObj : MonoBehaviour
         
     }
     public abstract void OnInteracted();
+    public abstract void OnBeingDestroyed();
 }

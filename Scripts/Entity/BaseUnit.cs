@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class BaseUnit : BaseObj
 {
+    public override void OnBeingDestroyed()
+    {
+        
+    }
+
     public override void OnInteracted()
     {
         

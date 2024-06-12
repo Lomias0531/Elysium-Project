@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class BaseResource : BaseObj
 {
@@ -11,11 +14,6 @@ public class BaseResource : BaseObj
         Rock,
         Iron,
     }
-    public override void OnInteracted()
-    {
-        
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -27,22 +25,51 @@ public class BaseResource : BaseObj
     {
         
     }
-    public void InitResource(ResourceType type)
+    public void InitResource(Vector3Int pos, ResourceType type)
     {
-        switch(type)
+        Pos = pos;
+        Guid id = Guid.NewGuid();
+        this.ID = id.ToString();
+
+        for(int i = 0;i<3;i++)
         {
-            case ResourceType.Tree:
-                {
-                    break;
-                }
-            case ResourceType.Rock:
-                {
-                    break;
-                }
-            case ResourceType.Iron:
-                {
-                    break;
-                }
+            GameObject obj;
+            switch (type)
+            {
+                case ResourceType.Tree:
+                    {
+                        var index = Random.Range(0, MapController.Instance.treesTemplate.Count);
+                        obj = GameObject.Instantiate(MapController.Instance.treesTemplate[index], objPos[i].transform);
+                        obj.transform.localPosition = Vector3.zero;
+                        break;
+                    }
+                case ResourceType.Rock:
+                    {
+                        var index = Random.Range(0, MapController.Instance.rocksTemplate.Count);
+                        obj = GameObject.Instantiate(MapController.Instance.rocksTemplate[index], objPos[i].transform);
+                        obj.transform.localPosition = Vector3.zero;
+                        break;
+                    }
+                case ResourceType.Iron:
+                    {
+                        var index = Random.Range(0, MapController.Instance.metalTemplate.Count);
+                        obj = GameObject.Instantiate(MapController.Instance.metalTemplate[index], objPos[i].transform);
+                        obj.transform.localPosition = Vector3.zero;
+                        break;
+                    }
+            }
+        }
+    }
+
+    public override void OnBeingDestroyed()
+    {
+        
+    }
+    public override void OnInteracted()
+    {
+        foreach (var comp in components)
+        {
+            comp.OnApply();
         }
     }
 }
