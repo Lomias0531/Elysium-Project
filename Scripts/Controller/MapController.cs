@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
 public class MapController : Singletion<MapController>
@@ -186,31 +187,122 @@ public class MapController : Singletion<MapController>
     }
     void GenerateResources()
     {
-        int treeCount = 50 + Random.Range(-5, 5);
-        for(int i = 0;i< treeCount; i++)
+        //int treeCount = 50 + Random.Range(-5, 5);
+        //for(int i = 0;i< treeCount; i++)
+        //{
+        //    bool resGenerated = false;
+        //    do
+        //    {
+        //        var index = Random.Range(0, mapTiles.Count);
+        //        var tile = mapTiles.ToList()[index].Value;
+
+        //        if (resourcesDic.ContainsKey(tile.Pos))
+        //        {
+        //            resGenerated = false;
+        //            continue;
+        //        }
+        //        var res = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
+        //        res.transform.position = tile.transform.position;
+        //        var resIndex = Random.Range(0, 3);
+        //        res.InitResource(tile.Pos, (BaseResource.ResourceType)resIndex);
+
+        //        entityDic.Add(res.ID, res);
+        //        resourcesDic.Add(res.Pos, res);
+        //        resGenerated = true;
+        //    } while (!resGenerated);
+        //}
+        int[] resCount = new int[3];
+        resCount[0] = Random.Range(2, 5);
+        resCount[1] = Random.Range(1, 4);
+        resCount[2] = Random.Range(1, 3);
+
+        for(int i = 0;i<resCount.Length;i++)
         {
-            bool resGenerated = false;
-            do
+            for(int j = 0; j < resCount[i];j++)
             {
-                var index = Random.Range(0, mapTiles.Count);
-                var tile = mapTiles.ToList()[index].Value;
-                if (tile.terrainType == BaseTile.TerrainType.Plain)
+                BaseTile origin;
+                bool isOriginSet;
+                do
                 {
-                    if (resourcesDic.ContainsKey(tile.Pos))
+                    isOriginSet = true;
+                    var index = Random.Range(0,mapTiles.Count);
+                    origin = mapTiles.ToList()[index].Value;
+                    if(resourcesDic.ContainsKey(origin.Pos))
                     {
-                        resGenerated = false;
+                        isOriginSet = false;
                         continue;
                     }
-                    var res = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
-                    res.transform.position = tile.transform.position;
-                    var resIndex = Random.Range(0, 3);
-                    res.InitResource(tile.Pos, (BaseResource.ResourceType)resIndex);
+                    if(j == 0)
+                    {
+                        if (origin.terrainType == BaseTile.TerrainType.Water)
+                        {
+                            isOriginSet = false;
+                            continue;
+                        }
+                    }
+                }while(!isOriginSet);
 
-                    entityDic.Add(res.ID, res);
-                    resourcesDic.Add(res.Pos, res);
-                    resGenerated = true;
-                }
-            } while (!resGenerated);
+                BaseResource res = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
+                res.transform.position = origin.transform.position;
+                res.InitResource(origin.Pos, (BaseResource.ResourceType)i);
+
+                entityDic.Add(res.ID, res);
+                resourcesDic.Add(res.Pos, res);
+
+                List<BaseTile> ResToGen = new List<BaseTile>();
+                List<BaseTile> ResGenerated = new List<BaseTile>
+                {
+                    origin
+                };
+
+                do
+                {
+                    ResToGen.Clear();
+                    foreach (var tile in ResGenerated)
+                    {
+                        foreach (var adjTile in tile.adjacentTiles)
+                        {
+                            if (!resourcesDic.ContainsKey(adjTile.Value.Pos) && !ResToGen.Contains(adjTile.Value))
+                            {
+                                float rnd = Random.Range(0f, 1f);
+
+                                float para = 0f;
+                                switch(adjTile.Value.terrainType)
+                                {
+                                    case BaseTile.TerrainType.Plain:
+                                        {
+                                            para = 0.7f;
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            para = 0.9f;
+                                            break;
+                                        }
+                                }
+
+                                float threshold = Mathf.Exp(-para * Tools.GetDistance(adjTile.Value.Pos, origin.Pos));
+                                if (rnd <= threshold)
+                                {
+                                    ResToGen.Add(adjTile.Value);
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (var item in ResToGen)
+                    {
+                        BaseResource res1 = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
+                        res1.transform.position = item.transform.position;
+                        res1.InitResource(item.Pos, (BaseResource.ResourceType)i);
+
+                        entityDic.Add(res1.ID, res1);
+                        resourcesDic.Add(res1.Pos, res1);
+
+                        ResGenerated.Add(item);
+                    }
+                } while (ResToGen.Count > 0);
+            }
         }
     }
     #endregion
