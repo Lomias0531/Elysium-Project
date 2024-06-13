@@ -76,7 +76,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _progress: -0.47
+    - _progress: 0
     - _speed: 0.5
     - _threshold: 2
     - _totalheight: 1
