@@ -14,6 +14,7 @@ public class BaseTile : MonoBehaviour
     [NonSerialized]
     List<Vector3> terrainTypes;
     List<int> triangles;
+    public string tileName;
 
     const float outerRadius = 0.5f;
     const float innerRadius = 0.5f * 0.866025404f;
@@ -82,6 +83,7 @@ public class BaseTile : MonoBehaviour
         Swamp,
         Road,
         Snowfield,
+        DeepWater,
     }
 
     /// <summary>

@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [HideInInspector]
     public BaseTile hoveredTile;
+    [HideInInspector]
     public BaseObj hoveredObject;
+    [HideInInspector]
     public BaseObj selectedObject;
     // Start is called before the first frame update
     void Start()
@@ -46,6 +49,7 @@ public class PlayerController : MonoBehaviour
                     }
                     selectedTile.MarkTile(BaseTile.TileSelectionType.Hover);
                     hoveredTile = selectedTile;
+                    UIController.Instance.DisplayHoveredTileInfo(hoveredTile);
 
                     break;
                 }
@@ -55,9 +59,10 @@ public class PlayerController : MonoBehaviour
     void GetObjUnderMouse()
     {
         hoveredObject = hoveredTile.GetObjInThisTile();
-        if(hoveredObject != null)
+        UIController.Instance.DisplayHoveredUnitInfo(hoveredObject);
+        if (hoveredObject != null)
         {
-
+            
         }
     }
     void UnitFunctions()

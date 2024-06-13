@@ -120,7 +120,8 @@ public class MapController : Singletion<MapController>
                 var tile = Instantiate(tileTemplate, tileContainer);
                 tile.originalPos = new Vector2Int(x, y);
 
-                noiseMap[x, y] = Mathf.Ceil(noiseMap[x, y] / 0.1f) * 0.1f;
+                float flatLevel = 0.1f;
+                noiseMap[x, y] = Mathf.Ceil(noiseMap[x, y] / flatLevel) * flatLevel;
 
                 tile.InitHex();
 
@@ -128,25 +129,29 @@ public class MapController : Singletion<MapController>
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), -noiseMap[x, y], 0.866025404f * y);
                     tile.PaintTile(Color.white, 4f);
-                    tile.terrainType = BaseTile.TerrainType.Water;
+                    tile.terrainType = BaseTile.TerrainType.DeepWater;
+                    tile.tileName = "深水";
                 }
                 if (noiseMap[x, y] >= 0.2 && noiseMap[x, y] < 0.3)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y] * 0.5f, 0.866025404f * y);
                     tile.PaintTile(Color.white, 2f);
                     tile.terrainType = BaseTile.TerrainType.Water;
+                    tile.tileName = "浅水";
                 }
                 if (noiseMap[x, y] >= 0.3 && noiseMap[x, y] < 0.7)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y], 0.866025404f * y);
                     tile.PaintTile(Color.white, 0f);
                     tile.terrainType = BaseTile.TerrainType.Plain;
+                    tile.tileName = "平原";
                 }
                 if (noiseMap[x, y] >= 0.7)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y] * 2f, 0.866025404f * y);
                     tile.PaintTile(Color.white, 3f);
                     tile.terrainType = BaseTile.TerrainType.Rocks;
+                    tile.tileName = "山地";
                 }
 
                 tileToAlign.Add(tile);

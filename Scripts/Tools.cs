@@ -45,6 +45,7 @@ public static class ToolsUtility
         {BaseTile.TerrainType.Swamp, new float[]{100,3,2,1 } },
         {BaseTile.TerrainType.Road, new float[]{100,0.5f,10,1 } },
         {BaseTile.TerrainType.Snowfield, new float[]{100,2,10,1 } },
+        {BaseTile.TerrainType.DeepWater, new float[]{100,10,1,1 } },
     };
 
     public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination)
