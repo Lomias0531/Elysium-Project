@@ -76,13 +76,15 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _threshold: 1
-    - _totalheight: 5
-    - _wireframe: 2
+    - _progress: -0.47
+    - _speed: 0.5
+    - _threshold: 2
+    - _totalheight: 1
+    - _wireframe: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _emissioncolor: {r: 1, g: 0, b: 0, a: 0}
+    - _emissioncolor: {r: 0, g: 0.550797, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &8954354639583054507
 MonoBehaviour:
