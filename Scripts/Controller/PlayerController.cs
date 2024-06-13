@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     BaseTile lastSelectedTile;
+    BaseObj hoveredObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         GetTileUnderMouse();
+        GetObjUnderMouse();
     }
     void GetTileUnderMouse()
     {
@@ -47,6 +49,14 @@ public class PlayerController : MonoBehaviour
                     break;
                 }
             }
+        }
+    }
+    void GetObjUnderMouse()
+    {
+        hoveredObject = lastSelectedTile.GetObjInThisTile();
+        if(hoveredObject != null)
+        {
+
         }
     }
     void UnitFunctions()

@@ -34,6 +34,7 @@ public class BaseResource : BaseObj
         for(int i = 0;i<3;i++)
         {
             GameObject obj;
+            float rot = Random.Range(0f, 359f);
             switch (type)
             {
                 case ResourceType.Tree:
@@ -41,6 +42,7 @@ public class BaseResource : BaseObj
                         var index = Random.Range(0, MapController.Instance.treesTemplate.Count);
                         obj = GameObject.Instantiate(MapController.Instance.treesTemplate[index], objPos[i].transform);
                         obj.transform.localPosition = Vector3.zero;
+                        obj.transform.eulerAngles = new Vector3(0, rot, 0);
                         break;
                     }
                 case ResourceType.Rock:
@@ -48,6 +50,7 @@ public class BaseResource : BaseObj
                         var index = Random.Range(0, MapController.Instance.rocksTemplate.Count);
                         obj = GameObject.Instantiate(MapController.Instance.rocksTemplate[index], objPos[i].transform);
                         obj.transform.localPosition = Vector3.zero;
+                        obj.transform.eulerAngles = new Vector3(0, rot, 0);
                         break;
                     }
                 case ResourceType.Iron:
@@ -55,6 +58,7 @@ public class BaseResource : BaseObj
                         var index = Random.Range(0, MapController.Instance.metalTemplate.Count);
                         obj = GameObject.Instantiate(MapController.Instance.metalTemplate[index], objPos[i].transform);
                         obj.transform.localPosition = Vector3.zero;
+                        obj.transform.eulerAngles = new Vector3(0, rot, 0);
                         break;
                     }
             }

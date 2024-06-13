@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,7 +14,7 @@ public class MapController : Singletion<MapController>
 
     int curSeed;
     public Dictionary<Vector3Int,BaseTile> mapTiles = new Dictionary<Vector3Int, BaseTile> ();
-    public Dictionary<string, BaseResource> resourcesDic = new Dictionary<string, BaseResource> ();
+    public Dictionary<Vector3Int, BaseResource> resourcesDic = new Dictionary<Vector3Int, BaseResource> ();
     public Dictionary<string, BaseObj> entityDic = new Dictionary<string, BaseObj> ();
 
     public List<GameObject> treesTemplate = new List<GameObject> ();
@@ -22,6 +23,8 @@ public class MapController : Singletion<MapController>
     public GameObject waterTemplate;
     GameObject water;
     float waveTime;
+    public BaseResource resourceTemplate;
+    public Transform tsf_ResContainer;
     // Start is called before the first frame update
     void Start()
     {
@@ -124,21 +127,25 @@ public class MapController : Singletion<MapController>
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), -noiseMap[x, y], 0.866025404f * y);
                     tile.PaintTile(Color.white, 4f);
+                    tile.terrainType = BaseTile.TerrainType.Water;
                 }
                 if (noiseMap[x, y] >= 0.2 && noiseMap[x, y] < 0.3)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y] * 0.5f, 0.866025404f * y);
                     tile.PaintTile(Color.white, 2f);
+                    tile.terrainType = BaseTile.TerrainType.Water;
                 }
                 if (noiseMap[x, y] >= 0.3 && noiseMap[x, y] < 0.7)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y], 0.866025404f * y);
                     tile.PaintTile(Color.white, 0f);
+                    tile.terrainType = BaseTile.TerrainType.Plain;
                 }
                 if (noiseMap[x, y] >= 0.7)
                 {
                     tile.gameObject.transform.localPosition = new Vector3(x + (y % 2 == 0 ? 0 : 0.5f), noiseMap[x, y] * 2f, 0.866025404f * y);
                     tile.PaintTile(Color.white, 3f);
+                    tile.terrainType = BaseTile.TerrainType.Rocks;
                 }
 
                 tileToAlign.Add(tile);
@@ -179,7 +186,32 @@ public class MapController : Singletion<MapController>
     }
     void GenerateResources()
     {
+        int treeCount = 50 + Random.Range(-5, 5);
+        for(int i = 0;i< treeCount; i++)
+        {
+            bool resGenerated = false;
+            do
+            {
+                var index = Random.Range(0, mapTiles.Count);
+                var tile = mapTiles.ToList()[index].Value;
+                if (tile.terrainType == BaseTile.TerrainType.Plain)
+                {
+                    if (resourcesDic.ContainsKey(tile.Pos))
+                    {
+                        resGenerated = false;
+                        continue;
+                    }
+                    var res = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
+                    res.transform.position = tile.transform.position;
+                    var resIndex = Random.Range(0, 3);
+                    res.InitResource(tile.Pos, (BaseResource.ResourceType)resIndex);
 
+                    entityDic.Add(res.ID, res);
+                    resourcesDic.Add(res.Pos, res);
+                    resGenerated = true;
+                }
+            } while (!resGenerated);
+        }
     }
     #endregion
 }

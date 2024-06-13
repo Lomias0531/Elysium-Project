@@ -248,6 +248,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 30, y: -30, z: 0}
+--- !u!1 &798325646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 798325647}
+  m_Layer: 0
+  m_Name: ResContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &798325647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798325646}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,12 +431,12 @@ MonoBehaviour:
   mapWidth: 50
   mapHeight: 50
   treesTemplate:
-  - {fileID: 6920058590620085306, guid: 20837263a7b57be4a9b6637a8d365fd8, type: 3}
-  - {fileID: 727632308619620236, guid: 644623dea157a164c80fa934f872cc04, type: 3}
-  - {fileID: 5809089146051724890, guid: f7800726d20ca234e8740b50049712bd, type: 3}
-  - {fileID: 6238373567539690591, guid: 06fedc535a86512479083c0306647a52, type: 3}
-  - {fileID: 1870055117394663451, guid: f366cb3cb917b88458e2e96c7b58d2cb, type: 3}
-  - {fileID: 8768886680799307399, guid: ea340aec977e313439a05a6faa80ebaa, type: 3}
+  - {fileID: 3648399987953614050, guid: a04981256270eda43b97fd3886cda124, type: 3}
+  - {fileID: 5116213076208908872, guid: 7d6107a138e975640a15b27c70b0ee3a, type: 3}
+  - {fileID: 3445818306332173841, guid: 9c350f75f5220e04893794a07786d1ff, type: 3}
+  - {fileID: 1863444769242976630, guid: d42b0a57d36e7a6498c1e05fa09c6f1c, type: 3}
+  - {fileID: 6445690633979034173, guid: 59b9c435389eded4f85e753e31c4198e, type: 3}
+  - {fileID: 7196128956299240961, guid: 21dc422f88c687f4db212c0139d99093, type: 3}
   rocksTemplate:
   - {fileID: 1123455833538496295, guid: 9ac69a5bfeba7714cba60a519710b6ee, type: 3}
   - {fileID: 6415786325481023713, guid: 8c778ad2a98f199429419259cd42395c, type: 3}
@@ -415,6 +446,8 @@ MonoBehaviour:
   - {fileID: 4232149604463587550, guid: c1c417e94a7c08f4cae8c291a377b414, type: 3}
   - {fileID: 732370158558335634, guid: 66754c161ab57744cac8b11bf6b394bb, type: 3}
   waterTemplate: {fileID: 5975395118864009416, guid: df810f1e36907604a95b2d5fee071538, type: 3}
+  resourceTemplate: {fileID: 3369710057481506199, guid: ce52f79b6e8612948b1e5777c9adfab7, type: 3}
+  tsf_ResContainer: {fileID: 798325647}
 --- !u!114 &1486776331
 MonoBehaviour:
   m_ObjectHideFlags: 0

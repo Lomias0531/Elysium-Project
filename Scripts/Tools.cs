@@ -184,4 +184,16 @@ public static class ToolsUtility
         //}
         return true;
     }
+    public static BaseObj GetObjInThisTile(this BaseTile tile)
+    {
+        if (tile == null) return null;
+        foreach (var ent in MapController.Instance.entityDic)
+        {
+            if(ent.Value.Pos == tile.Pos)
+            {
+                return ent.Value;
+            }
+        }
+        return null;
+    }
 }
