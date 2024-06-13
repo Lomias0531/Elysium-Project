@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    BaseTile lastSelectedTile;
-    BaseObj hoveredObject;
+    public BaseTile hoveredTile;
+    public BaseObj hoveredObject;
+    public BaseObj selectedObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,18 +34,18 @@ public class PlayerController : MonoBehaviour
                 var selectedTile = item.collider.gameObject.GetComponent<BaseTile>();
                 if (selectedTile != null)
                 {
-                    if (selectedTile == lastSelectedTile)
+                    if (selectedTile == hoveredTile)
                     {
-                        lastSelectedTile = selectedTile;
+                        hoveredTile = selectedTile;
                         break;
                     }
 
-                    if (lastSelectedTile && lastSelectedTile != selectedTile)
+                    if (hoveredTile && hoveredTile != selectedTile)
                     {
-                        lastSelectedTile.MarkTile(BaseTile.TileSelectionType.None);
+                        hoveredTile.MarkTile(BaseTile.TileSelectionType.None);
                     }
                     selectedTile.MarkTile(BaseTile.TileSelectionType.Hover);
-                    lastSelectedTile = selectedTile;
+                    hoveredTile = selectedTile;
 
                     break;
                 }
@@ -53,7 +54,7 @@ public class PlayerController : MonoBehaviour
     }
     void GetObjUnderMouse()
     {
-        hoveredObject = lastSelectedTile.GetObjInThisTile();
+        hoveredObject = hoveredTile.GetObjInThisTile();
         if(hoveredObject != null)
         {
 

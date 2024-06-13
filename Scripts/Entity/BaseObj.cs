@@ -8,6 +8,7 @@ public abstract class BaseObj : MonoBehaviour
     public string ID;
     public MoveType moveType;
     public MoveStyle moveStyle;
+    public string objName;
     public List<BaseComponent> components = new List<BaseComponent>();
 
     public enum MoveType

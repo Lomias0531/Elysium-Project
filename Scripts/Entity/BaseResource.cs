@@ -41,18 +41,21 @@ public class BaseResource : BaseObj
                     {
                         var index = Random.Range(0, MapController.Instance.treesTemplate.Count);
                         obj = GameObject.Instantiate(MapController.Instance.treesTemplate[index], objPos[i].transform);
+                        this.objName = "Ê÷Ä¾";
                         break;
                     }
                 case ResourceType.Rock:
                     {
                         var index = Random.Range(0, MapController.Instance.rocksTemplate.Count);
                         obj = GameObject.Instantiate(MapController.Instance.rocksTemplate[index], objPos[i].transform);
+                        this.objName = "Ê¯Í·";
                         break;
                     }
                 case ResourceType.Iron:
                     {
                         var index = Random.Range(0, MapController.Instance.metalTemplate.Count);
                         obj = GameObject.Instantiate(MapController.Instance.metalTemplate[index], objPos[i].transform);
+                        this.objName = "½ðÊô";
                         break;
                     }
                 default:

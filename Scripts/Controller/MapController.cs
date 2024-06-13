@@ -187,30 +187,6 @@ public class MapController : Singletion<MapController>
     }
     void GenerateResources()
     {
-        //int treeCount = 50 + Random.Range(-5, 5);
-        //for(int i = 0;i< treeCount; i++)
-        //{
-        //    bool resGenerated = false;
-        //    do
-        //    {
-        //        var index = Random.Range(0, mapTiles.Count);
-        //        var tile = mapTiles.ToList()[index].Value;
-
-        //        if (resourcesDic.ContainsKey(tile.Pos))
-        //        {
-        //            resGenerated = false;
-        //            continue;
-        //        }
-        //        var res = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
-        //        res.transform.position = tile.transform.position;
-        //        var resIndex = Random.Range(0, 3);
-        //        res.InitResource(tile.Pos, (BaseResource.ResourceType)resIndex);
-
-        //        entityDic.Add(res.ID, res);
-        //        resourcesDic.Add(res.Pos, res);
-        //        resGenerated = true;
-        //    } while (!resGenerated);
-        //}
         int[] resCount = new int[3];
         resCount[0] = Random.Range(2, 5);
         resCount[1] = Random.Range(1, 4);
