@@ -14,6 +14,9 @@ public class UIController : Singletion<UIController>
     public Text txt_hoveredTileStatus;
     [Space(1)]
     public GameObject obj_hoveredUnit;
+    public Text txt_hoveredUnitName;
+    public Image img_hoveredUnitHP;
+    public Image img_hoveredUnitEP;
     [Space(1)]
     public GameObject obj_selectedUnit;
     // Start is called before the first frame update
@@ -47,6 +50,10 @@ public class UIController : Singletion<UIController>
         if(obj != null)
         {
             obj_hoveredUnit.SetActive(true);
+            txt_hoveredUnitName.text = obj.objName;
+
+            img_hoveredUnitHP.fillAmount = obj.HPMax == 0 ? 1 : obj.HP / obj.HPMax;
+            img_hoveredUnitEP.fillAmount = obj.EPMax == 0 ? 1 : obj.EP / obj.EPMax;
         }else
         {
             obj_hoveredUnit.SetActive(false);

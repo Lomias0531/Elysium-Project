@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     {
         GetTileUnderMouse();
         GetObjUnderMouse();
+        MouseFunctions();
     }
     void GetTileUnderMouse()
     {
@@ -65,7 +66,7 @@ public class PlayerController : MonoBehaviour
             
         }
     }
-    void UnitFunctions()
+    void MouseFunctions()
     {
 
     }

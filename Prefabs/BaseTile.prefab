@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4bfba8abd3bce704f95b685556bc8114, type: 2}
+  - {fileID: 2100000, guid: 0690fa9d3ac82a747a6dc8d3b9c66453, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,10 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00394c583e1bc104d9ac58a7cc37cf81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tileName: 
   originalPos: {x: 0, y: 0}
   Pos: {x: 0, y: 0, z: 0}
   color: {r: 0, g: 0, b: 0, a: 0}
-  colors: []
   indicator: {fileID: 8744074811001788057}
   indicatorRenderer: {fileID: 1615600245584911639}
   isMarked: 0

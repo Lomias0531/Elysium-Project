@@ -19,7 +19,7 @@ public class BaseTile : MonoBehaviour
     const float outerRadius = 0.5f;
     const float innerRadius = 0.5f * 0.866025404f;
     const float extendDistanceX = 0.5f * (1f - 0.866025404f);
-    const float extendDistanceZ = 0.125f;
+    const float extendDistanceZ = 0.866025404f - 0.75f;
 
     public Vector2Int originalPos;
     public Vector3Int Pos;
@@ -211,15 +211,15 @@ public class BaseTile : MonoBehaviour
             colors.Add(adjacentTiles[dir].color);
             colors.Add(adjacentTiles[dir].color);
 
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
 
-            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
-            terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
+            //terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
 
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 2);
@@ -246,13 +246,13 @@ public class BaseTile : MonoBehaviour
             colors.Add(adjacentTiles[dir].color);
             colors.Add(adjacentTiles[dir + 1].color);
 
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
 
-            terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
-            terrainTypes.Add(new Vector3(adjacentTiles[dir + 1].terrainIndex, adjacentTiles[dir + 1].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
+            //terrainTypes.Add(new Vector3(adjacentTiles[dir + 1].terrainIndex, adjacentTiles[dir + 1].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
 
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 1);

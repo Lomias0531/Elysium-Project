@@ -10,6 +10,54 @@ public abstract class BaseObj : MonoBehaviour
     public MoveStyle moveStyle;
     public string objName;
     public List<BaseComponent> components = new List<BaseComponent>();
+    public float HP
+    {
+        get
+        {
+            float value = 0f;
+            foreach (var item in components)
+            {
+                value += item.HP;
+            }
+            return value;
+        }
+    }
+    public float HPMax
+    {
+        get
+        {
+            float value = 0f;
+            foreach (var item in components)
+            {
+                value += item.MaxHP;
+            }
+            return value;
+        }
+    }
+    public float EP
+    {
+        get
+        {
+            float value = 0f;
+            foreach (var item in components)
+            {
+                value += item.EP;
+            }
+            return value;
+        }
+    }
+    public float EPMax
+    {
+        get
+        {
+            float value = 0f;
+            foreach (var item in components)
+            {
+                value += item.MaxEP;
+            }
+            return value;
+        }
+    }
 
     public enum MoveType
     {
