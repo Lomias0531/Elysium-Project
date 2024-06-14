@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Water2
-  m_Shader: {fileID: -6465566751694194690, guid: fd98d6e418135c244b0c1a06ef9633b2, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 3d2d4b063f284c041b7ba72fc5793fa5, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -54,6 +54,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture:
+        m_Texture: {fileID: 2800000, guid: c7f21fdd7c3a4524f848b12154f551f5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _normal1:
