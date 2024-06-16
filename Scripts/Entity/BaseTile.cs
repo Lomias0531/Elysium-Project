@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Unity.VisualScripting;
+using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -195,69 +196,149 @@ public class BaseTile : MonoBehaviour
 
         if (adjacentTiles.ContainsKey(dir))
         {
-            int vertexIndex = vertices.Count;
-
             var v1 = corners[(int)dir];
-            vertices.Add(v1);
+
             var v2 = corners[(int)dir + 1];
-            vertices.Add(v2);
+
             var v3 = extendCorners[(int)dir * 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
-            vertices.Add(v3);
+
             var v4 = extendCorners[(int)dir * 2 + 1] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
-            vertices.Add(v4);
 
-            colors.Add(color);
-            colors.Add(color);
-            colors.Add(adjacentTiles[dir].color);
-            colors.Add(adjacentTiles[dir].color);
+            for (int i = 0; i < 4; i++)
+            {
+                var p1 = Vector3.Lerp(v1, v3,  (float)i / 4);
+                var p2 = Vector3.Lerp(v2, v4, (float)i / 4);
+                var p3 = Vector3.Lerp(v1, v3, (float)(i + 1) / 4);
+                var p4 = Vector3.Lerp(v2, v4, (float)(i + 1) / 4);
 
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+                AddQuad(p1, p2, p3, p4, color, adjacentTiles[dir].color, terrainIndex, adjacentTiles[dir].terrainIndex);
+            }
+            //colors.Add(color);
+            //colors.Add(color);
+            //colors.Add(adjacentTiles[dir].color);
+            //colors.Add(adjacentTiles[dir].color);
 
-            //terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
-            //terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
 
-            triangles.Add(vertexIndex);
-            triangles.Add(vertexIndex + 2);
-            triangles.Add(vertexIndex + 1);
-            triangles.Add(vertexIndex + 1);
-            triangles.Add(vertexIndex + 2);
-            triangles.Add(vertexIndex + 3);
+            //triangles.Add(vertexIndex);
+            //triangles.Add(vertexIndex + 2);
+            //triangles.Add(vertexIndex + 1);
+            //triangles.Add(vertexIndex + 1);
+            //triangles.Add(vertexIndex + 2);
+            //triangles.Add(vertexIndex + 3);
         }
     }
     void GetAdjTriangles(HexDirection dir)
     {
         if (adjacentTiles.ContainsKey(dir) && adjacentTiles.ContainsKey(dir + 1))
         {
-            int vertexIndex = vertices.Count;
-
             var v1 = corners[(int)dir + 1];
-            vertices.Add(v1);
+
             var v2 = extendCorners[(int)dir*2 + 1] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
-            vertices.Add(v2);
+
             var v3 = extendCorners[(int)dir*2 + 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir + 1].gameObject.transform.localPosition.y, 0);
-            vertices.Add(v3);
 
-            colors.Add(color);
-            colors.Add(adjacentTiles[dir].color);
-            colors.Add(adjacentTiles[dir + 1].color);
+            var d1 = Vector3.Lerp(v1, v2, 0.25f);
+            var d2 = Vector3.Lerp(v1, v3, 0.25f);
+            AddTriangle(v1, d1, d2, color, adjacentTiles[dir].color, adjacentTiles[dir + 1].color, terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex);
 
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-            terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            for(int i = 1;i<4;i++)
+            {
+                var p1 = Vector3.Lerp(v1, v2, (float)i / 4);
+                var p2 = Vector3.Lerp(v1, v3, (float)i / 4);
+                var p3 = Vector3.Lerp(v1, v2, (float)(i + 1) / 4);
+                var p4 = Vector3.Lerp(v1, v3, (float)(i + 1) / 4);
 
-            //terrainTypes.Add(new Vector3(terrainIndex, terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir].terrainIndex));
-            //terrainTypes.Add(new Vector3(adjacentTiles[dir + 1].terrainIndex, adjacentTiles[dir + 1].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+                AddQuad(p1, p2, p3, p4, color, adjacentTiles[dir].color, adjacentTiles[dir + 1].color, terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex);
+            }
 
-            triangles.Add(vertexIndex);
-            triangles.Add(vertexIndex + 1);
-            triangles.Add(vertexIndex + 2);
+            //colors.Add(color);
+            //colors.Add(adjacentTiles[dir].color);
+            //colors.Add(adjacentTiles[dir + 1].color);
+
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
+
+            //triangles.Add(vertexIndex);
+            //triangles.Add(vertexIndex + 1);
+            //triangles.Add(vertexIndex + 2);
         }
+    }
+    void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,Color c1, Color c2, float t1, float t2)
+    {
+        int vertexIndex = vertices.Count;
+
+        vertices.Add(v1);
+        vertices.Add(v2);
+        vertices.Add(v3);
+        vertices.Add(v4);
+
+        colors.Add(c1);
+        colors.Add(c1);
+        colors.Add(c2);
+        colors.Add(c2);
+
+        terrainTypes.Add(new Vector3(t1, t2, t1));
+        terrainTypes.Add(new Vector3(t1, t2, t1));
+        terrainTypes.Add(new Vector3(t1, t2, t1));
+        terrainTypes.Add(new Vector3(t1, t2, t1));
+
+        triangles.Add(vertexIndex);
+        triangles.Add(vertexIndex + 2);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 2);
+        triangles.Add(vertexIndex + 3);
+    }
+    void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Color c1, Color c2, Color c3, float t1, float t2, float t3)
+    {
+        int vertexIndex = vertices.Count;
+
+        vertices.Add(v1);
+        vertices.Add(v2);
+        vertices.Add(v3);
+        vertices.Add(v4);
+
+        colors.Add(c1);
+        colors.Add(c1);
+        colors.Add(c2);
+        colors.Add(c2);
+
+        terrainTypes.Add(new Vector3(t1, t2, t1));
+        terrainTypes.Add(new Vector3(t1, t2, t1));
+        terrainTypes.Add(new Vector3(t1, t2, t1));
+        terrainTypes.Add(new Vector3(t1, t2, t1));
+
+        triangles.Add(vertexIndex);
+        triangles.Add(vertexIndex + 2);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 2);
+        triangles.Add(vertexIndex + 3);
+    }
+    void AddTriangle(Vector3 v1,Vector3 v2, Vector3 v3, Color c1, Color c2, Color c3, float t1, float t2, float t3)
+    {
+        int vertexIndex = vertices.Count;
+
+        vertices.Add(v1);
+        vertices.Add(v2);
+        vertices.Add(v3);
+
+        colors.Add(c1);
+        colors.Add(c2);
+        colors.Add(c3);
+
+        terrainTypes.Add(new Vector3(t1, t2, t3));
+        terrainTypes.Add(new Vector3(t1, t2, t3));
+        terrainTypes.Add(new Vector3(t1, t2, t3));
+
+        triangles.Add(vertexIndex);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 2);
     }
     #endregion
 
