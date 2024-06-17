@@ -953,9 +953,9 @@
     "m_ShaderOutputName": "B",
     "m_StageCapability": 3,
     "m_Value": {
-        "x": 3.0,
-        "y": 3.0,
-        "z": 3.0,
+        "x": 2.0,
+        "y": 2.0,
+        "z": 2.0,
         "w": 1.0
     },
     "m_DefaultValue": {
