@@ -223,12 +223,12 @@ public class MapController : Singletion<MapController>
                     }
                 }while(!isOriginSet);
 
-                BaseResource res = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
-                res.transform.position = origin.transform.position;
-                res.InitResource(origin.Pos, (BaseResource.ResourceType)i);
+                //BaseResource res = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
+                //res.transform.position = origin.transform.position;
+                //res.InitResource(origin.Pos, (BaseResource.ResourceType)i);
 
-                entityDic.Add(res.ID, res);
-                resourcesDic.Add(res.Pos, res);
+                //entityDic.Add(res.ID, res);
+                //resourcesDic.Add(res.Pos, res);
 
                 List<BaseTile> ResToGen = new List<BaseTile>();
                 List<BaseTile> ResGenerated = new List<BaseTile>
@@ -243,7 +243,7 @@ public class MapController : Singletion<MapController>
                     {
                         foreach (var adjTile in tile.adjacentTiles)
                         {
-                            if (!resourcesDic.ContainsKey(adjTile.Value.Pos) && !ResToGen.Contains(adjTile.Value))
+                            if (!resourcesDic.ContainsKey(adjTile.Value.Pos) && !ResToGen.Contains(adjTile.Value) && !ResGenerated.Contains(adjTile.Value))
                             {
                                 float rnd = Random.Range(0f, 1f);
 
@@ -273,16 +273,20 @@ public class MapController : Singletion<MapController>
 
                     foreach (var item in ResToGen)
                     {
-                        BaseResource res1 = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
-                        res1.transform.position = item.transform.position;
-                        res1.InitResource(item.Pos, (BaseResource.ResourceType)i);
-
-                        entityDic.Add(res1.ID, res1);
-                        resourcesDic.Add(res1.Pos, res1);
-
                         ResGenerated.Add(item);
                     }
                 } while (ResToGen.Count > 0);
+
+                foreach (var item in ResGenerated)
+                {
+                    if (Random.Range(0f, 1f) < 0.3f) continue;
+                    BaseResource res1 = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
+                    res1.transform.position = item.transform.position;
+                    res1.InitResource(item.Pos, (BaseResource.ResourceType)i);
+
+                    entityDic.Add(res1.ID, res1);
+                    resourcesDic.Add(res1.Pos, res1);
+                }
             }
         }
     }

@@ -225,6 +225,7 @@ public class BaseTile : MonoBehaviour
 
             var d1 = Vector3.Lerp(v1, v2, 0.25f);
             var d2 = Vector3.Lerp(v1, v3, 0.25f);
+
             AddTriangle(v1, d1, d2, color, adjacentTiles[dir].color, adjacentTiles[dir + 1].color, terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex);
 
             for(int i = 1;i<4;i++)
