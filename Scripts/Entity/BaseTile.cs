@@ -211,22 +211,6 @@ public class BaseTile : MonoBehaviour
 
                 AddQuad(p1, p2, p3, p4, color, adjacentTiles[dir].color, terrainIndex, adjacentTiles[dir].terrainIndex);
             }
-            //colors.Add(color);
-            //colors.Add(color);
-            //colors.Add(adjacentTiles[dir].color);
-            //colors.Add(adjacentTiles[dir].color);
-
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, terrainIndex));
-
-            //triangles.Add(vertexIndex);
-            //triangles.Add(vertexIndex + 2);
-            //triangles.Add(vertexIndex + 1);
-            //triangles.Add(vertexIndex + 1);
-            //triangles.Add(vertexIndex + 2);
-            //triangles.Add(vertexIndex + 3);
         }
     }
     void GetAdjTriangles(HexDirection dir)
@@ -252,18 +236,6 @@ public class BaseTile : MonoBehaviour
 
                 AddQuad(p1, p2, p3, p4, color, adjacentTiles[dir].color, adjacentTiles[dir + 1].color, terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex);
             }
-
-            //colors.Add(color);
-            //colors.Add(adjacentTiles[dir].color);
-            //colors.Add(adjacentTiles[dir + 1].color);
-
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-            //terrainTypes.Add(new Vector3(terrainIndex, adjacentTiles[dir].terrainIndex, adjacentTiles[dir + 1].terrainIndex));
-
-            //triangles.Add(vertexIndex);
-            //triangles.Add(vertexIndex + 1);
-            //triangles.Add(vertexIndex + 2);
         }
     }
     void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,Color c1, Color c2, float t1, float t2)
