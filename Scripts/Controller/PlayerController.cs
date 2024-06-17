@@ -68,6 +68,22 @@ public class PlayerController : MonoBehaviour
     }
     void MouseFunctions()
     {
+        if(Input.GetMouseButtonUp(0))
+        {
+            if(selectedObject == null)
+            {
+                selectedObject = hoveredObject;
 
+                UIController.Instance.DisplaySelectedUnitInfo(selectedObject);
+            }else
+            {
+
+            }
+        }
+        if(Input.GetMouseButtonUp(1))
+        {
+            selectedObject = null;
+            UIController.Instance.DisplaySelectedUnitInfo(null);
+        }
     }
 }

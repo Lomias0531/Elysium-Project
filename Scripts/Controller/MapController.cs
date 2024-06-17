@@ -223,13 +223,6 @@ public class MapController : Singletion<MapController>
                     }
                 }while(!isOriginSet);
 
-                //BaseResource res = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
-                //res.transform.position = origin.transform.position;
-                //res.InitResource(origin.Pos, (BaseResource.ResourceType)i);
-
-                //entityDic.Add(res.ID, res);
-                //resourcesDic.Add(res.Pos, res);
-
                 List<BaseTile> ResToGen = new List<BaseTile>();
                 List<BaseTile> ResGenerated = new List<BaseTile>
                 {

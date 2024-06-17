@@ -10,6 +10,7 @@ public abstract class BaseComponent : MonoBehaviour
     public float EP;
     public float MaxEP;
     public ComponentFunction[] functions;
+    public float ApplyTimeInterval;
 
     public enum ComponentFunction
     {
@@ -17,6 +18,11 @@ public abstract class BaseComponent : MonoBehaviour
         Damage,
         Interact,
         Protection,
+    }
+    public enum InteractFunction
+    {
+        Harvest,
+        Active,
     }
     // Start is called before the first frame update
     void Start()
@@ -30,4 +36,5 @@ public abstract class BaseComponent : MonoBehaviour
         
     }
     public abstract void OnApply();
+    public abstract void OnDestroyThis();
 }
