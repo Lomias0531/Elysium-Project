@@ -19,6 +19,14 @@ public class UIController : Singletion<UIController>
     public Image img_hoveredUnitEP;
     [Space(1)]
     public GameObject obj_selectedUnit;
+    public Text txt_selectedUnitName;
+    public Image img_selectedUnitHP;
+    public Image img_selectedUnitEP;
+    [Space(1)]
+    public Text txt_organicAmount;
+    public Text txt_constructAmount;
+    public Text txt_metalAmount;
+    public Text txt_energyLevel;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +36,7 @@ public class UIController : Singletion<UIController>
     // Update is called once per frame
     void Update()
     {
-        
+        ShowResourceAmount();
     }
     public void DisplayHoveredTileInfo(BaseTile tile)
     {
@@ -67,6 +75,11 @@ public class UIController : Singletion<UIController>
         if (obj != null)
         {
             obj_selectedUnit.SetActive(true);
+
+            txt_selectedUnitName.text = obj.objName;
+
+            img_selectedUnitHP.fillAmount = obj.HPMax == 0 ? 1 : obj.HP / obj.HPMax;
+            img_selectedUnitEP.fillAmount = obj.EPMax == 0 ? 1 : obj.EP / obj.EPMax;
         }
         else
         {
@@ -75,5 +88,12 @@ public class UIController : Singletion<UIController>
 
         img_BG.enabled = false;
         img_BG.enabled = true;
+    }
+    public void ShowResourceAmount()
+    {
+        txt_organicAmount.text = PlayerDataManager.Instance.OrganicAmount.ToString("F0") + "/" + PlayerDataManager.Instance.OrganicMaxAmount.ToString("F0");
+        txt_constructAmount.text = PlayerDataManager.Instance.ConstructMaterialAmount.ToString("F0") + "/" + PlayerDataManager.Instance.ConstructMaterialMaxAmount.ToString("F0");
+        txt_metalAmount.text = PlayerDataManager.Instance.MetalAmount.ToString("F0") + "/" + PlayerDataManager.Instance.MetalMaxAmount.ToString("F0");
+        txt_energyLevel.text = PlayerDataManager.Instance.EnergyConsumed.ToString("F0") + "/" + PlayerDataManager.Instance.EnergyProduced.ToString("F0");
     }
 }
