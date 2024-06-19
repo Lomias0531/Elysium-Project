@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     public BaseObj hoveredObject;
     [HideInInspector]
     public BaseObj selectedObject;
+
+    List<BaseTile> moveIndicators = new List<BaseTile>();
+    List<BaseTile> attackIndicators = new List<BaseTile>();
+    List<BaseTile> interactIndicators = new List<BaseTile>();
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +27,8 @@ public class PlayerController : MonoBehaviour
         GetTileUnderMouse();
         GetObjUnderMouse();
         MouseFunctions();
+
+        PaintIndicator();
     }
     void GetTileUnderMouse()
     {
@@ -82,8 +88,27 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetMouseButtonUp(1))
         {
+            if(MapController.Instance.mapTiles.ContainsKey(selectedObject.Pos))
+            {
+                MapController.Instance.mapTiles[selectedObject.Pos].MarkTile(BaseTile.TileSelectionType.None);
+            }
+
             selectedObject = null;
             UIController.Instance.DisplaySelectedUnitInfo(null);
+        }
+    }
+    void PaintIndicator()
+    {
+        if(selectedObject != null)
+        {
+            PaintSelectionIndicator(selectedObject.Pos);
+        }
+    }
+    void PaintSelectionIndicator(Vector3Int pos)
+    {
+        if(MapController.Instance.mapTiles.ContainsKey(pos))
+        {
+            MapController.Instance.mapTiles[pos].MarkTile(BaseTile.TileSelectionType.Selected);
         }
     }
 }

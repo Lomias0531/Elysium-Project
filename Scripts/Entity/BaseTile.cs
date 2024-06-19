@@ -71,6 +71,7 @@ public class BaseTile : MonoBehaviour
         Moveable,
         Attackable,
         Interactable,
+        Selected,
     }
     public enum TerrainType
     {
@@ -350,6 +351,11 @@ public class BaseTile : MonoBehaviour
             case TileSelectionType.Interactable:
                 {
                     indicatorRenderer.material.color = new Color(0, 1, 1, 1f);
+                    break;
+                }
+            case TileSelectionType.Selected:
+                {
+                    indicatorRenderer.material.color = new Color(1, 0, 1, 1f);
                     break;
                 }
         }
