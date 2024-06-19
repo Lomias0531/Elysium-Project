@@ -1,0 +1,11 @@
+Model Information:
+* title:	Old Xylophis Light Shuttle (by Nyankosensei)
+* source:	https://sketchfab.com/3d-models/old-xylophis-light-shuttle-by-nyankosensei-d592ec9bad7244b6a385669370f8357c
+* author:	bszlrd (https://sketchfab.com/bszlrd)
+
+Model License:
+* license type:	CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+* requirements:	Author must be credited. Modified versions must have the same license. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Old Xylophis Light Shuttle (by Nyankosensei)" (https://sketchfab.com/3d-models/old-xylophis-light-shuttle-by-nyankosensei-d592ec9bad7244b6a385669370f8357c) by bszlrd (https://sketchfab.com/bszlrd) licensed under CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)

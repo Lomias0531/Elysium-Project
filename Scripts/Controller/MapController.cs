@@ -16,7 +16,7 @@ public class MapController : Singletion<MapController>
     int curSeed;
     public Dictionary<Vector3Int,BaseTile> mapTiles = new Dictionary<Vector3Int, BaseTile> ();
     public Dictionary<Vector3Int, BaseResource> resourcesDic = new Dictionary<Vector3Int, BaseResource> ();
-    public Dictionary<string, BaseObj> entityDic = new Dictionary<string, BaseObj> ();
+    public Dictionary<string, BaseObj> entityDic = new Dictionary<string, BaseObj>();
 
     public List<GameObject> treesTemplate = new List<GameObject> ();
     public List<GameObject> rocksTemplate = new List<GameObject> ();
@@ -120,7 +120,7 @@ public class MapController : Singletion<MapController>
                 var tile = Instantiate(tileTemplate, tileContainer);
                 tile.originalPos = new Vector2Int(x, y);
 
-                float flatLevel = 0.1f;
+                float flatLevel = 0.12f;
                 noiseMap[x, y] = Mathf.Ceil(noiseMap[x, y] / flatLevel) * flatLevel;
 
                 tile.InitHex();
@@ -187,7 +187,7 @@ public class MapController : Singletion<MapController>
     }
     void GenerateWater()
     {
-        water = GameObject.Instantiate(waterTemplate, tileContainer);
+        water = GameObject.Instantiate(waterTemplate);
         water.transform.localPosition = new Vector3(25, 0.2f, 25);
     }
     void GenerateResources()
