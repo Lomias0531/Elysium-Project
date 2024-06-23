@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
+using DG.Tweening;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
+using UnityEditor.PackageManager.Requests;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,10 +17,14 @@ public class PlayerController : MonoBehaviour
     List<BaseTile> moveIndicators = new List<BaseTile>();
     List<BaseTile> attackIndicators = new List<BaseTile>();
     List<BaseTile> interactIndicators = new List<BaseTile>();
+
+    GameObject selectIndicator;
+    Tween selectIndicatorMove;
+    public Material selectIndicatorMaterial;
     // Start is called before the first frame update
     void Start()
     {
-        
+        CreateSelectIndicator();
     }
 
     // Update is called once per frame
@@ -29,6 +35,38 @@ public class PlayerController : MonoBehaviour
         MouseFunctions();
 
         PaintIndicator();
+    }
+    void CreateSelectIndicator()
+    {
+        selectIndicator = new GameObject("SelectIndicator");
+
+        Mesh hexMesh = selectIndicator.AddComponent<MeshFilter>().mesh = new Mesh();
+        MeshRenderer renderer = selectIndicator.AddComponent<MeshRenderer>();
+
+        hexMesh.name = "Hex Mesh";
+        var vertices = new List<Vector3>();
+        var triangles = new List<int>();
+
+        for (int i = 0; i < 6; i++)
+        {
+            AddTriangle(Vector3.zero, Vector3.zero + ToolsUtility.corners[i], Vector3.zero + ToolsUtility.corners[i + 1], vertices, triangles);
+        }
+
+        hexMesh.vertices = vertices.ToArray();
+        hexMesh.triangles = triangles.ToArray();
+        hexMesh.RecalculateNormals();
+
+        renderer.material = selectIndicatorMaterial;
+    }
+    void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, List<Vector3> vertices, List<int> triangles)
+    {
+        int vertexIndex = vertices.Count;
+        vertices.Add(v1);
+        vertices.Add(v2);
+        vertices.Add(v3);
+        triangles.Add(vertexIndex);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 2);
     }
     void GetTileUnderMouse()
     {
@@ -46,19 +84,26 @@ public class PlayerController : MonoBehaviour
                 {
                     if (selectedTile == hoveredTile)
                     {
-                        hoveredTile = selectedTile;
-                        break;
+                        return;
                     }
 
-                    if (hoveredTile && hoveredTile != selectedTile)
-                    {
-                        hoveredTile.MarkTile(BaseTile.TileSelectionType.None);
-                    }
-                    selectedTile.MarkTile(BaseTile.TileSelectionType.Hover);
                     hoveredTile = selectedTile;
+
+                    if (selectIndicatorMove != null)
+                    {
+                        selectIndicatorMove.Kill();
+                    }
+                    selectIndicatorMove = selectIndicator.transform.DOMove(hoveredTile.transform.position + new Vector3(0, 0.01f, 0), 0.1f);
+
+                    //if (hoveredTile && hoveredTile != selectedTile)
+                    //{
+                    //    hoveredTile.MarkTile(BaseTile.TileSelectionType.None);
+                    //}
+                    //selectedTile.MarkTile(BaseTile.TileSelectionType.Hover);
+
                     UIController.Instance.DisplayHoveredTileInfo(hoveredTile);
 
-                    break;
+                    return;
                 }
             }
         }

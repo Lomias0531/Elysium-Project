@@ -1,0 +1,25 @@
+[Info]
+Version = 3
+
+[Effect]
+Obj = none
+Obj[16] = Effects\Armor Arm.fx
+Obj[17] = Effects\Armor.fx
+Obj[18] = Effects\Armor2.fx
+Obj[19] = Effects\Armor.fx
+Obj[20] = Effects\Armor2.fx
+Obj[21] = Effects\Armor2.fx
+Obj[22] = Effects\Armor.fx
+Obj[23] = Effects\Armor.fx
+Obj[24] = Effects\Armor.fx
+Obj[27] = Effects\Armor.fx
+Obj[28] = Effects\Armor.fx
+Obj[29] = Effects\Armor.fx
+Obj[30] = none
+Obj[30].show = false
+Obj[31] = none
+Obj[31].show = false
+Obj[32].show = false
+Obj[33] = Effects\Armor.fx
+Obj[34] = Effects\Armor.fx
+

@@ -15,10 +15,7 @@ public class BaseTile : MonoBehaviour
     List<int> triangles;
     public string tileName;
 
-    const float outerRadius = 0.5f;
-    const float innerRadius = 0.5f * 0.866025404f;
-    const float extendDistanceX = 0.5f * (1f - 0.866025404f);
-    const float extendDistanceZ = 0.866025404f - 0.75f;
+    
 
     public Vector2Int originalPos;
     public Vector3Int Pos;
@@ -35,31 +32,7 @@ public class BaseTile : MonoBehaviour
     public TerrainType terrainType;
     public float terrainIndex;
 
-    Vector3[] corners =
-    {
-        new Vector3(0f,0f,outerRadius),
-        new Vector3(innerRadius,0f,0.5f * outerRadius),
-        new Vector3(innerRadius,0f,-0.5f * outerRadius),
-        new Vector3(0f,0f,-outerRadius),
-        new Vector3(-innerRadius,0f,-0.5f*outerRadius),
-        new Vector3(-innerRadius,0f,0.5f*outerRadius),
-        new Vector3(0f,0f,outerRadius)
-    };
-    Vector3[] extendCorners =
-    {
-        new Vector3(extendDistanceX, 0 ,outerRadius + extendDistanceZ),
-        new Vector3(innerRadius + extendDistanceX, 0 ,0.5f*outerRadius + extendDistanceZ),
-        new Vector3(innerRadius + extendDistanceX * 2f, 0, 0.5f * outerRadius),
-        new Vector3(innerRadius + extendDistanceX * 2f, 0, -0.5f * outerRadius),
-        new Vector3(innerRadius + extendDistanceX, 0, -0.5f * outerRadius - extendDistanceZ),
-        new Vector3(extendDistanceX, 0, -outerRadius - extendDistanceZ),
-        new Vector3(-extendDistanceX, 0, -outerRadius - extendDistanceZ),
-        new Vector3(-innerRadius - extendDistanceX, 0, -0.5f * outerRadius - extendDistanceZ),
-        new Vector3(-innerRadius - extendDistanceX * 2f, 0, -0.5f * outerRadius),
-        new Vector3(-innerRadius - extendDistanceX * 2f, 0, 0.5f * outerRadius),
-        new Vector3(-innerRadius - extendDistanceX, 0, 0.5f * outerRadius + extendDistanceZ),
-        new Vector3(-extendDistanceX, 0, outerRadius + extendDistanceZ),
-    };
+    
     public enum HexDirection
     {
         NE, E, SE, SW, W, NW
@@ -124,7 +97,7 @@ public class BaseTile : MonoBehaviour
 
         for (int i = 0; i < 6; i++)
         {
-            AddTriangle(Vector3.zero, Vector3.zero + corners[i], Vector3.zero + corners[i + 1]);
+            AddTriangle(Vector3.zero, Vector3.zero + ToolsUtility.corners[i], Vector3.zero + ToolsUtility.corners[i + 1]);
         }
 
         hexMesh.vertices = vertices.ToArray();
@@ -195,13 +168,13 @@ public class BaseTile : MonoBehaviour
 
         if (adjacentTiles.ContainsKey(dir))
         {
-            var v1 = corners[(int)dir];
+            var v1 = ToolsUtility.corners[(int)dir];
 
-            var v2 = corners[(int)dir + 1];
+            var v2 = ToolsUtility.corners[(int)dir + 1];
 
-            var v3 = extendCorners[(int)dir * 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
+            var v3 = ToolsUtility.extendCorners[(int)dir * 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
 
-            var v4 = extendCorners[(int)dir * 2 + 1] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
+            var v4 = ToolsUtility.extendCorners[(int)dir * 2 + 1] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
 
             for (int i = 0; i < 4; i++)
             {
@@ -218,11 +191,11 @@ public class BaseTile : MonoBehaviour
     {
         if (adjacentTiles.ContainsKey(dir) && adjacentTiles.ContainsKey(dir + 1))
         {
-            var v1 = corners[(int)dir + 1];
+            var v1 = ToolsUtility.corners[(int)dir + 1];
 
-            var v2 = extendCorners[(int)dir*2 + 1] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
+            var v2 = ToolsUtility.extendCorners[(int)dir*2 + 1] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir].gameObject.transform.localPosition.y, 0);
 
-            var v3 = extendCorners[(int)dir*2 + 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir + 1].gameObject.transform.localPosition.y, 0);
+            var v3 = ToolsUtility.extendCorners[(int)dir*2 + 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[dir + 1].gameObject.transform.localPosition.y, 0);
 
             var d1 = Vector3.Lerp(v1, v2, 0.25f);
             var d2 = Vector3.Lerp(v1, v3, 0.25f);

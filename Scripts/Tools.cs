@@ -47,6 +47,35 @@ public static class ToolsUtility
         {BaseTile.TerrainType.Snowfield, new float[]{100,2,10,1 } },
         {BaseTile.TerrainType.DeepWater, new float[]{100,10,1,1 } },
     };
+    public const float outerRadius = 0.5f;
+    public const float innerRadius = 0.5f * 0.866025404f;
+    public const float extendDistanceX = 0.5f * (1f - 0.866025404f);
+    public const float extendDistanceZ = 0.866025404f - 0.75f;
+    public static Vector3[] corners =
+    {
+        new Vector3(0f,0f,outerRadius),
+        new Vector3(innerRadius,0f,0.5f * outerRadius),
+        new Vector3(innerRadius,0f,-0.5f * outerRadius),
+        new Vector3(0f,0f,-outerRadius),
+        new Vector3(-innerRadius,0f,-0.5f*outerRadius),
+        new Vector3(-innerRadius,0f,0.5f*outerRadius),
+        new Vector3(0f,0f,outerRadius)
+    };
+    public static Vector3[] extendCorners =
+    {
+        new Vector3(extendDistanceX, 0 ,outerRadius + extendDistanceZ),
+        new Vector3(innerRadius + extendDistanceX, 0 ,0.5f*outerRadius + extendDistanceZ),
+        new Vector3(innerRadius + extendDistanceX * 2f, 0, 0.5f * outerRadius),
+        new Vector3(innerRadius + extendDistanceX * 2f, 0, -0.5f * outerRadius),
+        new Vector3(innerRadius + extendDistanceX, 0, -0.5f * outerRadius - extendDistanceZ),
+        new Vector3(extendDistanceX, 0, -outerRadius - extendDistanceZ),
+        new Vector3(-extendDistanceX, 0, -outerRadius - extendDistanceZ),
+        new Vector3(-innerRadius - extendDistanceX, 0, -0.5f * outerRadius - extendDistanceZ),
+        new Vector3(-innerRadius - extendDistanceX * 2f, 0, -0.5f * outerRadius),
+        new Vector3(-innerRadius - extendDistanceX * 2f, 0, 0.5f * outerRadius),
+        new Vector3(-innerRadius - extendDistanceX, 0, 0.5f * outerRadius + extendDistanceZ),
+        new Vector3(-extendDistanceX, 0, outerRadius + extendDistanceZ),
+    };
 
     public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination)
     {
