@@ -84,6 +84,10 @@ public abstract class BaseObj : MonoBehaviour
     {
         
     }
+    public virtual void InitThis()
+    {
+
+    }
     public abstract void OnInteracted();
     public abstract void OnBeingDestroyed();
 }

@@ -27,6 +27,8 @@ public class UIController : Singletion<UIController>
     public Text txt_constructAmount;
     public Text txt_metalAmount;
     public Text txt_energyLevel;
+    [Space(1)]
+    public UnitSelectMenu unitMenu;
     // Start is called before the first frame update
     void Start()
     {
@@ -72,22 +74,7 @@ public class UIController : Singletion<UIController>
     }
     public void DisplaySelectedUnitInfo(BaseObj obj)
     {
-        if (obj != null)
-        {
-            obj_selectedUnit.SetActive(true);
-
-            txt_selectedUnitName.text = obj.objName;
-
-            img_selectedUnitHP.fillAmount = obj.HPMax == 0 ? 1 : obj.HP / obj.HPMax;
-            img_selectedUnitEP.fillAmount = obj.EPMax == 0 ? 1 : obj.EP / obj.EPMax;
-        }
-        else
-        {
-            obj_selectedUnit.SetActive(false);
-        }
-
-        img_BG.enabled = false;
-        img_BG.enabled = true;
+        unitMenu.OnSelectUnit(obj);
     }
     public void ShowResourceAmount()
     {
