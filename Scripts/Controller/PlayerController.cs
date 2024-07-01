@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour
 
                     List<BaseTile> tiles = new List<BaseTile>()
                     {
-                        selectedTile,
+                        //selectedTile,
                     };
                     foreach (var tile in selectedTile.adjacentTiles)
                     {
@@ -299,7 +299,20 @@ public class PlayerController : MonoBehaviour
                     var widthDev1 = borderWidth / Vector3.Distance(v1, v3);
                     var widthDev2 = borderWidth / Vector3.Distance(v2, v4);
 
-                    AddQuad(v1, v2, Vector3.Lerp(v1, v3, widthDev1), Vector3.Lerp(v2, v4, widthDev2), borderVertices, borderTriangles);
+                    AddQuad(Vector3.Lerp(v1, v3, 1f-widthDev1), Vector3.Lerp(v2, v4, 1f-widthDev2), v3, v4, borderVertices, borderTriangles);
+                }
+                var nextAdj = (int)adjTile.Key + 1 >= 6 ? 0 : (int)adjTile.Key + 1;
+                var nextDir = (HexDirection)nextAdj;
+                if (!tiles.Contains(tile.adjacentTiles[nextDir]))
+                {
+                    var v1 = relPos + ToolsUtility.corners[(int)adjTile.Key];
+
+                    var v2 = relPos + ToolsUtility.extendCorners[(int)adjTile.Key * 2 + 1] - new Vector3(0, tile.transform.localPosition.y - tile.adjacentTiles[adjTile.Key].gameObject.transform.localPosition.y, 0);
+                    v2 = (v1 + v2) / 2;
+                }
+                else
+                {
+
                 }
             }
         }
