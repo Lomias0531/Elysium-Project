@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public static class Tools
 {
@@ -31,6 +33,17 @@ public static class Tools
     public static int GetDistance(Vector3Int start, Vector3Int targetPosition)
     {
         return (Mathf.Abs(start.x - targetPosition.x) + Mathf.Abs(start.y - targetPosition.y) + Mathf.Abs(start.z - targetPosition.z)) / 2;
+    }
+    public static Color HexToColor(string hex)
+    {
+        Color result;
+        if(ColorUtility.TryParseHtmlString(hex, out result))
+        {
+            return result;
+        }else
+        {
+            return Color.white;
+        }
     }
 }
 public static class ToolsUtility

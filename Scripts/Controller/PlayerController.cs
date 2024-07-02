@@ -21,10 +21,6 @@ public class PlayerController : MonoBehaviour
     List<BaseTile> attackIndicators = new List<BaseTile>();
     List<BaseTile> interactIndicators = new List<BaseTile>();
 
-    GameObject selectIndicator;
-    Tween selectIndicatorMove;
-    public Material selectIndicatorMaterial;
-
     Dictionary<string, GameObject> rangeIndicators = new Dictionary<string, GameObject>();
     public Material indicatorCenterMat;
     public Material indicatorBorderMat;
@@ -32,7 +28,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CreateSelectIndicator();
+        
     }
 
     // Update is called once per frame
@@ -43,28 +39,6 @@ public class PlayerController : MonoBehaviour
         MouseFunctions();
 
         PaintIndicator();
-    }
-    void CreateSelectIndicator()
-    {
-        selectIndicator = new GameObject("SelectIndicator");
-
-        Mesh hexMesh = selectIndicator.AddComponent<MeshFilter>().mesh = new Mesh();
-        MeshRenderer renderer = selectIndicator.AddComponent<MeshRenderer>();
-
-        hexMesh.name = "Hex Mesh";
-        var vertices = new List<Vector3>();
-        var triangles = new List<int>();
-
-        for (int i = 0; i < 6; i++)
-        {
-            AddTriangle(Vector3.zero, Vector3.zero + ToolsUtility.corners[i], Vector3.zero + ToolsUtility.corners[i + 1], vertices, triangles);
-        }
-
-        hexMesh.vertices = vertices.ToArray();
-        hexMesh.triangles = triangles.ToArray();
-        hexMesh.RecalculateNormals();
-
-        renderer.material = selectIndicatorMaterial;
     }
     void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, List<Vector3> vertices, List<int> triangles)
     {
@@ -124,21 +98,11 @@ public class PlayerController : MonoBehaviour
 
                     List<BaseTile> tiles = new List<BaseTile>()
                     {
-                        //selectedTile,
+                        selectedTile,
                     };
-                    foreach (var tile in selectedTile.adjacentTiles)
-                    {
-                        tiles.Add(tile.Value);
-                    }
-                    DrawRangeIndicator(tiles, selectedTile, "HoverIndicator");
+                    DrawRangeIndicator(tiles, selectedTile, "HoverIndicator", Color.white);
 
                     hoveredTile = selectedTile;
-
-                    if (selectIndicatorMove != null)
-                    {
-                        selectIndicatorMove.Kill();
-                    }
-                    selectIndicatorMove = selectIndicator.transform.DOMove(hoveredTile.transform.position + new Vector3(0, 0.01f, 0), 0.1f);
 
                     UIController.Instance.DisplayHoveredTileInfo(hoveredTile);
 
@@ -172,10 +136,7 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetMouseButtonUp(1))
         {
-            if(MapController.Instance.mapTiles.ContainsKey(selectedObject.Pos))
-            {
-                MapController.Instance.mapTiles[selectedObject.Pos].MarkTile(BaseTile.TileSelectionType.None);
-            }
+            DestroyRangeIndicator("SelectIndicator");
 
             selectedObject = null;
             UIController.Instance.DisplaySelectedUnitInfo(null);
@@ -185,17 +146,14 @@ public class PlayerController : MonoBehaviour
     {
         if(selectedObject != null)
         {
-            PaintSelectionIndicator(selectedObject.Pos);
+            List<BaseTile> tiles = new List<BaseTile>()
+            {
+                selectedObject.GetTileWhereUnitIs(),
+            };
+            DrawRangeIndicator(tiles, selectedObject.GetTileWhereUnitIs(), "SelectIndicator", Tools.HexToColor("#6AB3FF"), 1f);
         }
     }
-    void PaintSelectionIndicator(Vector3Int pos)
-    {
-        if(MapController.Instance.mapTiles.ContainsKey(pos))
-        {
-            MapController.Instance.mapTiles[pos].MarkTile(BaseTile.TileSelectionType.Selected);
-        }
-    }
-    void DrawRangeIndicator(List<BaseTile> tiles, BaseTile originCenter, string rangeName, float layer = 0)
+    void DrawRangeIndicator(List<BaseTile> tiles, BaseTile originCenter,string rangeName, Color rangeColor, float layer = 0)
     {
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
@@ -209,6 +167,7 @@ public class PlayerController : MonoBehaviour
         indicatorObj.transform.position = originCenter.gameObject.transform.position + new Vector3(0, 0.01f + layer * 0.01f, 0);
         GameObject indicatorBorder = new GameObject(rangeName + "Border");
         indicatorBorder.transform.position = originCenter.gameObject.transform.position + new Vector3(0, 0.02f + layer * 0.01f, 0);
+        indicatorBorder.transform.SetParent(indicatorObj.transform);
 
         rangeIndicators.Add(rangeName, indicatorObj);
         rangeIndicators.Add(rangeName + "Border", indicatorBorder);
@@ -222,6 +181,7 @@ public class PlayerController : MonoBehaviour
 
         foreach (var tile in tiles)
         {
+            //DrawCenter
             Vector3 relPos = tile.gameObject.transform.localPosition - originCenter.transform.localPosition;
             for (int i = 0; i < 6; i++)
             {
@@ -280,6 +240,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
+            //DrawBorder
             foreach (var adjTile in tile.adjacentTiles)
             {
                 if (!tiles.Contains(adjTile.Value))
@@ -299,20 +260,51 @@ public class PlayerController : MonoBehaviour
                     var widthDev1 = borderWidth / Vector3.Distance(v1, v3);
                     var widthDev2 = borderWidth / Vector3.Distance(v2, v4);
 
-                    AddQuad(Vector3.Lerp(v1, v3, 1f-widthDev1), Vector3.Lerp(v2, v4, 1f-widthDev2), v3, v4, borderVertices, borderTriangles);
+                    AddQuad(Vector3.Lerp(v1, v3, 1f - widthDev1), Vector3.Lerp(v2, v4, 1f - widthDev2), v3, v4, borderVertices, borderTriangles);
                 }
                 var nextAdj = (int)adjTile.Key + 1 >= 6 ? 0 : (int)adjTile.Key + 1;
                 var nextDir = (HexDirection)nextAdj;
-                if (!tiles.Contains(tile.adjacentTiles[nextDir]))
+                if(tile.adjacentTiles.ContainsKey(nextDir) && !tiles.Contains(adjTile.Value))
                 {
-                    var v1 = relPos + ToolsUtility.corners[(int)adjTile.Key];
+                    if (!tiles.Contains(tile.adjacentTiles[nextDir]))
+                    {
+                        var c1 = (int)adjTile.Key + 1 >= 6 ? (int)adjTile.Key - 5 : (int)adjTile.Key + 1;
+                        var c2 = (int)adjTile.Key + 3 >= 6 ? (int)adjTile.Key - 3 : (int)adjTile.Key + 3;
+                        var c3 = (int)adjTile.Key + 5 >= 6 ? (int)adjTile.Key - 1 : (int)adjTile.Key + 5;
 
-                    var v2 = relPos + ToolsUtility.extendCorners[(int)adjTile.Key * 2 + 1] - new Vector3(0, tile.transform.localPosition.y - tile.adjacentTiles[adjTile.Key].gameObject.transform.localPosition.y, 0);
-                    v2 = (v1 + v2) / 2;
-                }
-                else
-                {
+                        var v1 = tile.transform.localPosition - originCenter.transform.localPosition + ToolsUtility.corners[c1];
 
+                        var v2 = adjTile.Value.transform.localPosition - originCenter.transform.localPosition + ToolsUtility.corners[c2];
+                        v2 = (v1 + v2) / 2f;
+
+                        var v3 = tile.adjacentTiles[nextDir].transform.localPosition - originCenter.transform.localPosition + ToolsUtility.corners[c3];
+                        v3 = (v1 + v3) / 2f;
+
+                        var widthDev1 = borderWidth / Vector3.Distance(v1, v2);
+                        var widthDev2 = borderWidth / Vector3.Distance(v1, v3);
+
+                        AddQuad(Vector3.Lerp(v1, v2, 1f - widthDev1), Vector3.Lerp(v1, v3, 1f - widthDev2), v2, v3, borderVertices, borderTriangles);
+                    }
+                    else
+                    {
+                        var c1 = (int)adjTile.Key + 1 >= 6 ? (int)adjTile.Key - 5 : (int)adjTile.Key + 1;
+                        var c2 = (int)adjTile.Key + 3 >= 6 ? (int)adjTile.Key - 3 : (int)adjTile.Key + 3;
+                        var c3 = (int)adjTile.Key + 5 >= 6 ? (int)adjTile.Key - 1 : (int)adjTile.Key + 5;
+
+                        var v1 = tile.transform.localPosition - originCenter.transform.localPosition + ToolsUtility.corners[c1];
+
+                        var v2 = adjTile.Value.transform.localPosition - originCenter.transform.localPosition + ToolsUtility.corners[c2];
+
+                        var v3 = tile.adjacentTiles[nextDir].transform.localPosition - originCenter.transform.localPosition + ToolsUtility.corners[c3];
+
+                        var v4 = (v1 + v2) / 2f;
+                        var v5 = (v2 + v3) / 2f;
+
+                        var widthDev1 = borderWidth / Vector3.Distance(v1, v4);
+                        var widthDev2 = borderWidth / Vector3.Distance(v3, v5);
+
+                        AddQuad(Vector3.Lerp(v1, v4, 1f - widthDev1), Vector3.Lerp(v3, v5, 1f - widthDev2), v4, v5, borderVertices, borderTriangles);
+                    }
                 }
             }
         }
@@ -321,12 +313,13 @@ public class PlayerController : MonoBehaviour
         hexMesh.SetTriangles(triangles, 0);
         hexMesh.RecalculateNormals();
         meshRenderer.material = indicatorCenterMat;
+        meshRenderer.material.SetColor("_Color", rangeColor);
 
         borderMesh.SetVertices(borderVertices);
         borderMesh.SetTriangles(borderTriangles, 0);
         borderMesh.RecalculateNormals();
         borderRenderer.material = indicatorBorderMat;
-
+        borderRenderer.material.SetColor("_Color", rangeColor);
     }
     void DestroyRangeIndicator(string rangeName)
     {
