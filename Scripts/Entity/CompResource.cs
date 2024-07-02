@@ -70,9 +70,16 @@ public class CompResource : BaseComponent
     {
         thisUnit = GetComponent<BaseUnit>();
 
-        this.functions = new ComponentFunction[1]
+        this.functions = new CompFunctionDetail[1]
         {
-             ComponentFunction.Interact,
+             new CompFunctionDetail
+             {
+                 functionName = "采集",
+                 function = ComponentFunction.Interact,
+                 functionValue = ResourceAcquireAmount,
+                 functionConsume = 0,
+                 functionDescription = "可以采集",
+             }
         };
     }
 

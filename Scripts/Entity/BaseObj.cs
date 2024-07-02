@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class BaseObj : MonoBehaviour
@@ -121,6 +122,13 @@ public abstract class BaseObj : MonoBehaviour
     {
         Guid id = Guid.NewGuid();
         this.ID = id.ToString();
+
+        var _components = this.gameObject.GetComponents<BaseComponent>();
+        components = _components.ToList();
+        foreach (var item in components)
+        {
+            item.thisObj = this;
+        }
     }
     public abstract void OnInteracted();
     public abstract void OnBeingDestroyed();

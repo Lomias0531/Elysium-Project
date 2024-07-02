@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public class UnitSelectMenu : MonoBehaviour
 {
@@ -11,6 +10,9 @@ public class UnitSelectMenu : MonoBehaviour
 
     float expandTimeElapsed;
     public Image img_Circle;
+
+    public CompSkillTrigger skillTrigger;
+    public Transform tsf_SkillTriggerContainer;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,11 +28,15 @@ public class UnitSelectMenu : MonoBehaviour
     {
         if (thisUnit == selectedObj) return;
         selectedObj = thisUnit;
+        if(selectedObj != null)
+            this.gameObject.transform.position = thisUnit.transform.position;
 
         if (expandRoutine != null)
         {
             StopCoroutine(expandRoutine);
         }
+
+        expandTimeElapsed = 0;
 
         if (selectedObj == null)
         {
@@ -42,10 +48,34 @@ public class UnitSelectMenu : MonoBehaviour
     }
     IEnumerator RetractThis()
     {
-        yield return null;
+        do
+        {
+            float div = expandTimeElapsed / 0.2f;
+            img_Circle.fillAmount = 1f - div;
+
+            expandTimeElapsed += Time.deltaTime;
+            yield return null;
+
+        } while (expandTimeElapsed <= 0.2f);
+
+        img_Circle.fillAmount = 0f;
     }
     IEnumerator ExpandThis()
     {
-        yield return null;
+        do
+        {
+            float div = expandTimeElapsed / 0.2f;
+            img_Circle.fillAmount = div;
+
+            expandTimeElapsed += Time.deltaTime;
+            yield return null;
+
+        } while (expandTimeElapsed <= 0.2f);
+
+        img_Circle.fillAmount = 1f;
+    }
+    public void ShowDescription(string desc)
+    {
+
     }
 }

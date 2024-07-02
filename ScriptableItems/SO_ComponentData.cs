@@ -19,10 +19,13 @@ public struct CompFunctionDetail
 {
     public string functionName;
     public BaseComponent.ComponentFunction function;
+    public Sprite functionIcon;
+    public float functionApplyTimeInterval;
     public float functionValue;
     public float functionConsume;
     public int[] functionIntVal;
     public float[] functionFloatVal;
     public bool[] functionBoolVal;
     public string[] functionStringVal;
+    public string functionDescription;
 }

@@ -30,6 +30,8 @@ public class BaseResource : BaseObj
         Guid id = Guid.NewGuid();
         this.ID = id.ToString();
 
+        base.InitThis();
+
         GameObject obj;
         float rot = Random.Range(0f, 359f);
         switch (type)

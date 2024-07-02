@@ -9,8 +9,7 @@ public abstract class BaseComponent : MonoBehaviour
     public float MaxHP;
     public float EP;
     public float MaxEP;
-    public ComponentFunction[] functions;
-    public float ApplyTimeInterval;
+    public CompFunctionDetail[] functions;
     public BaseObj thisObj;
 
     public enum ComponentFunction
