@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3861910269526347956}
+  - component: {fileID: 846115186787529782}
+  - component: {fileID: 7991404404025900937}
   m_Layer: 0
   m_Name: WorkBot
   m_TagString: Untagged
@@ -32,6 +34,46 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &846115186787529782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389244388165440043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a35856893bec7844cb94a90eb2517bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pos: {x: 0, y: 0, z: 0}
+  ID: 
+  moveType: 0
+  moveStyle: 0
+  objName: 
+  components: []
+--- !u!114 &7991404404025900937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389244388165440043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad089886059404cb692e2ee81bd808, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compName: 
+  HP: 20
+  MaxHP: 20
+  EP: 10
+  MaxEP: 10
+  functions: 00000000
+  ApplyTimeInterval: 3
+  moveStyle: 1
+  moveType: 1
+  mobility: 4
 --- !u!1 &8801693143224486690
 GameObject:
   m_ObjectHideFlags: 0

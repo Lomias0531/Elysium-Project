@@ -11,6 +11,7 @@ public abstract class BaseComponent : MonoBehaviour
     public float MaxEP;
     public ComponentFunction[] functions;
     public float ApplyTimeInterval;
+    public BaseObj thisObj;
 
     public enum ComponentFunction
     {

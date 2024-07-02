@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,10 +7,42 @@ public abstract class BaseObj : MonoBehaviour
 {
     public Vector3Int Pos;
     public string ID;
-    public MoveType moveType;
-    public MoveStyle moveStyle;
+    [HideInInspector]
+    public MoveType[] moveType
+    {
+        get
+        {
+            List<MoveType> list = new List<MoveType>();
+            foreach (var comp in components)
+            {
+                if(comp.GetType() == typeof(CompMobile))
+                {
+                    list.Add(((CompMobile)comp).moveType);
+                }
+            }
+            return list.ToArray();
+        }
+    }
+    [HideInInspector]
+    public MoveStyle[] moveStyle
+    {
+        get
+        {
+            List<MoveStyle> list = new List<MoveStyle>();
+            foreach (var comp in components)
+            {
+                if (comp.GetType() == typeof(CompMobile))
+                {
+                    list.Add(((CompMobile)comp).moveStyle);
+                }
+            }
+            return list.ToArray();
+        }
+    }
     public string objName;
+    [HideInInspector]
     public List<BaseComponent> components = new List<BaseComponent>();
+    public string Faction;
     public float HP
     {
         get
@@ -86,7 +119,8 @@ public abstract class BaseObj : MonoBehaviour
     }
     public virtual void InitThis()
     {
-
+        Guid id = Guid.NewGuid();
+        this.ID = id.ToString();
     }
     public abstract void OnInteracted();
     public abstract void OnBeingDestroyed();

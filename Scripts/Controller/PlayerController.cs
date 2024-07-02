@@ -8,7 +8,7 @@ using static BaseTile;
 using System;
 using System.Linq;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Singletion<PlayerController>
 {
     [HideInInspector]
     public BaseTile hoveredTile;
@@ -17,9 +17,17 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public BaseObj selectedObject;
 
+    public Color col_Select;
+    public Color col_Move;
     List<BaseTile> moveIndicators = new List<BaseTile>();
+    public Color col_Attack;
     List<BaseTile> attackIndicators = new List<BaseTile>();
+    public Color col_Interact;
     List<BaseTile> interactIndicators = new List<BaseTile>();
+    public Color col_AttackRange;
+    List<BaseTile> attackRangeIndicators = new List<BaseTile>();
+    public Color col_VisionRange;
+    List<BaseTile> visionRangeIndicators = new List<BaseTile>();
 
     Dictionary<string, GameObject> rangeIndicators = new Dictionary<string, GameObject>();
     public Material indicatorCenterMat;
@@ -136,10 +144,19 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetMouseButtonUp(1))
         {
-            DestroyRangeIndicator("SelectIndicator");
+            foreach (var item in rangeIndicators)
+            {
+                Destroy(item.Value.gameObject);
+            }
+            rangeIndicators.Clear();
 
             selectedObject = null;
             UIController.Instance.DisplaySelectedUnitInfo(null);
+            moveIndicators.Clear();
+            attackIndicators.Clear();
+            interactIndicators.Clear();
+            attackRangeIndicators.Clear();
+            visionRangeIndicators.Clear();
         }
     }
     void PaintIndicator()
@@ -150,8 +167,23 @@ public class PlayerController : MonoBehaviour
             {
                 selectedObject.GetTileWhereUnitIs(),
             };
-            DrawRangeIndicator(tiles, selectedObject.GetTileWhereUnitIs(), "SelectIndicator", Tools.HexToColor("#6AB3FF"), 1f);
+            DrawRangeIndicator(tiles, selectedObject.GetTileWhereUnitIs(), "SelectIndicator", col_Select, 1f);
         }
+
+        //if(moveIndicators != null && moveIndicators.Count > 0)
+        //{
+        //    DrawRangeIndicator(moveIndicators, selectedObject.GetTileWhereUnitIs(), "MoveIndicator", col_Move, 2f);
+        //}
+
+        //if (attackIndicators != null && attackIndicators.Count > 0)
+        //{
+        //    DrawRangeIndicator(attackIndicators, selectedObject.GetTileWhereUnitIs(), "AttackIndicator", col_Attack, 2f);
+        //}
+
+        //if(interactIndicators!= null && interactIndicators.Count > 0)
+        //{
+        //    DrawRangeIndicator(interactIndicators, selectedObject.GetTileWhereUnitIs(), "InteractIndicator", col_Interact, 2f);
+        //}
     }
     void DrawRangeIndicator(List<BaseTile> tiles, BaseTile originCenter,string rangeName, Color rangeColor, float layer = 0)
     {
@@ -328,5 +360,11 @@ public class PlayerController : MonoBehaviour
             Destroy(rangeIndicators[rangeName].gameObject);
             rangeIndicators.Remove(rangeName);
         }
+    }
+
+    public void GetMoveRange(List<BaseTile> tiles)
+    {
+        moveIndicators = tiles;
+        DrawRangeIndicator(moveIndicators, selectedObject.GetTileWhereUnitIs(), "MoveIndicator", col_Move, 2f);
     }
 }

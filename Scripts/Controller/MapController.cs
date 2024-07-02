@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -9,6 +10,7 @@ public class MapController : Singletion<MapController>
 {
     public BaseTile tileTemplate;
     public Transform tileContainer;
+    public Transform entityContainer;
 
     public int mapWidth = 50;
     public int mapHeight = 50;
@@ -26,11 +28,14 @@ public class MapController : Singletion<MapController>
     float waveTime;
     public BaseResource resourceTemplate;
     public Transform tsf_ResContainer;
+
+    public BaseObj[] unitsToGenerate;
     // Start is called before the first frame update
     void Start()
     {
         curSeed = UnityEngine.Random.Range(0, 3000);
         GenerateMap(mapWidth, mapHeight, curSeed, 15f, 1, 0.3f, 8f, new Vector2(0, 0));
+        GenerateUnits();
     }
 
     // Update is called once per frame
@@ -280,6 +285,41 @@ public class MapController : Singletion<MapController>
                     entityDic.Add(res1.ID, res1);
                     resourcesDic.Add(res1.Pos, res1);
                 }
+            }
+        }
+    }
+
+    void GenerateUnits()
+    {
+        foreach (var unit in unitsToGenerate)
+        {
+            bool checkTerrainOK = false;
+            BaseTile generateTile = null;
+            int tryCount = 0;
+            do
+            {
+                generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
+                foreach (var move in unit.moveType)
+                {
+                    if(generateTile.GetMoveCost(move)<10 && generateTile.isAvailable())
+                    {
+                        checkTerrainOK = true;
+                    }
+                }
+                tryCount += 1;
+                if (tryCount >= 1000) break;
+            } while (!checkTerrainOK);
+
+            if(generateTile != null)
+            {
+                var obj = GameObject.Instantiate(unit, entityContainer);
+                obj.gameObject.transform.localPosition = generateTile.gameObject.transform.localPosition;
+                obj.Pos = generateTile.Pos;
+                obj.InitThis();
+                obj.Faction = "Elysium";
+                obj.objName = obj.gameObject.name;
+
+                entityDic.Add(obj.ID, obj);
             }
         }
     }

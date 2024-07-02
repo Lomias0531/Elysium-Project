@@ -45,6 +45,95 @@ public static class Tools
             return Color.white;
         }
     }
+    public static List<BaseTile> GetMobileRange(BaseObj thisEntity, BaseUnit.MoveType moveType, int mobility)
+    {
+        List<BaseTile> result = new List<BaseTile>();
+
+        Dictionary<BaseTile, MoveIndicator> openList = new Dictionary<BaseTile, MoveIndicator>();
+        Dictionary<BaseTile, MoveIndicator> closeList = new Dictionary<BaseTile, MoveIndicator>();
+        int availableMove;
+        List<BaseTile> friendlyTile = new List<BaseTile>();
+        var originTile = thisEntity.GetTileWhereUnitIs();
+
+        openList.Add(originTile, new MoveIndicator(originTile, mobility + 1));
+
+        do
+        {
+            //临时向关闭格添加单元格的容器
+            var tempList = new Dictionary<BaseTile, MoveIndicator>();
+            //临时从开放格移除单元格的容器
+            var tempList1 = new Dictionary<BaseTile, MoveIndicator>();
+
+            foreach (var item in openList)
+            {
+                //遍历所有的开放格，将其加入待移除容器
+                tempList.Add(item.Key, item.Value);
+
+                foreach (var adjTile in item.Value.curTile.adjacentTiles)
+                {
+                    if (!closeList.ContainsKey(adjTile.Value))
+                    {
+                        //遍历当前单元格的相邻单元格，若该单元格不存在于关闭格中，则计算其移动力消耗。
+                        float life = (float)item.Value.MoveLife - (float)adjTile.Value.GetMoveCost(moveType);
+                        if (!adjTile.Value.isAvailable())
+                        {
+                            //如果这个相邻单元格上存在单位，若为敌方则将移动力直接归零，若为友方可互动单位则不影响
+                            var tileUnit = adjTile.Value.GetEntitynThisTile();
+                            if (tileUnit != null)
+                            {
+                                if (tileUnit.Faction == thisEntity.Faction)
+                                {
+                                    //将这个单元格加入友方单元格列表中
+                                    friendlyTile.Add(adjTile.Value);
+                                }
+                                else
+                                {
+                                    life = 0;
+                                }
+                            }
+                        }
+                        if (life > 0 && !tempList1.ContainsKey(adjTile.Value))
+                            tempList1.Add(adjTile.Value, new MoveIndicator(adjTile.Value, life));
+                    }
+                }
+            }
+
+            availableMove = 0;
+            foreach (var tile in openList)
+            {
+                if (tile.Value.MoveLife > 0)
+                {
+                    availableMove += 1;
+                }
+            }
+        } while (availableMove > 0);
+
+        foreach (var tile in friendlyTile)
+        {
+            if (closeList.ContainsKey(tile))
+            {
+                closeList.Remove(tile);
+            }
+        }
+
+        foreach (var tile in closeList)
+        {
+            result.Add(tile.Key);
+        }
+
+        return result;
+    }
+    class MoveIndicator
+    {
+        public BaseTile curTile;
+        public float MoveLife;
+
+        public MoveIndicator(BaseTile curTile, float moveLife)
+        {
+            this.curTile = curTile;
+            this.MoveLife = moveLife;
+        }
+    }
 }
 public static class ToolsUtility
 {
@@ -90,7 +179,7 @@ public static class ToolsUtility
         new Vector3(-extendDistanceX, 0, outerRadius + extendDistanceZ),
     };
 
-    public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination)
+    public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination, BaseUnit.MoveType selectedMoveType)
     {
         int calculateCycle = 0;
 
@@ -130,7 +219,7 @@ public static class ToolsUtility
             foreach (BaseTile adjacentTile in currentTile.adjacentTiles.Values)
             {
                 // 忽略不能行走的相邻地格。
-                if (adjacentTile.GetMoveCost(unit) > 8 || (!adjacentTile.isAvailable(true, unit) && adjacentTile != destination))
+                if (adjacentTile.GetMoveCost(selectedMoveType) > 8 || (!adjacentTile.isAvailable(true, unit) && adjacentTile != destination))
                 {
                     continue;
                 }
@@ -145,7 +234,7 @@ public static class ToolsUtility
                 if (!(openPathTiles.Contains(adjacentTile)))
                 {
                     adjacentTile.g = g;
-                    adjacentTile.h = Tools.GetEstimatedPathCost(adjacentTile.Pos, destination.Pos) * adjacentTile.GetMoveCost(unit);
+                    adjacentTile.h = Tools.GetEstimatedPathCost(adjacentTile.Pos, destination.Pos) * adjacentTile.GetMoveCost(selectedMoveType);
                     openPathTiles.Add(adjacentTile);
                 }
                 // 检查使用当前的G是否可以得到一个更低的F值，如果可以的话，更新它的值。
@@ -196,36 +285,48 @@ public static class ToolsUtility
         }
         return null;
     }
-    public static float GetMoveCost(this BaseTile tile, BaseObj unit)
+    public static BaseObj GetEntitynThisTile(this BaseTile tile)
+    {
+        foreach (var unit in MapController.Instance.entityDic)
+        {
+            if(unit.Value.Pos == tile.Pos)
+            {
+                return unit.Value;
+            }
+        }
+        return null;
+    }
+    public static float GetMoveCost(this BaseTile tile, BaseUnit.MoveType type)
     {
         if (MoveCostForUnits.ContainsKey(tile.terrainType))
         {
-            if ((int)unit.moveType < 5)
-            {
-                return MoveCostForUnits[tile.terrainType][(int)unit.moveType];
-            }
+            return MoveCostForUnits[tile.terrainType][(int)type];
         }
-        return 10;
+        return 100;
     }
     public static bool isAvailable(this BaseTile tile, bool ignoreFriendly, BaseObj me)
     {
-        //BaseObj unit = tile.GetUnitOnThisTile();
-        //if (unit != null)
-        //{
-        //    if (ignoreFriendly)
-        //    {
-        //        return unit.model.Team == me.model.Team;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-        //else
-        //{
-        //    return true;
-        //}
-        return true;
+        BaseObj unit = tile.GetEntitynThisTile();
+        if (unit != null)
+        {
+            if (ignoreFriendly)
+            {
+                return unit.Faction == me.Faction;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public static bool isAvailable(this BaseTile tile)
+    {
+        BaseObj unit = tile.GetEntitynThisTile();
+        return unit == null;
     }
     public static BaseObj GetObjInThisTile(this BaseTile tile)
     {
