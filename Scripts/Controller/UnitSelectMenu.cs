@@ -47,7 +47,7 @@ public class UnitSelectMenu : MonoBehaviour
             expandRoutine = StartCoroutine(ExpandThis());
         }
     }
-    IEnumerator RetractThis()
+    public IEnumerator RetractThis()
     {
         do
         {
@@ -70,7 +70,7 @@ public class UnitSelectMenu : MonoBehaviour
         }
         skillTriggers.Clear();
     }
-    IEnumerator ExpandThis()
+    public IEnumerator ExpandThis()
     {
         foreach (var comp in selectedObj.components)
         {

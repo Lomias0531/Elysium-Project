@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 
 public abstract class BaseObj : MonoBehaviour
 {
@@ -113,6 +114,9 @@ public abstract class BaseObj : MonoBehaviour
         Jump,
         Teleport,
     }
+
+    public MoveType curSelectedMoveType;
+    public MoveStyle curSelectedMoveStyle;
     // Start is called before the first frame update
     public virtual void Start()
     {
@@ -138,4 +142,17 @@ public abstract class BaseObj : MonoBehaviour
     }
     public abstract void OnInteracted();
     public abstract void OnBeingDestroyed();
+
+    public IEnumerator MoveObjectToTile(BaseTile tile)
+    {
+        var moveQueue = this.UnitFindPath(tile, this.curSelectedMoveType);
+
+        do
+        {
+            var target = moveQueue.Dequeue();
+            this.transform.DOMove(target.transform.position, 0.2f);
+            this.Pos = target.Pos;
+            yield return new WaitForSeconds(0.2f);
+        }while(moveQueue.Count > 0);
+    }
 }

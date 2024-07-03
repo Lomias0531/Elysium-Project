@@ -51,6 +51,10 @@ public class CompSkillTrigger : MonoBehaviour, IPointerClickHandler, IPointerEnt
         if (isAvailable)
         {
             thisComp.OnApply(skillIndex);
+            thisComp.thisObj.curSelectedMoveType = (BaseUnit.MoveType)thisComp.functions[skillIndex].functionIntVal[0];
+            thisComp.thisObj.curSelectedMoveStyle = (BaseUnit.MoveStyle)thisComp.functions[skillIndex].functionIntVal[1];
+
+            selectMenu.OnSelectUnit(null);
         }
     }
 }

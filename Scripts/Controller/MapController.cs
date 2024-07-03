@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
+using static BaseObj;
 
 public class MapController : Singletion<MapController>
 {
@@ -35,7 +37,8 @@ public class MapController : Singletion<MapController>
     {
         curSeed = UnityEngine.Random.Range(0, 3000);
         GenerateMap(mapWidth, mapHeight, curSeed, 15f, 1, 0.3f, 8f, new Vector2(0, 0));
-        GenerateUnits();
+
+        StartCoroutine(GenerateUnits());
     }
 
     // Update is called once per frame
@@ -289,37 +292,64 @@ public class MapController : Singletion<MapController>
         }
     }
 
-    void GenerateUnits()
+    IEnumerator GenerateUnits()
     {
         foreach (var unit in unitsToGenerate)
         {
             bool checkTerrainOK = false;
-            BaseTile generateTile = null;
+            BaseTile generateTile;
             int tryCount = 0;
+
+            var obj = GameObject.Instantiate(unit, entityContainer);
+
+            obj.InitThis();
+            obj.Faction = "Elysium";
+            obj.objName = obj.gameObject.name;
+
+            yield return new WaitForNextFrameUnit();
+
             do
             {
                 generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
-                foreach (var move in unit.moveType)
+
+                List<MoveType> list = new List<MoveType>();
+                var components = obj.gameObject.GetComponents<CompMobile>();
+                foreach (var comp in components)
                 {
-                    if(generateTile.GetMoveCost(move)<10 && generateTile.isAvailable())
+                    if (comp.GetType() == typeof(CompMobile))
+                    {
+                        foreach (var item in comp.functions)
+                        {
+                            list.Add((BaseUnit.MoveType)item.functionIntVal[0]);
+                        }
+                    }
+                }
+
+                foreach (var move in list)
+                {
+                    if (generateTile.GetMoveCost(move) < 8 && generateTile.isAvailable())
                     {
                         checkTerrainOK = true;
                     }
                 }
                 tryCount += 1;
-                if (tryCount >= 1000) break;
+                if (tryCount >= 1000)
+                {
+                    generateTile = null;
+                    Debug.Log("unit not in position");
+                    break;
+                }
             } while (!checkTerrainOK);
 
-            if(generateTile != null)
+            if (generateTile != null)
             {
-                var obj = GameObject.Instantiate(unit, entityContainer);
                 obj.gameObject.transform.localPosition = generateTile.gameObject.transform.localPosition;
                 obj.Pos = generateTile.Pos;
-                obj.InitThis();
-                obj.Faction = "Elysium";
-                obj.objName = obj.gameObject.name;
 
                 entityDic.Add(obj.ID, obj);
+            }else
+            {
+                Destroy(obj.gameObject);
             }
         }
     }

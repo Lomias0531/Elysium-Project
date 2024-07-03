@@ -84,8 +84,8 @@ MonoBehaviour:
     function: 0
     functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
     functionApplyTimeInterval: 0
-    functionValue: 5
-    functionConsume: 5
+    functionValue: 8
+    functionConsume: 8
     functionIntVal: 0100000002000000
     functionFloatVal: []
     functionBoolVal: 

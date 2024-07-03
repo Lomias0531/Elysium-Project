@@ -7,6 +7,7 @@ using UnityEditor.PackageManager.Requests;
 using static BaseTile;
 using System;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 public class PlayerController : Singletion<PlayerController>
 {
@@ -33,6 +34,8 @@ public class PlayerController : Singletion<PlayerController>
     public Material indicatorCenterMat;
     public Material indicatorBorderMat;
     public float borderWidth;
+    public bool isFocus;
+    public bool isMouseOverUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +45,13 @@ public class PlayerController : Singletion<PlayerController>
     // Update is called once per frame
     void Update()
     {
+        if (!isFocus)
+        {
+            return;
+        }
+
+        isMouseOverUI = EventSystem.current.IsPointerOverGameObject();
+
         GetTileUnderMouse();
         GetObjUnderMouse();
         MouseFunctions();
@@ -132,6 +142,7 @@ public class PlayerController : Singletion<PlayerController>
     {
         if(Input.GetMouseButtonUp(0))
         {
+            if (isMouseOverUI) return;
             if(selectedObject == null)
             {
                 selectedObject = hoveredObject;
@@ -139,7 +150,13 @@ public class PlayerController : Singletion<PlayerController>
                 UIController.Instance.DisplaySelectedUnitInfo(selectedObject);
             }else
             {
-
+                if(hoveredTile != null)
+                {
+                    if(moveIndicators.Contains(hoveredTile))
+                    {
+                        StartCoroutine(selectedObject.MoveObjectToTile(hoveredTile));
+                    }
+                }
             }
         }
         if(Input.GetMouseButtonUp(1))
@@ -366,5 +383,9 @@ public class PlayerController : Singletion<PlayerController>
     {
         moveIndicators = tiles;
         DrawRangeIndicator(moveIndicators, selectedObject.GetTileWhereUnitIs(), "MoveIndicator", col_Move, 2f);
+    }
+    private void OnApplicationFocus(bool focus)
+    {
+        isFocus = focus;
     }
 }
