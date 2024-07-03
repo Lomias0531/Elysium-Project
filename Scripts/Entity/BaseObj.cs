@@ -18,7 +18,10 @@ public abstract class BaseObj : MonoBehaviour
             {
                 if(comp.GetType() == typeof(CompMobile))
                 {
-                    list.Add(((CompMobile)comp).moveType);
+                    foreach (var item in comp.functions)
+                    {
+                        list.Add((BaseUnit.MoveType)item.functionIntVal[0]);
+                    }
                 }
             }
             return list.ToArray();
@@ -34,7 +37,10 @@ public abstract class BaseObj : MonoBehaviour
             {
                 if (comp.GetType() == typeof(CompMobile))
                 {
-                    list.Add(((CompMobile)comp).moveStyle);
+                    foreach (var item in comp.functions)
+                    {
+                        list.Add((BaseUnit.MoveStyle)item.functionIntVal[1]);
+                    }
                 }
             }
             return list.ToArray();

@@ -30,8 +30,6 @@ public class BaseResource : BaseObj
         Guid id = Guid.NewGuid();
         this.ID = id.ToString();
 
-        base.InitThis();
-
         GameObject obj;
         float rot = Random.Range(0f, 359f);
         switch (type)
@@ -66,6 +64,13 @@ public class BaseResource : BaseObj
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localScale *= 2;
         obj.transform.eulerAngles = new Vector3(0, rot, 0);
+        var res = this.gameObject.AddComponent<CompResource>();
+        res.MaxHP = 10;
+        res.HP = 10;
+        res.MaxEP = 10;
+        res.EP = 10;
+
+        base.InitThis();
     }
 
     public override void OnBeingDestroyed()
@@ -76,7 +81,7 @@ public class BaseResource : BaseObj
     {
         foreach (var comp in components)
         {
-            comp.OnApply();
+            comp.OnApply(0);
         }
     }
 }

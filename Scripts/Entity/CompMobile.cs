@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class CompMobile : BaseComponent
 {
-    public BaseUnit.MoveStyle moveStyle;
-    public BaseUnit.MoveType moveType;
-    public int mobility;
+    //public BaseUnit.MoveStyle moveStyle;
+    //public BaseUnit.MoveType moveType;
+    //public int mobility;
 
-    public override void OnApply()
+    public override void OnApply(int index)
     {
+        var moveType = (BaseUnit.MoveType)functions[index].functionIntVal[0];
+        var moveStyle = (BaseUnit.MoveStyle)functions[index].functionIntVal[1];
+        var mobility = (int)functions[index].functionValue;
+
         PlayerController.Instance.GetMoveRange(Tools.GetMobileRange(thisObj, moveType, mobility));
     }
 

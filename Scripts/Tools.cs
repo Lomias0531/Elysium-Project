@@ -98,6 +98,24 @@ public static class Tools
                 }
             }
 
+            //将临时容器中的单元格添加进开放列表
+            foreach (var item in tempList1)
+            {
+                if (!openList.ContainsKey(item.Key))
+                    openList.Add(item.Key, item.Value);
+            }
+
+            //将临时容器中的单元格从开放列表移入关闭列表
+            foreach (var item in tempList)
+            {
+                if (openList.ContainsKey(item.Key))
+                {
+                    openList.Remove(item.Key);
+                    if (!closeList.ContainsKey(item.Key))
+                        closeList.Add(item.Key, item.Value);
+                }
+            }
+
             availableMove = 0;
             foreach (var tile in openList)
             {

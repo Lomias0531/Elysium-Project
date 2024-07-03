@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CompResource : BaseComponent
 {
-    public BaseUnit thisUnit;
+    public BaseObj thisUnit;
     public BaseResource.ResourceType resourceType;
     public float ResourceAcquireAmount;
-    public override void OnApply()
+    public override void OnApply(int index)
     {
         switch(resourceType)
         {
@@ -68,7 +68,7 @@ public class CompResource : BaseComponent
     // Start is called before the first frame update
     void Start()
     {
-        thisUnit = GetComponent<BaseUnit>();
+        thisUnit = GetComponent<BaseObj>();
 
         this.functions = new CompFunctionDetail[1]
         {

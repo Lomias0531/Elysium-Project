@@ -9,10 +9,12 @@ public class UnitSelectMenu : MonoBehaviour
     Coroutine expandRoutine;
 
     float expandTimeElapsed;
-    public Image img_Circle;
+    public Image img_MP;
+    public Image img_HP;
 
     public CompSkillTrigger skillTrigger;
     public Transform tsf_SkillTriggerContainer;
+    List<CompSkillTrigger> skillTriggers = new List<CompSkillTrigger>();
     // Start is called before the first frame update
     void Start()
     {
@@ -27,9 +29,6 @@ public class UnitSelectMenu : MonoBehaviour
     public void OnSelectUnit(BaseObj thisUnit)
     {
         if (thisUnit == selectedObj) return;
-        selectedObj = thisUnit;
-        if(selectedObj != null)
-            this.gameObject.transform.position = thisUnit.transform.position;
 
         if (expandRoutine != null)
         {
@@ -38,11 +37,13 @@ public class UnitSelectMenu : MonoBehaviour
 
         expandTimeElapsed = 0;
 
-        if (selectedObj == null)
+        if (thisUnit == null)
         {
             expandRoutine = StartCoroutine(RetractThis());
         }else
         {
+            selectedObj = thisUnit;
+            this.gameObject.transform.position = thisUnit.transform.position;
             expandRoutine = StartCoroutine(ExpandThis());
         }
     }
@@ -50,32 +51,88 @@ public class UnitSelectMenu : MonoBehaviour
     {
         do
         {
-            float div = expandTimeElapsed / 0.2f;
-            img_Circle.fillAmount = 1f - div;
+            float div = 1f - expandTimeElapsed / 0.2f;
+
+            SetUIDegrees(div);
 
             expandTimeElapsed += Time.deltaTime;
             yield return null;
 
         } while (expandTimeElapsed <= 0.2f);
 
-        img_Circle.fillAmount = 0f;
+        SetUIDegrees(0f);
+
+        selectedObj = null;
+
+        foreach (var trigger in skillTriggers)
+        {
+            Destroy(trigger.gameObject);
+        }
+        skillTriggers.Clear();
     }
     IEnumerator ExpandThis()
     {
+        foreach (var comp in selectedObj.components)
+        {
+            for (int i = 0; i < comp.functions.Length; i++)
+            {
+                var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
+                trigger.gameObject.SetActive(true);
+                skillTriggers.Add(trigger);
+                trigger.InitThis(true, this, i, comp);
+            }
+        }
+
         do
         {
             float div = expandTimeElapsed / 0.2f;
-            img_Circle.fillAmount = div;
+
+            var HPDiv = selectedObj.HP / selectedObj.HPMax;
+            var MPDiv = selectedObj.EP / selectedObj.EPMax;
+
+            SetUIDegrees(div);
 
             expandTimeElapsed += Time.deltaTime;
             yield return null;
 
         } while (expandTimeElapsed <= 0.2f);
 
-        img_Circle.fillAmount = 1f;
+        SetUIDegrees(1f);
+    }
+    void SetUIDegrees(float val)
+    {
+        var HPDiv = selectedObj.HP / selectedObj.HPMax;
+        var MPDiv = selectedObj.EP / selectedObj.EPMax;
+
+        if (val <= HPDiv)
+        {
+            img_HP.fillAmount = val;
+        }
+        else
+        {
+            img_HP.fillAmount = HPDiv;
+        }
+        if (val <= MPDiv)
+        {
+            img_MP.fillAmount = val;
+        }
+        else
+        {
+            img_MP.fillAmount = MPDiv;
+        }
+
+        if (skillTriggers.Count > 0)
+        {
+            for (int i = 0; i < skillTriggers.Count; i++)
+            {
+                var posX = Mathf.Sin(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
+                var posY = Mathf.Cos(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
+                skillTriggers[i].transform.localPosition = new Vector3(posX, posY, 0);
+            }
+        }
     }
     public void ShowDescription(string desc)
     {
-
+        Debug.Log(desc);
     }
 }

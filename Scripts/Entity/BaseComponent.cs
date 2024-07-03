@@ -35,6 +35,6 @@ public abstract class BaseComponent : MonoBehaviour
     {
         
     }
-    public abstract void OnApply();
+    public abstract void OnApply(int index);
     public abstract void OnDestroyThis();
 }

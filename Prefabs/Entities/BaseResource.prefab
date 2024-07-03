@@ -142,10 +142,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pos: {x: 0, y: 0, z: 0}
   ID: 
-  moveType: 0
-  moveStyle: 0
+  objName: 
   components: []
-  objPos:
-  - {fileID: 1874254913700521781}
-  - {fileID: 3747505408747542058}
-  - {fileID: 827492680406986422}
+  Faction: 

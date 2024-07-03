@@ -48,10 +48,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pos: {x: 0, y: 0, z: 0}
   ID: 
-  moveType: 0
-  moveStyle: 0
   objName: 
   components: []
+  Faction: 
 --- !u!114 &7991404404025900937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,11 +68,30 @@ MonoBehaviour:
   MaxHP: 20
   EP: 10
   MaxEP: 10
-  functions: 00000000
-  ApplyTimeInterval: 3
-  moveStyle: 1
-  moveType: 1
-  mobility: 4
+  functions:
+  - functionName: "\u79FB\u52A8"
+    function: 0
+    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
+    functionApplyTimeInterval: 0
+    functionValue: 4
+    functionConsume: 3
+    functionIntVal: 0100000001000000
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: "\u8FD9\u662F\u79FB\u52A8"
+  - functionName: "\u8DF3\u8DC3"
+    function: 0
+    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
+    functionApplyTimeInterval: 0
+    functionValue: 5
+    functionConsume: 5
+    functionIntVal: 0100000002000000
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: "\u8FD9\u662F\u8DF3\u8DC3"
+  thisObj: {fileID: 0}
 --- !u!1 &8801693143224486690
 GameObject:
   m_ObjectHideFlags: 0
