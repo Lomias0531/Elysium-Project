@@ -161,20 +161,24 @@ public class PlayerController : Singletion<PlayerController>
         }
         if(Input.GetMouseButtonUp(1))
         {
-            foreach (var item in rangeIndicators)
-            {
-                Destroy(item.Value.gameObject);
-            }
-            rangeIndicators.Clear();
-
-            selectedObject = null;
-            UIController.Instance.DisplaySelectedUnitInfo(null);
-            moveIndicators.Clear();
-            attackIndicators.Clear();
-            interactIndicators.Clear();
-            attackRangeIndicators.Clear();
-            visionRangeIndicators.Clear();
+            CancelAllOperations();
         }
+    }
+    public void CancelAllOperations()
+    {
+        foreach (var item in rangeIndicators)
+        {
+            Destroy(item.Value.gameObject);
+        }
+        rangeIndicators.Clear();
+
+        selectedObject = null;
+        UIController.Instance.DisplaySelectedUnitInfo(null);
+        moveIndicators.Clear();
+        attackIndicators.Clear();
+        interactIndicators.Clear();
+        attackRangeIndicators.Clear();
+        visionRangeIndicators.Clear();
     }
     void PaintIndicator()
     {

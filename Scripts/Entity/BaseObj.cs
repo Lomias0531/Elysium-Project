@@ -154,5 +154,6 @@ public abstract class BaseObj : MonoBehaviour
             this.Pos = target.Pos;
             yield return new WaitForSeconds(0.2f);
         }while(moveQueue.Count > 0);
+        PlayerController.Instance.CancelAllOperations();
     }
 }
