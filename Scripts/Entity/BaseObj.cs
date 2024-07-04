@@ -237,7 +237,7 @@ public abstract class BaseObj : MonoBehaviour
                 }
         }
 
-        //PlayerController.Instance.CancelAllOperations();
+        PlayerController.Instance.EntityFinishedAction();
 
         if (animator != null)
         {

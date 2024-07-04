@@ -150,6 +150,8 @@ public class PlayerController : Singletion<PlayerController>
                 UIController.Instance.DisplaySelectedUnitInfo(selectedObject);
             }else
             {
+                if (selectedObject.curSelectedComp == null) return;
+
                 selectedObject.curSelectedComp.EP -= selectedObject.curSelectedFunction.functionConsume;
 
                 if(hoveredTile != null)
@@ -181,6 +183,17 @@ public class PlayerController : Singletion<PlayerController>
         interactIndicators.Clear();
         attackRangeIndicators.Clear();
         visionRangeIndicators.Clear();
+    }
+    public void EntityFinishedAction()
+    {
+        foreach (var item in rangeIndicators)
+        {
+            Destroy(item.Value.gameObject);
+        }
+        rangeIndicators.Clear();
+
+        selectedObject.curSelectedComp = null;
+        //selectedObject.curSelectedFunction = null;
     }
     void PaintIndicator()
     {
