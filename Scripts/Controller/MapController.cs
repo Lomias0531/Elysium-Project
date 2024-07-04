@@ -284,6 +284,7 @@ public class MapController : Singletion<MapController>
                     BaseResource res1 = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
                     res1.transform.position = item.transform.position;
                     res1.InitResource(item.Pos, (BaseResource.ResourceType)i);
+                    res1.Faction = "Resource";
 
                     entityDic.Add(res1.ID, res1);
                     resourcesDic.Add(res1.Pos, res1);
@@ -306,24 +307,26 @@ public class MapController : Singletion<MapController>
             obj.Faction = "Elysium";
             //obj.objName = obj.gameObject.name;
 
-            yield return new WaitForNextFrameUnit();
+            yield return new WaitForSeconds(0.1f);
 
             do
             {
                 generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
 
-                List<MoveType> list = new List<MoveType>();
-                var components = obj.gameObject.GetComponents<CompMobile>();
-                foreach (var comp in components)
-                {
-                    if (comp.GetType() == typeof(CompMobile))
-                    {
-                        foreach (var item in comp.functions)
-                        {
-                            list.Add((BaseUnit.MoveType)item.functionIntVal[0]);
-                        }
-                    }
-                }
+                //List<MoveType> list = new List<MoveType>();
+                //var components = obj.gameObject.GetComponents<CompMobile>();
+                //foreach (var comp in components)
+                //{
+                //    comp.Start();
+                //    if (comp.GetType() == typeof(CompMobile))
+                //    {
+                //        foreach (var item in comp.functions)
+                //        {
+                //            list.Add((MoveType)item.functionIntVal[0]);
+                //        }
+                //    }
+                //}
+                var list = obj.moveType;
 
                 foreach (var move in list)
                 {

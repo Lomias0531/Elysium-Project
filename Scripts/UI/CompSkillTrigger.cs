@@ -11,6 +11,7 @@ public class CompSkillTrigger : MonoBehaviour, IPointerClickHandler, IPointerEnt
     UnitSelectMenu selectMenu;
     int skillIndex;
     public Button btn_Click;
+    public Image img_FunctionMask;
 
     // Start is called before the first frame update
     void Start()
@@ -36,13 +37,11 @@ public class CompSkillTrigger : MonoBehaviour, IPointerClickHandler, IPointerEnt
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //selectMenu.ShowDescription(thisComp.functions[skillIndex].functionDescription);
         UIController.Instance.DisplayHoveredSkillInfo(thisComp.functions[skillIndex]);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //selectMenu.ShowDescription("");
         UIController.Instance.HideHoveredSkillInfo();
     }
     public void OnPointerClick(PointerEventData eventData)
@@ -60,7 +59,9 @@ public class CompSkillTrigger : MonoBehaviour, IPointerClickHandler, IPointerEnt
     }
     void UpdateAvailable()
     {
-        if (thisComp.EP < thisComp.functions[skillIndex].functionConsume)
+        img_FunctionMask.fillAmount = thisComp.functionTimeElapsed / thisComp.thisObj.curSelectedFunction.functionApplyTimeInterval;
+
+        if (thisComp.EP < thisComp.functions[skillIndex].functionConsume || thisComp.HP <= 0 || !thisComp.isAvailable)
         {
             isAvailable = false;
             btn_Click.interactable = false;

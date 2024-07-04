@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3861910269526347956}
   - component: {fileID: 846115186787529782}
   - component: {fileID: 7991404404025900937}
+  - component: {fileID: -3663101869440365015}
   m_Layer: 0
   m_Name: WorkBot
   m_TagString: Untagged
@@ -51,10 +52,19 @@ MonoBehaviour:
   objName: Worker
   components: []
   Faction: 
-  HP: 0
-  EP: 0
-  curSelectedMoveType: 0
-  curSelectedMoveStyle: 0
+  curSelectedComp: {fileID: 0}
+  curSelectedFunction:
+    functionName: 
+    function: 0
+    functionIcon: {fileID: 0}
+    functionApplyTimeInterval: 0
+    functionValue: 0
+    functionConsume: 0
+    functionIntVal: 
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: 
 --- !u!114 &7991404404025900937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,41 +82,31 @@ MonoBehaviour:
   MaxHP: 20
   EP: 10
   MaxEP: 10
-  functions:
-  - functionName: "\u79FB\u52A8"
-    function: 0
-    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
-    functionApplyTimeInterval: 0
-    functionValue: 4
-    functionConsume: 3
-    functionIntVal: 0100000001000000
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: "\u8FD9\u662F\u79FB\u52A8"
-  - functionName: "\u8DF3\u8DC3"
-    function: 0
-    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
-    functionApplyTimeInterval: 0
-    functionValue: 8
-    functionConsume: 8
-    functionIntVal: 0100000002000000
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: "\u8FD9\u662F\u8DF3\u8DC3"
-  - functionName: "\u4F20\u9001"
-    function: 0
-    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
-    functionApplyTimeInterval: 0
-    functionValue: 6
-    functionConsume: 10
-    functionIntVal: 0100000003000000
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: "\u8FD9\u662F\u8DF3\u8DC3"
+  functions: []
   thisObj: {fileID: 0}
+  compResID: MobileComp01
+  isCritical: 0
+--- !u!114 &-3663101869440365015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389244388165440043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b00d5c2a716c445b4462dfd3dc17f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compName: 
+  HP: 40
+  MaxHP: 40
+  EP: 5
+  MaxEP: 5
+  functions: []
+  thisObj: {fileID: 0}
+  compResID: HarvestComp01
+  isCritical: 0
 --- !u!1 &8801693143224486690
 GameObject:
   m_ObjectHideFlags: 0

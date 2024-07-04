@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class CompMobile : BaseComponent
 {
-    //public BaseUnit.MoveStyle moveStyle;
-    //public BaseUnit.MoveType moveType;
-    //public int mobility;
-
     public override void OnApply(int index)
     {
-        var moveType = (BaseUnit.MoveType)functions[index].functionIntVal[0];
-        var moveStyle = (BaseUnit.MoveStyle)functions[index].functionIntVal[1];
+        var moveType = (BaseObj.MoveType)functions[index].functionIntVal[0];
+        var moveStyle = (BaseObj.MoveStyle)functions[index].functionIntVal[1];
         var mobility = (int)functions[index].functionValue;
 
         PlayerController.Instance.GetMoveRange(Tools.GetMobileRange(thisObj, moveType, moveStyle, mobility));
@@ -23,13 +19,13 @@ public class CompMobile : BaseComponent
     }
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
         base.Update();
     }

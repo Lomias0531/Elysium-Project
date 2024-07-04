@@ -19,13 +19,20 @@ public abstract class BaseObj : MonoBehaviour
             List<MoveType> list = new List<MoveType>();
             foreach (var comp in components)
             {
-                if(comp.GetType() == typeof(CompMobile))
+                foreach (var item in comp.functions)
                 {
-                    foreach (var item in comp.functions)
+                    if(item.function == BaseComponent.ComponentFunction.Mobile)
                     {
-                        list.Add((BaseUnit.MoveType)item.functionIntVal[0]);
+                        list.Add((MoveType)item.functionIntVal[0]);
                     }
                 }
+                //if(comp.GetType() == typeof(CompMobile))
+                //{
+                //    foreach (var item in comp.functions)
+                //    {
+                //        list.Add((MoveType)item.functionIntVal[0]);
+                //    }
+                //}
             }
             return list.ToArray();
         }
@@ -38,13 +45,20 @@ public abstract class BaseObj : MonoBehaviour
             List<MoveStyle> list = new List<MoveStyle>();
             foreach (var comp in components)
             {
-                if (comp.GetType() == typeof(CompMobile))
+                foreach (var item in comp.functions)
                 {
-                    foreach (var item in comp.functions)
+                    if (item.function == BaseComponent.ComponentFunction.Mobile)
                     {
-                        list.Add((BaseUnit.MoveStyle)item.functionIntVal[1]);
+                        list.Add((MoveStyle)item.functionIntVal[1]);
                     }
                 }
+                //if (comp.GetType() == typeof(CompMobile))
+                //{
+                //    foreach (var item in comp.functions)
+                //    {
+                //        list.Add((MoveStyle)item.functionIntVal[1]);
+                //    }
+                //}
             }
             return list.ToArray();
         }
@@ -117,9 +131,9 @@ public abstract class BaseObj : MonoBehaviour
         Teleport,
     }
 
-    //public MoveType curSelectedMoveType;
-    //public MoveStyle curSelectedMoveStyle;
+    [HideInInspector]
     public BaseComponent curSelectedComp;
+    [HideInInspector]
     public CompFunctionDetail curSelectedFunction;
     // Start is called before the first frame update
     public virtual void Start()

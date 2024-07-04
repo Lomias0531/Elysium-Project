@@ -77,5 +77,5 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
     }
 
     public List<BaseConstruction> myConstructions = new List<BaseConstruction>();
-    public List<BaseUnit> myUnits = new List<BaseUnit>();
+    public List<BaseObj> myUnits = new List<BaseObj>();
 }

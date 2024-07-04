@@ -1972,41 +1972,10 @@ MonoBehaviour:
   MaxHP: 30
   EP: 20
   MaxEP: 20
-  functions:
-  - functionName: "\u884C\u8D70"
-    function: 0
-    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
-    functionApplyTimeInterval: 3
-    functionValue: 5
-    functionConsume: 5
-    functionIntVal: 0100000001000000
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: "\u884C\u8D70\u5230\u76EE\u6807\u4F4D\u7F6E"
-  - functionName: "\u8DF3\u8DC3"
-    function: 0
-    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
-    functionApplyTimeInterval: 3
-    functionValue: 8
-    functionConsume: 8
-    functionIntVal: 0100000002000000
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: "\u8DF3\u8DC3\u5230\u76EE\u6807\u4F4D\u7F6E"
-  - functionName: "\u4F20\u9001"
-    function: 0
-    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
-    functionApplyTimeInterval: 3
-    functionValue: 5
-    functionConsume: 10
-    functionIntVal: 0100000003000000
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: "\u4F20\u9001\u5230\u76EE\u6807\u4F4D\u7F6E"
+  functions: []
   thisObj: {fileID: 0}
+  compResID: MobileComp01
+  isCritical: 0
 --- !u!1 &2969407270076441885
 GameObject:
   m_ObjectHideFlags: 0

@@ -97,6 +97,7 @@ public class PlayerController : Singletion<PlayerController>
     void GetTileUnderMouse()
     {
         if (MapController.Instance.mapTiles == null) return;
+        if (isMouseOverUI) return;
 
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hit = Physics.RaycastAll(camRay, Mathf.Infinity);
@@ -152,13 +153,19 @@ public class PlayerController : Singletion<PlayerController>
             {
                 if (selectedObject.curSelectedComp == null) return;
 
-                selectedObject.curSelectedComp.EP -= selectedObject.curSelectedFunction.functionConsume;
-
                 if(hoveredTile != null)
                 {
                     if(moveIndicators.Contains(hoveredTile))
                     {
+                        //selectedObject.curSelectedComp.EP -= selectedObject.curSelectedFunction.functionConsume;
+                        selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
                         StartCoroutine(selectedObject.MoveObjectToTile(hoveredTile));
+                    }
+                    if(interactIndicators.Contains(hoveredTile))
+                    {
+                        selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
+                        //selectedObject.curSelectedComp.EP -= selectedObject.curSelectedFunction.functionConsume;
+                        EntityFinishedAction();
                     }
                 }
             }
@@ -205,21 +212,6 @@ public class PlayerController : Singletion<PlayerController>
             };
             DrawRangeIndicator(tiles, selectedObject.GetTileWhereUnitIs(), "SelectIndicator", col_Select, 1f);
         }
-
-        //if(moveIndicators != null && moveIndicators.Count > 0)
-        //{
-        //    DrawRangeIndicator(moveIndicators, selectedObject.GetTileWhereUnitIs(), "MoveIndicator", col_Move, 2f);
-        //}
-
-        //if (attackIndicators != null && attackIndicators.Count > 0)
-        //{
-        //    DrawRangeIndicator(attackIndicators, selectedObject.GetTileWhereUnitIs(), "AttackIndicator", col_Attack, 2f);
-        //}
-
-        //if(interactIndicators!= null && interactIndicators.Count > 0)
-        //{
-        //    DrawRangeIndicator(interactIndicators, selectedObject.GetTileWhereUnitIs(), "InteractIndicator", col_Interact, 2f);
-        //}
     }
     void DrawRangeIndicator(List<BaseTile> tiles, BaseTile originCenter,string rangeName, Color rangeColor, float layer = 0)
     {
@@ -402,6 +394,37 @@ public class PlayerController : Singletion<PlayerController>
     {
         moveIndicators = tiles;
         DrawRangeIndicator(moveIndicators, selectedObject.GetTileWhereUnitIs(), "MoveIndicator", col_Move, 2f);
+    }
+    public void GetInteractRange(BaseComponent.InteractFunction interactType)
+    {
+        switch (interactType)
+        {
+            default:
+                {
+                    break;
+                }
+            case BaseComponent.InteractFunction.Harvest:
+                {
+                    interactIndicators.Clear();
+                    var curTile = selectedObject.GetTileWhereUnitIs();
+                    foreach (var adjTile in curTile.adjacentTiles)
+                    {
+                        var obj = adjTile.Value.GetEntitynThisTile();
+                        if (obj != null)
+                        {
+                            if(obj.GetComponent<CompResource>() != null)
+                            {
+                                interactIndicators.Add(adjTile.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+        }
+        if(interactIndicators.Count > 0)
+        {
+            DrawRangeIndicator(interactIndicators, selectedObject.GetTileWhereUnitIs(), "InteractIndicator", col_Interact, 2f);
+        }
     }
     private void OnApplicationFocus(bool focus)
     {

@@ -66,8 +66,10 @@ public class CompResource : BaseComponent
     }
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        base.Start();
+
         thisUnit = GetComponent<BaseObj>();
 
         this.functions = new CompFunctionDetail[1]
@@ -84,8 +86,8 @@ public class CompResource : BaseComponent
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        
+        base.Update();
     }
 }

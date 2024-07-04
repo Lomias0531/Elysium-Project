@@ -46,7 +46,7 @@ public static class Tools
             return Color.white;
         }
     }
-    public static List<BaseTile> GetMobileRange(BaseObj thisEntity, BaseUnit.MoveType moveType, BaseUnit.MoveStyle moveStyle, int mobility)
+    public static List<BaseTile> GetMobileRange(BaseObj thisEntity, BaseObj.MoveType moveType, BaseObj.MoveStyle moveStyle, int mobility)
     {
         List<BaseTile> result = new List<BaseTile>();
 
@@ -222,7 +222,7 @@ public static class ToolsUtility
         new Vector3(-extendDistanceX, 0, outerRadius + extendDistanceZ),
     };
 
-    public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination, BaseUnit.MoveType selectedMoveType)
+    public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination, BaseObj.MoveType selectedMoveType, bool isPathingToTarget = false)
     {
         int calculateCycle = 0;
 
@@ -261,6 +261,15 @@ public static class ToolsUtility
             // 调查当前地格的每一块相邻的地格。
             foreach (BaseTile adjacentTile in currentTile.adjacentTiles.Values)
             {
+                //若寻路模式为导航到目标物体，则检测相邻地格是否为目的地
+                if(isPathingToTarget)
+                {
+                    if(adjacentTile == destination)
+                    {
+                        openPathTiles.Add(adjacentTile);
+                    }
+                }
+
                 // 忽略不能行走的相邻地格。
                 if (adjacentTile.GetMoveCost(selectedMoveType) > 8 || (!adjacentTile.isAvailable(true, unit) && adjacentTile != destination))
                 {
@@ -313,6 +322,13 @@ public static class ToolsUtility
             result.Enqueue(item);
         }
 
+        if(isPathingToTarget)
+        {
+            result.Reverse();
+            result.Dequeue();
+            result.Reverse();
+        }
+
         //Debug.Log(calculateCycle);
 
         return result;
@@ -339,7 +355,7 @@ public static class ToolsUtility
         }
         return null;
     }
-    public static float GetMoveCost(this BaseTile tile, BaseUnit.MoveType type)
+    public static float GetMoveCost(this BaseTile tile, BaseObj.MoveType type)
     {
         if (MoveCostForUnits.ContainsKey(tile.terrainType))
         {

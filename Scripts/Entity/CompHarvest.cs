@@ -2,16 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseUnit : BaseObj
+public class CompHarvest : BaseComponent
 {
-    //DO NOT DELETE THIS!
-    //USE FOR ABSTRACT CLASS!
-    public override void OnBeingDestroyed()
+    public override void OnApply(int index)
     {
-        
+        PlayerController.Instance.GetInteractRange(InteractFunction.Harvest);
     }
 
-    public override void OnInteracted()
+    public override void OnDestroyThis()
     {
         
     }
