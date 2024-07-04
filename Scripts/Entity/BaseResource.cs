@@ -22,7 +22,7 @@ public class BaseResource : BaseObj
     // Update is called once per frame
     void Update()
     {
-        
+        base.Update();
     }
     public void InitResource(Vector3Int pos, ResourceType type)
     {

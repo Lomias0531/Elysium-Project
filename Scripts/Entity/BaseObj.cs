@@ -53,7 +53,18 @@ public abstract class BaseObj : MonoBehaviour
     [HideInInspector]
     public List<BaseComponent> components = new List<BaseComponent>();
     public string Faction;
-    public float HP;
+    public float HP
+    {
+        get
+        {
+            float value = 0f;
+            foreach (var item in components)
+            {
+                value += item.HP;
+            }
+            return value;
+        }
+    }
     public float HPMax
     {
         get
@@ -66,7 +77,18 @@ public abstract class BaseObj : MonoBehaviour
             return value;
         }
     }
-    public float EP;
+    public float EP
+    {
+        get
+        {
+            float value = 0f;
+            foreach (var item in components)
+            {
+                value += item.EP;
+            }
+            return value;
+        }
+    }
     public float EPMax
     {
         get
@@ -95,8 +117,10 @@ public abstract class BaseObj : MonoBehaviour
         Teleport,
     }
 
-    public MoveType curSelectedMoveType;
-    public MoveStyle curSelectedMoveStyle;
+    //public MoveType curSelectedMoveType;
+    //public MoveStyle curSelectedMoveStyle;
+    public BaseComponent curSelectedComp;
+    public CompFunctionDetail curSelectedFunction;
     // Start is called before the first frame update
     public virtual void Start()
     {
@@ -120,17 +144,15 @@ public abstract class BaseObj : MonoBehaviour
             item.thisObj = this;
         }
         animator = this.gameObject.GetComponent<Animator>();
-        HP = HPMax;
-        EP = EPMax;
     }
     public abstract void OnInteracted();
     public abstract void OnBeingDestroyed();
 
     public IEnumerator MoveObjectToTile(BaseTile tile)
     {
-        var moveQueue = this.UnitFindPath(tile, this.curSelectedMoveType);
+        var moveQueue = this.UnitFindPath(tile, (MoveType)curSelectedFunction.functionIntVal[0]);
 
-        switch(curSelectedMoveStyle)
+        switch ((MoveStyle)curSelectedFunction.functionIntVal[1])
         {
             default:
                 {
@@ -215,7 +237,7 @@ public abstract class BaseObj : MonoBehaviour
                 }
         }
 
-        PlayerController.Instance.CancelAllOperations();
+        //PlayerController.Instance.CancelAllOperations();
 
         if (animator != null)
         {

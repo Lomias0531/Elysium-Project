@@ -150,6 +150,8 @@ public class PlayerController : Singletion<PlayerController>
                 UIController.Instance.DisplaySelectedUnitInfo(selectedObject);
             }else
             {
+                selectedObject.curSelectedComp.EP -= selectedObject.curSelectedFunction.functionConsume;
+
                 if(hoveredTile != null)
                 {
                     if(moveIndicators.Contains(hoveredTile))
