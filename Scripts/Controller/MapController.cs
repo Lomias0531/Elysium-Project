@@ -288,6 +288,10 @@ public class MapController : Singletion<MapController>
 
                     entityDic.Add(res1.ID, res1);
                     resourcesDic.Add(res1.Pos, res1);
+
+                    //var resource = res1.gameObject.AddComponent<CompResource>();
+                    //resource.resourceType = (BaseResource.ResourceType)i;
+                    //resource.ResourceAcquireAmount = 5;
                 }
             }
         }
@@ -313,19 +317,6 @@ public class MapController : Singletion<MapController>
             {
                 generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
 
-                //List<MoveType> list = new List<MoveType>();
-                //var components = obj.gameObject.GetComponents<CompMobile>();
-                //foreach (var comp in components)
-                //{
-                //    comp.Start();
-                //    if (comp.GetType() == typeof(CompMobile))
-                //    {
-                //        foreach (var item in comp.functions)
-                //        {
-                //            list.Add((MoveType)item.functionIntVal[0]);
-                //        }
-                //    }
-                //}
                 var list = obj.moveType;
 
                 foreach (var move in list)

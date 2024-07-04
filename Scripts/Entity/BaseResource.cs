@@ -69,6 +69,8 @@ public class BaseResource : BaseObj
         res.HP = 10;
         res.MaxEP = 10;
         res.EP = 10;
+        res.ResourceAcquireAmount = 10;
+        res.resourceType = type;
 
         base.InitThis();
     }

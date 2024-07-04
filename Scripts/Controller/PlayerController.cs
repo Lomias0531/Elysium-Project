@@ -164,6 +164,13 @@ public class PlayerController : Singletion<PlayerController>
                     if(interactIndicators.Contains(hoveredTile))
                     {
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
+
+                        var res = hoveredTile.GetEntitynThisTile();
+                        if(res != null)
+                        {
+                            var resource = res.gameObject.GetComponent<CompResource>();
+                            resource.OnApply(0);
+                        }
                         //selectedObject.curSelectedComp.EP -= selectedObject.curSelectedFunction.functionConsume;
                         EntityFinishedAction();
                     }
