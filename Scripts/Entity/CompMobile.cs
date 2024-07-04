@@ -14,7 +14,7 @@ public class CompMobile : BaseComponent
         var moveStyle = (BaseUnit.MoveStyle)functions[index].functionIntVal[1];
         var mobility = (int)functions[index].functionValue;
 
-        PlayerController.Instance.GetMoveRange(Tools.GetMobileRange(thisObj, moveType, mobility));
+        PlayerController.Instance.GetMoveRange(Tools.GetMobileRange(thisObj, moveType, moveStyle, mobility));
     }
 
     public override void OnDestroyThis()

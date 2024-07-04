@@ -1878,6 +1878,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2578413209973240336}
   - component: {fileID: 8442122793450793066}
+  - component: {fileID: 4972859180769544076}
+  - component: {fileID: 4107342644199083685}
   m_Layer: 0
   m_Name: POPPI
   m_TagString: Untagged
@@ -1912,7 +1914,7 @@ Animator:
   m_GameObject: {fileID: 2919332615130540202}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 342dd1ec957165a42b2a450883506d9c, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6cb2c2dbda5367043bd0600812e770d8, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -1923,6 +1925,79 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4972859180769544076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2919332615130540202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a35856893bec7844cb94a90eb2517bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pos: {x: 0, y: 0, z: 0}
+  ID: 
+  objName: Hana
+  components: []
+  Faction: 
+  HP: 0
+  EP: 0
+  curSelectedMoveType: 0
+  curSelectedMoveStyle: 0
+--- !u!114 &4107342644199083685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2919332615130540202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad089886059404cb692e2ee81bd808, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compName: 
+  HP: 10
+  MaxHP: 10
+  EP: 10
+  MaxEP: 10
+  functions:
+  - functionName: "\u884C\u8D70"
+    function: 0
+    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
+    functionApplyTimeInterval: 3
+    functionValue: 5
+    functionConsume: 5
+    functionIntVal: 0100000001000000
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: "\u884C\u8D70\u5230\u76EE\u6807\u4F4D\u7F6E"
+  - functionName: "\u8DF3\u8DC3"
+    function: 0
+    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
+    functionApplyTimeInterval: 3
+    functionValue: 8
+    functionConsume: 9
+    functionIntVal: 0100000002000000
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: "\u8DF3\u8DC3\u5230\u76EE\u6807\u4F4D\u7F6E"
+  - functionName: "\u4F20\u9001"
+    function: 0
+    functionIcon: {fileID: 21300000, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
+    functionApplyTimeInterval: 3
+    functionValue: 5
+    functionConsume: 12
+    functionIntVal: 0100000003000000
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: "\u4F20\u9001\u5230\u76EE\u6807\u4F4D\u7F6E"
+  thisObj: {fileID: 0}
 --- !u!1 &2969407270076441885
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,7 +24,7 @@ public class UnitSelectMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        UpdateSelectedObjectStatus();
     }
     public void OnSelectUnit(BaseObj thisUnit)
     {
@@ -131,8 +131,13 @@ public class UnitSelectMenu : MonoBehaviour
             }
         }
     }
-    public void ShowDescription(string desc)
+    void UpdateSelectedObjectStatus()
     {
-        Debug.Log(desc);
+        if (selectedObj == null) return;
+        if(expandRoutine == null)
+        {
+            img_HP.fillAmount = selectedObj.HP / selectedObj.HPMax;
+            img_MP.fillAmount = selectedObj.EP / selectedObj.EPMax;
+        }
     }
 }

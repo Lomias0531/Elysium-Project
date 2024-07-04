@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -45,7 +46,7 @@ public static class Tools
             return Color.white;
         }
     }
-    public static List<BaseTile> GetMobileRange(BaseObj thisEntity, BaseUnit.MoveType moveType, int mobility)
+    public static List<BaseTile> GetMobileRange(BaseObj thisEntity, BaseUnit.MoveType moveType, BaseUnit.MoveStyle moveStyle, int mobility)
     {
         List<BaseTile> result = new List<BaseTile>();
 
@@ -74,7 +75,16 @@ public static class Tools
                     if (!closeList.ContainsKey(adjTile.Value))
                     {
                         //遍历当前单元格的相邻单元格，若该单元格不存在于关闭格中，则计算其移动力消耗。
-                        float life = (float)item.Value.MoveLife - (float)adjTile.Value.GetMoveCost(moveType);
+                        var cost = (float)adjTile.Value.GetMoveCost(moveType);
+                        if (moveStyle == BaseObj.MoveStyle.Jump || moveStyle == BaseObj.MoveStyle.Teleport)
+                        {
+                            if(cost >=8)
+                            {
+                                friendlyTile.Add(adjTile.Value);    
+                            }
+                            cost = 1;
+                        }
+                        float life = (float)item.Value.MoveLife - cost;
                         if (!adjTile.Value.isAvailable())
                         {
                             //如果这个相邻单元格上存在单位，若为敌方则将移动力直接归零，若为友方可互动单位则不影响
@@ -88,7 +98,13 @@ public static class Tools
                                 }
                                 else
                                 {
-                                    life = 0;
+                                    if(moveStyle == BaseObj.MoveStyle.Jump || moveStyle == BaseObj.MoveStyle.Teleport)
+                                    {
+                                        friendlyTile.Add(adjTile.Value);
+                                    }else
+                                    {
+                                        life = 0;
+                                    }
                                 }
                             }
                         }
@@ -140,6 +156,15 @@ public static class Tools
         }
 
         return result;
+    }
+    public static Vector3 GetBezierCurve(Vector3 startPoint, Vector3 destination, float timeDiv)
+    {
+        var length = Vector3.Distance(startPoint, destination);
+        var midPoint = (startPoint + destination) / 2 + new Vector3(0, length / 2f, 0);
+
+        Vector3 curPos = Mathf.Pow((1 - timeDiv), 2) * startPoint + 2 * timeDiv * (1 - timeDiv) * midPoint + Mathf.Pow(timeDiv, 2) * destination;
+
+        return curPos;
     }
     class MoveIndicator
     {

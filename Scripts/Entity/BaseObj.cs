@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 public abstract class BaseObj : MonoBehaviour
 {
     public Vector3Int Pos;
     public string ID;
+    Animator animator;
     [HideInInspector]
     public MoveType[] moveType
     {
@@ -51,18 +53,7 @@ public abstract class BaseObj : MonoBehaviour
     [HideInInspector]
     public List<BaseComponent> components = new List<BaseComponent>();
     public string Faction;
-    public float HP
-    {
-        get
-        {
-            float value = 0f;
-            foreach (var item in components)
-            {
-                value += item.HP;
-            }
-            return value;
-        }
-    }
+    public float HP;
     public float HPMax
     {
         get
@@ -75,18 +66,7 @@ public abstract class BaseObj : MonoBehaviour
             return value;
         }
     }
-    public float EP
-    {
-        get
-        {
-            float value = 0f;
-            foreach (var item in components)
-            {
-                value += item.EP;
-            }
-            return value;
-        }
-    }
+    public float EP;
     public float EPMax
     {
         get
@@ -139,6 +119,9 @@ public abstract class BaseObj : MonoBehaviour
         {
             item.thisObj = this;
         }
+        animator = this.gameObject.GetComponent<Animator>();
+        HP = HPMax;
+        EP = EPMax;
     }
     public abstract void OnInteracted();
     public abstract void OnBeingDestroyed();
@@ -147,13 +130,97 @@ public abstract class BaseObj : MonoBehaviour
     {
         var moveQueue = this.UnitFindPath(tile, this.curSelectedMoveType);
 
-        do
+        switch(curSelectedMoveStyle)
         {
-            var target = moveQueue.Dequeue();
-            this.transform.DOMove(target.transform.position, 0.2f);
-            this.Pos = target.Pos;
-            yield return new WaitForSeconds(0.2f);
-        }while(moveQueue.Count > 0);
+            default:
+                {
+                    if(animator != null)
+                    {
+                        animator.CrossFadeInFixedTime("Walk", 0.1f);
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+                    do
+                    {
+                        var target = moveQueue.Dequeue();
+                        if (target == this.GetTileWhereUnitIs())
+                            continue;
+
+                        var facing = Vector3.Angle(new Vector3(0, 0, 1f), target.transform.position - this.transform.position);
+                        if (target.transform.position.x < this.transform.position.x) facing *= -1;
+
+                        this.transform.localEulerAngles = new Vector3(0, facing, 0);
+
+                        float moveTimeElapsed = 0;
+                        var originPos = this.transform.position;
+                        do
+                        {
+                            this.transform.position = Vector3.Lerp(originPos, target.transform.position, moveTimeElapsed / 0.2f);
+                            moveTimeElapsed += Time.deltaTime;
+                            yield return null;
+                        } while (moveTimeElapsed < 0.2f);
+                        this.transform.position = target.transform.position;
+                        //this.transform.DOMove(target.transform.position, 0.2f, false);
+                        this.Pos = target.Pos;
+                        //yield return new WaitForSeconds(0.2f);
+                    } while (moveQueue.Count > 0);
+
+                    break;
+                }
+            case MoveStyle.Teleport:
+                {
+                    if (animator != null)
+                    {
+                        animator.CrossFadeInFixedTime("Interact", 0.1f);
+                        yield return new WaitForSeconds(0.2f);
+                        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+                    }
+
+                    var facing = Vector3.Angle(new Vector3(0, 0, 1f), tile.transform.position - this.transform.position);
+                    if (tile.transform.position.x < this.transform.position.x) facing *= -1;
+
+                    this.transform.localEulerAngles = new Vector3(0, facing, 0);
+
+                    //yield return new WaitForSeconds(0.2f);
+
+                    this.transform.position = tile.transform.position;
+                    this.Pos = tile.Pos;
+                    break;
+                }
+            case MoveStyle.Jump:
+                {
+                    if (animator != null)
+                    {
+                        animator.CrossFadeInFixedTime("Jump", 0.1f);
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+                    var facing = Vector3.Angle(new Vector3(0, 0, 1f), tile.transform.position - this.transform.position);
+                    if (tile.transform.position.x < this.transform.position.x) facing *= -1;
+
+                    this.transform.localEulerAngles = new Vector3(0, facing, 0);
+
+                    float jumpTileElapsed = 0;
+                    do
+                    {
+                        this.transform.position = Tools.GetBezierCurve(this.GetTileWhereUnitIs().transform.position, tile.transform.position, jumpTileElapsed / 1f);
+                        jumpTileElapsed += Time.deltaTime;
+
+                        yield return null;
+                    } while (jumpTileElapsed <= 1f);
+                    this.transform.position = tile.transform.position;
+                    this.Pos = tile.Pos;
+
+                    break;
+                }
+        }
+
         PlayerController.Instance.CancelAllOperations();
+
+        if (animator != null)
+        {
+            animator.CrossFadeInFixedTime("Idle", 0.1f);
+        }
+        yield return new WaitForSeconds(0.1f);
     }
 }

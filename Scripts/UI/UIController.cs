@@ -18,10 +18,11 @@ public class UIController : Singletion<UIController>
     public Image img_hoveredUnitHP;
     public Image img_hoveredUnitEP;
     [Space(1)]
-    public GameObject obj_selectedUnit;
-    public Text txt_selectedUnitName;
-    public Image img_selectedUnitHP;
-    public Image img_selectedUnitEP;
+    public GameObject obj_HoveredSkill;
+    public Text txt_hoveredSkillName;
+    public Text txt_hoveredSkillDesc;
+    public Text txt_hoveredSkillCost;
+    public Image img_hoveredSkillIcon;
     [Space(1)]
     public Text txt_organicAmount;
     public Text txt_constructAmount;
@@ -82,5 +83,17 @@ public class UIController : Singletion<UIController>
         txt_constructAmount.text = PlayerDataManager.Instance.ConstructMaterialAmount.ToString("F0") + "/" + PlayerDataManager.Instance.ConstructMaterialMaxAmount.ToString("F0");
         txt_metalAmount.text = PlayerDataManager.Instance.MetalAmount.ToString("F0") + "/" + PlayerDataManager.Instance.MetalMaxAmount.ToString("F0");
         txt_energyLevel.text = PlayerDataManager.Instance.EnergyConsumed.ToString("F0") + "/" + PlayerDataManager.Instance.EnergyProduced.ToString("F0");
+    }
+    public void DisplayHoveredSkillInfo(CompFunctionDetail info)
+    {
+        obj_HoveredSkill.SetActive(true);
+        txt_hoveredSkillName.text = info.functionName;
+        txt_hoveredSkillCost.text = info.functionConsume.ToString();
+        txt_hoveredSkillDesc.text = info.functionDescription;
+        img_hoveredSkillIcon.sprite = info.functionIcon;
+    }
+    public void HideHoveredSkillInfo()
+    {
+        obj_HoveredSkill.SetActive(false);
     }
 }

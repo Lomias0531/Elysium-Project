@@ -304,7 +304,7 @@ public class MapController : Singletion<MapController>
 
             obj.InitThis();
             obj.Faction = "Elysium";
-            obj.objName = obj.gameObject.name;
+            //obj.objName = obj.gameObject.name;
 
             yield return new WaitForNextFrameUnit();
 
