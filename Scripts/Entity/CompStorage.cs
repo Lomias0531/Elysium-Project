@@ -9,7 +9,8 @@ public class CompStorage : BaseComponent
     public List<ItemData> inventory = new List<ItemData>();
     public override void OnApply(int index)
     {
-        PlayerController.Instance.GetInteractRange(InteractFunction.Store);
+        //PlayerController.Instance.GetInteractRange(InteractFunction.Store);
+        StartCoroutine(UIController.Instance.unitMenu.ShowEntityInventory());
     }
 
     public override void OnDestroyThis()

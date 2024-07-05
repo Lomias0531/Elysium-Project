@@ -2,13 +2,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CompSkillTrigger : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class CompSkillTrigger : BaseCompTrigger
 {
     BaseComponent thisComp;
     bool isAvailable = true;
 
-    public Image img_Icon;
-    UnitSelectMenu selectMenu;
     int skillIndex;
     public Button btn_Click;
     public Image img_FunctionMask;
@@ -24,10 +22,9 @@ public class CompSkillTrigger : MonoBehaviour, IPointerClickHandler, IPointerEnt
     {
         UpdateAvailable();
     }
-    public void InitThis(bool _isAvailable, UnitSelectMenu menu, int _skillIndex, BaseComponent comp)
+    public void InitThis(bool _isAvailable, int _skillIndex, BaseComponent comp)
     {
         isAvailable = _isAvailable;
-        selectMenu = menu;
         thisComp = comp;
         
         skillIndex = _skillIndex;
@@ -35,16 +32,16 @@ public class CompSkillTrigger : MonoBehaviour, IPointerClickHandler, IPointerEnt
             img_Icon.sprite = thisComp.functions[skillIndex].functionIcon;
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
-        UIController.Instance.DisplayHoveredSkillInfo(thisComp.functions[skillIndex]);
+        UIController.Instance.DisplayHoveredSkillInfo(thisComp.functions[skillIndex], UIController.DisplayInfoType.skill);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit(PointerEventData eventData)
     {
         UIController.Instance.HideHoveredSkillInfo();
     }
-    public void OnPointerClick(PointerEventData eventData)
+    public override void OnPointerClick(PointerEventData eventData)
     {
         ApplySkill();
     }

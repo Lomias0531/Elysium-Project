@@ -23,6 +23,7 @@ public class UIController : Singletion<UIController>
     public Text txt_hoveredSkillDesc;
     public Text txt_hoveredSkillCost;
     public Image img_hoveredSkillIcon;
+    public Text txt_countType;
     [Space(1)]
     public Text txt_organicAmount;
     public Text txt_constructAmount;
@@ -35,7 +36,11 @@ public class UIController : Singletion<UIController>
     {
         
     }
-
+    public enum DisplayInfoType
+    {
+        skill,
+        item,
+    }
     // Update is called once per frame
     void Update()
     {
@@ -84,13 +89,30 @@ public class UIController : Singletion<UIController>
         txt_metalAmount.text = PlayerDataManager.Instance.MetalAmount.ToString("F0") + "/" + PlayerDataManager.Instance.MetalMaxAmount.ToString("F0");
         txt_energyLevel.text = PlayerDataManager.Instance.EnergyConsumed.ToString("F0") + "/" + PlayerDataManager.Instance.EnergyProduced.ToString("F0");
     }
-    public void DisplayHoveredSkillInfo(CompFunctionDetail info)
+    public void DisplayHoveredSkillInfo(CompFunctionDetail info, DisplayInfoType type)
     {
         obj_HoveredSkill.SetActive(true);
         txt_hoveredSkillName.text = info.functionName;
         txt_hoveredSkillCost.text = info.functionConsume.ToString();
         txt_hoveredSkillDesc.text = info.functionDescription;
         img_hoveredSkillIcon.sprite = info.functionIcon;
+        switch(type)
+        {
+            default:
+                {
+                    break;
+                }
+            case DisplayInfoType.skill:
+                {
+                    txt_countType.text = "ÏûºÄ£º";
+                    break;
+                }
+            case DisplayInfoType.item:
+                {
+                    txt_countType.text = "ÊýÁ¿£º";
+                    break;
+                }
+        }
     }
     public void HideHoveredSkillInfo()
     {

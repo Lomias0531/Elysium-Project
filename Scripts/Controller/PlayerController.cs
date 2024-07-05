@@ -189,9 +189,8 @@ public class PlayerController : Singletion<PlayerController>
                                 {
                                     var storage = res.GetDesiredComponent<CompStorage>();
                                     var ees = selectedObject.GetDesiredComponent<CompStorage>();
-                                    var item = ees.inventory.FirstOrDefault();
+                                    var item = ees.inventory[selectedObject.curSelectedFunction.functionIntVal[1]];
                                     ees.TransferItem(storage, item);
-                                    //storage.ReceiveItem(item);
                                     break;
                                 }
                         }
@@ -199,7 +198,8 @@ public class PlayerController : Singletion<PlayerController>
                     }
                 }
             }
-            selectedObject.curSelectedComp = null;
+            if(selectedObject != null)
+                selectedObject.curSelectedComp = null;
         }
         if(Input.GetMouseButtonUp(1))
         {

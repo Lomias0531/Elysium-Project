@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class UnitSelectMenu : MonoBehaviour
 {
@@ -14,8 +15,9 @@ public class UnitSelectMenu : MonoBehaviour
     public Image img_HP;
 
     public CompSkillTrigger skillTrigger;
+    public CompItemTrigger itemTrigger;
     public Transform tsf_SkillTriggerContainer;
-    List<CompSkillTrigger> skillTriggers = new List<CompSkillTrigger>();
+    List<BaseCompTrigger> skillTriggers = new List<BaseCompTrigger>();
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +51,20 @@ public class UnitSelectMenu : MonoBehaviour
             //this.gameObject.transform.position = thisUnit.transform.position;
             this.transform.SetParent(thisUnit.transform);
             this.transform.localPosition = Vector3.zero;
+
+            if (selectedObj.Faction == "Elysium")
+            {
+                foreach (var comp in selectedObj.components)
+                {
+                    for (int i = 0; i < comp.functions.Length; i++)
+                    {
+                        var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
+                        trigger.gameObject.SetActive(true);
+                        skillTriggers.Add(trigger);
+                        trigger.InitThis(true, i, comp);
+                    }
+                }
+            }
 
             expandRoutine = StartCoroutine(ExpandThis());
         }
@@ -84,20 +100,6 @@ public class UnitSelectMenu : MonoBehaviour
     {
         expandFinished = false;
 
-        if(selectedObj.Faction == "Elysium")
-        {
-            foreach (var comp in selectedObj.components)
-            {
-                for (int i = 0; i < comp.functions.Length; i++)
-                {
-                    var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
-                    trigger.gameObject.SetActive(true);
-                    skillTriggers.Add(trigger);
-                    trigger.InitThis(true, this, i, comp);
-                }
-            }
-        }
-
         do
         {
             float div = expandTimeElapsed / 0.2f;
@@ -111,6 +113,42 @@ public class UnitSelectMenu : MonoBehaviour
 
         SetUIDegrees(1f);
         expandFinished = true;
+    }
+    public IEnumerator ShowEntityInventory()
+    {
+        float iconExpandTime = 0f;
+        do
+        {
+            var val = 1f - iconExpandTime / 0.2f;
+            SetIconDegrees(val);
+            iconExpandTime += Time.deltaTime;
+            yield return null;
+
+        } while (iconExpandTime <= 0.2f);
+        foreach (var trigger in skillTriggers)
+        {
+            Destroy(trigger.gameObject);
+        }
+        skillTriggers.Clear();
+        var inv = selectedObj.GetDesiredComponent<CompStorage>();
+        if(inv != null)
+        {
+            for(int i = 0;i<inv.inventory.Count;i++)
+            {
+                var trigger = GameObject.Instantiate(itemTrigger, tsf_SkillTriggerContainer);
+                trigger.gameObject.SetActive(true);
+                skillTriggers.Add(trigger);
+                trigger.InitThis(inv, i, this);
+            }
+        }
+        iconExpandTime = 0f;
+        do
+        {
+            var val = iconExpandTime / 0.2f;
+            SetIconDegrees(val);
+            iconExpandTime += Time.deltaTime;
+            yield return null;
+        } while (iconExpandTime <= 0.2f);
     }
     void SetUIDegrees(float val)
     {
@@ -133,6 +171,10 @@ public class UnitSelectMenu : MonoBehaviour
         {
             img_MP.fillAmount = MPDiv;
         }
+        SetIconDegrees(val);
+    }
+    void SetIconDegrees(float val)
+    {
 
         if (skillTriggers.Count > 0)
         {
@@ -152,5 +194,13 @@ public class UnitSelectMenu : MonoBehaviour
             img_HP.fillAmount = selectedObj.HP / selectedObj.HPMax;
             img_MP.fillAmount = selectedObj.EP / selectedObj.EPMax;
         }
+    }
+    public void RemoveTrigger(BaseCompTrigger trigger)
+    {
+        if(skillTriggers.Contains(trigger))
+        {
+            Destroy(trigger.gameObject);
+        }
+        skillTriggers.Remove(trigger);
     }
 }
