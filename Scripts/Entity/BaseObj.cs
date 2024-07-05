@@ -27,13 +27,6 @@ public abstract class BaseObj : MonoBehaviour
                         list.Add((MoveType)item.functionIntVal[0]);
                     }
                 }
-                //if(comp.GetType() == typeof(CompMobile))
-                //{
-                //    foreach (var item in comp.functions)
-                //    {
-                //        list.Add((MoveType)item.functionIntVal[0]);
-                //    }
-                //}
             }
             return list.ToArray();
         }
@@ -53,13 +46,6 @@ public abstract class BaseObj : MonoBehaviour
                         list.Add((MoveStyle)item.functionIntVal[1]);
                     }
                 }
-                //if (comp.GetType() == typeof(CompMobile))
-                //{
-                //    foreach (var item in comp.functions)
-                //    {
-                //        list.Add((MoveStyle)item.functionIntVal[1]);
-                //    }
-                //}
             }
             return list.ToArray();
         }

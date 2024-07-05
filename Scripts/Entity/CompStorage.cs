@@ -9,7 +9,7 @@ public class CompStorage : BaseComponent
     public List<ItemData> inventory = new List<ItemData>();
     public override void OnApply(int index)
     {
-        
+        PlayerController.Instance.GetInteractRange(InteractFunction.Store);
     }
 
     public override void OnDestroyThis()

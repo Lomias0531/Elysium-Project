@@ -17,6 +17,9 @@ public class SO_ComponentData : ScriptableObject
 [Serializable]
 public struct CompFunctionDetail
 {
+    /// <summary>
+    /// Ãû³Æ
+    /// </summary>
     public string functionName;
     public BaseComponent.ComponentFunction function;
     public Sprite functionIcon;

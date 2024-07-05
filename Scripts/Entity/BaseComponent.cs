@@ -29,6 +29,7 @@ public abstract class BaseComponent : MonoBehaviour
     {
         Harvest,
         Active,
+        Store,
     }
     // Start is called before the first frame update
     public virtual void Start()

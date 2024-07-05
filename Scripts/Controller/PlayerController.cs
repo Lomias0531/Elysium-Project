@@ -165,10 +165,30 @@ public class PlayerController : Singletion<PlayerController>
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
 
                         var res = hoveredTile.GetEntitynThisTile();
-                        if(res != null)
+                        switch(selectedObject.curSelectedFunction.functionIntVal[0])
                         {
-                            var resource = res.GetDesiredComponent<CompResource>();
-                            resource.OnInteract(selectedObject);
+                            default:
+                                {
+                                    break;
+                                }
+                            case 0:
+                                {
+                                    if (res != null)
+                                    {
+                                        var resource = res.GetDesiredComponent<CompResource>();
+                                        resource.OnInteract(selectedObject);
+                                    }
+
+                                    break;
+                                }
+                            case 1:
+                                {
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    break;
+                                }
                         }
                         EntityFinishedAction();
                     }
@@ -417,7 +437,24 @@ public class PlayerController : Singletion<PlayerController>
                         var obj = adjTile.Value.GetEntitynThisTile();
                         if (obj != null)
                         {
-                            if(obj.GetComponent<CompResource>() != null)
+                            if(obj.GetDesiredComponent<CompResource>() != null)
+                            {
+                                interactIndicators.Add(adjTile.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case BaseComponent.InteractFunction.Store:
+                {
+                    interactIndicators.Clear();
+                    var curTile = selectedObject.GetTileWhereUnitIs();
+                    foreach (var adjTile in curTile.adjacentTiles)
+                    {
+                        var obj = adjTile.Value.GetEntitynThisTile();
+                        if(obj != null)
+                        {
+                            if(obj.GetDesiredComponent<CompStorage>() != null)
                             {
                                 interactIndicators.Add(adjTile.Value);
                             }
