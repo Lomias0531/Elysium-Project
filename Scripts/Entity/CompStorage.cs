@@ -66,23 +66,38 @@ public class CompStorage : BaseComponent
 
         return receivedItem;
     }
-    public ItemData TransferItem(ItemData transferedItem)
+    public ItemData TransferItem(CompStorage targetStorage, ItemData transferedItem)
     {
         for (int i = inventory.Count - 1; i >= 0; i--)
         {
             if (inventory[i].itemID == transferedItem.itemID)
             {
-                if (inventory[i].stackCount >= transferedItem.stackCount)
+                if (inventory[i].stackCount <= transferedItem.stackCount)
                 {
-                    inventory[i].stackCount -= transferedItem.stackCount;
-                    transferedItem.stackCount = 0;
+
+                    var itemData = targetStorage.ReceiveItem(inventory[i]);
+                    if(itemData.stackCount <= 0)
+                    {
+                        inventory[i].stackCount = 0;
+                    }else
+                    {
+                        inventory[i].stackCount = itemData.stackCount;
+                    }
+                    transferedItem.stackCount -= inventory[i].stackCount;
                 }
                 else
                 {
-                    transferedItem.stackCount -= inventory[i].stackCount;
-                    inventory[i].stackCount = 0;
-                    inventory.RemoveAt(i);
+                    var itemCount = transferedItem.stackCount;
+                    var itemData = targetStorage.ReceiveItem(transferedItem);
+                    var itemTransfered = itemCount - itemData.stackCount;
+
+                    transferedItem.stackCount -= itemTransfered;
+                    inventory[i].stackCount -= itemTransfered;
                 }
+            }
+            if (inventory[i].stackCount <= 0)
+            {
+                inventory.RemoveAt(i);
             }
         }
         return transferedItem;

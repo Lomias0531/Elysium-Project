@@ -187,6 +187,11 @@ public class PlayerController : Singletion<PlayerController>
                                 }
                             case 2:
                                 {
+                                    var storage = res.GetDesiredComponent<CompStorage>();
+                                    var ees = selectedObject.GetDesiredComponent<CompStorage>();
+                                    var item = ees.inventory.FirstOrDefault();
+                                    ees.TransferItem(storage, item);
+                                    //storage.ReceiveItem(item);
                                     break;
                                 }
                         }
@@ -194,6 +199,7 @@ public class PlayerController : Singletion<PlayerController>
                     }
                 }
             }
+            selectedObject.curSelectedComp = null;
         }
         if(Input.GetMouseButtonUp(1))
         {
@@ -224,7 +230,7 @@ public class PlayerController : Singletion<PlayerController>
         }
         rangeIndicators.Clear();
 
-        selectedObject.curSelectedComp = null;
+        //selectedObject.curSelectedComp = null;
         //selectedObject.curSelectedFunction = null;
     }
     void PaintIndicator()
