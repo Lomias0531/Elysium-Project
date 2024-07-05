@@ -195,12 +195,8 @@ public class UnitSelectMenu : MonoBehaviour
             img_MP.fillAmount = selectedObj.EP / selectedObj.EPMax;
         }
     }
-    public void RemoveTrigger(BaseCompTrigger trigger)
+    public void RemoveTrigger()
     {
-        if(skillTriggers.Contains(trigger))
-        {
-            Destroy(trigger.gameObject);
-        }
-        skillTriggers.Remove(trigger);
+        StartCoroutine(ShowEntityInventory());
     }
 }

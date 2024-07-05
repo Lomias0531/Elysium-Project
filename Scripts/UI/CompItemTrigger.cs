@@ -62,10 +62,16 @@ public class CompItemTrigger : BaseCompTrigger
     }
     private void UpdateItemInfo()
     {
-        txt_itemCount.text = inv.inventory[index].stackCount.ToString();
+        if(index >= inv.inventory.Count)
+        {
+            menu.RemoveTrigger();
+            return;
+        }
         if(inv.inventory[index].stackCount <= 0)
         {
-            menu.RemoveTrigger(this);
+            menu.RemoveTrigger();
+            return;
         }
+        txt_itemCount.text = inv.inventory[index].stackCount.ToString();
     }
 }
