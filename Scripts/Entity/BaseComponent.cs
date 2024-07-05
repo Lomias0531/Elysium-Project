@@ -35,7 +35,7 @@ public abstract class BaseComponent : MonoBehaviour
     {
         if(!string.IsNullOrEmpty(compResID))
         {
-            SO_ComponentData compData = Resources.Load<SO_ComponentData>("ScriptableItems/" + compResID);
+            SO_ComponentData compData = DataController.Instance.GetComponentData(compResID);
             if(compData != null)
             {
                 compName = compData.name;

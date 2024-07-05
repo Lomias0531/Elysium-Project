@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public abstract class BaseObj : MonoBehaviour
 {
@@ -229,6 +230,7 @@ public abstract class BaseObj : MonoBehaviour
                     {
                         animator.CrossFadeInFixedTime("Jump", 0.1f);
                         yield return new WaitForSeconds(0.1f);
+                        //animator.speed = animator.GetCurrentAnimatorStateInfo(0).length / 1f;
                     }
 
                     var facing = Vector3.Angle(new Vector3(0, 0, 1f), tile.transform.position - this.transform.position);
@@ -255,8 +257,20 @@ public abstract class BaseObj : MonoBehaviour
 
         if (animator != null)
         {
+            animator.speed = 1f;
             animator.CrossFadeInFixedTime("Idle", 0.1f);
         }
         yield return new WaitForSeconds(0.1f);
+    }
+    public T GetDesiredComponent<T>() where T:BaseComponent
+    {
+        foreach (var comp in components)
+        {
+            if(comp.GetType() == typeof(T))
+            {
+                return (T)comp;
+            }
+        }
+        return null;
     }
 }

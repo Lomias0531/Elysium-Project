@@ -84,23 +84,23 @@ public class UnitSelectMenu : MonoBehaviour
     {
         expandFinished = false;
 
-        foreach (var comp in selectedObj.components)
+        if(selectedObj.Faction == "Elysium")
         {
-            for (int i = 0; i < comp.functions.Length; i++)
+            foreach (var comp in selectedObj.components)
             {
-                var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
-                trigger.gameObject.SetActive(true);
-                skillTriggers.Add(trigger);
-                trigger.InitThis(true, this, i, comp);
+                for (int i = 0; i < comp.functions.Length; i++)
+                {
+                    var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
+                    trigger.gameObject.SetActive(true);
+                    skillTriggers.Add(trigger);
+                    trigger.InitThis(true, this, i, comp);
+                }
             }
         }
 
         do
         {
             float div = expandTimeElapsed / 0.2f;
-
-            var HPDiv = selectedObj.HP / selectedObj.HPMax;
-            var MPDiv = selectedObj.EP / selectedObj.EPMax;
 
             SetUIDegrees(div);
 

@@ -124,7 +124,7 @@ public class PlayerController : Singletion<PlayerController>
                     hoveredTile = selectedTile;
 
                     UIController.Instance.DisplayHoveredTileInfo(hoveredTile);
-
+                    
                     return;
                 }
             }
@@ -157,7 +157,6 @@ public class PlayerController : Singletion<PlayerController>
                 {
                     if(moveIndicators.Contains(hoveredTile))
                     {
-                        //selectedObject.curSelectedComp.EP -= selectedObject.curSelectedFunction.functionConsume;
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
                         StartCoroutine(selectedObject.MoveObjectToTile(hoveredTile));
                     }
@@ -168,10 +167,9 @@ public class PlayerController : Singletion<PlayerController>
                         var res = hoveredTile.GetEntitynThisTile();
                         if(res != null)
                         {
-                            var resource = res.gameObject.GetComponent<CompResource>();
-                            resource.OnApply(0);
+                            var resource = res.GetDesiredComponent<CompResource>();
+                            resource.OnInteract(selectedObject);
                         }
-                        //selectedObject.curSelectedComp.EP -= selectedObject.curSelectedFunction.functionConsume;
                         EntityFinishedAction();
                     }
                 }

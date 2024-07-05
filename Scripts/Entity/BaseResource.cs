@@ -32,6 +32,7 @@ public class BaseResource : BaseObj
 
         GameObject obj;
         float rot = Random.Range(0f, 359f);
+        ItemData resItem = new ItemData();
         switch (type)
         {
             case ResourceType.Tree:
@@ -39,6 +40,8 @@ public class BaseResource : BaseObj
                     var index = Random.Range(0, MapController.Instance.treesTemplate.Count);
                     obj = GameObject.Instantiate(MapController.Instance.treesTemplate[index], this.transform);
                     this.objName = "Ê÷Ä¾";
+                    resItem.itemID = "Res0001";
+                    resItem.stackCount = 10;
                     break;
                 }
             case ResourceType.Rock:
@@ -46,6 +49,8 @@ public class BaseResource : BaseObj
                     var index = Random.Range(0, MapController.Instance.rocksTemplate.Count);
                     obj = GameObject.Instantiate(MapController.Instance.rocksTemplate[index], this.transform);
                     this.objName = "Ê¯Í·";
+                    resItem.itemID = "Res0002";
+                    resItem.stackCount = 8;
                     break;
                 }
             case ResourceType.Iron:
@@ -53,6 +58,8 @@ public class BaseResource : BaseObj
                     var index = Random.Range(0, MapController.Instance.metalTemplate.Count);
                     obj = GameObject.Instantiate(MapController.Instance.metalTemplate[index], this.transform);
                     this.objName = "½ðÊô";
+                    resItem.itemID = "Res0003";
+                    resItem.stackCount = 5;
                     break;
                 }
             default:
@@ -71,6 +78,7 @@ public class BaseResource : BaseObj
         res.EP = 10;
         res.ResourceAcquireAmount = 10;
         res.resourceType = type;
+        res.resourceCollectableOnce = resItem;
 
         base.InitThis();
     }
