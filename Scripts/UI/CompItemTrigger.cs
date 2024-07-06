@@ -30,6 +30,7 @@ public class CompItemTrigger : BaseCompTrigger
         var itemInfo = DataController.Instance.GetItemInfo(inv.inventory[index].itemID);
         detail.functionName = itemInfo.itemName;
         detail.functionIcon = itemInfo.itemIcon;
+        detail.functionConsume = inv.inventory[index].stackCount;
 
         UIController.Instance.DisplayHoveredSkillInfo(detail,UIController.DisplayInfoType.item);
     }

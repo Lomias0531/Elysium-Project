@@ -50,13 +50,13 @@ public class CompStorage : BaseComponent
                 {
                     if (inventory[index].stackCount + receivedItem.stackCount <= itemInfo.maxStackCount)
                     {
-                        inventory[index].stackCount += receivedItem.stackCount;
+                        SetInvCount(index, inventory[index].stackCount + receivedItem.stackCount);
                         receivedItem.stackCount = 0;
                     }
                     else
                     {
                         var stackDiv = itemInfo.maxStackCount - inventory[index].stackCount;
-                        inventory[index].stackCount = itemInfo.maxStackCount;
+                        SetInvCount(index, itemInfo.maxStackCount);
                         receivedItem.stackCount -= stackDiv;
                     }
                 }
@@ -75,16 +75,19 @@ public class CompStorage : BaseComponent
             {
                 if (inventory[i].stackCount <= transferedItem.stackCount)
                 {
+                    ItemData dataTemp = new ItemData();
+                    dataTemp.itemID = inventory[i].itemID;
+                    dataTemp.stackCount = inventory[i].stackCount;
 
-                    var itemData = targetStorage.ReceiveItem(inventory[i]);
-                    if(itemData.stackCount <= 0)
+                    var itemData = targetStorage.ReceiveItem(dataTemp);
+                    transferedItem.stackCount -= inventory[i].stackCount;
+                    if (itemData.stackCount <= 0)
                     {
-                        inventory[i].stackCount = 0;
+                        SetInvCount(i, 0);
                     }else
                     {
-                        inventory[i].stackCount = itemData.stackCount;
+                        SetInvCount(i,itemData.stackCount);
                     }
-                    transferedItem.stackCount -= inventory[i].stackCount;
                 }
                 else
                 {
@@ -93,19 +96,27 @@ public class CompStorage : BaseComponent
                     var itemTransfered = itemCount - itemData.stackCount;
 
                     transferedItem.stackCount -= itemTransfered;
-                    inventory[i].stackCount -= itemTransfered;
+                    SetInvCount(i, inventory[i].stackCount - itemTransfered);
                 }
             }
             if (inventory[i].stackCount <= 0)
             {
                 inventory.RemoveAt(i);
             }
+            if (transferedItem.stackCount <= 0) break;
         }
         return transferedItem;
     }
+    void SetInvCount(int index, int count)
+    {
+        ItemData temp = new ItemData();
+        temp.itemID = inventory[index].itemID;
+        temp.stackCount = count;
+        inventory[index] = temp;
+    }
 }
 [Serializable]
-public class ItemData
+public struct ItemData
 {
     public string itemID;
     public int stackCount;
