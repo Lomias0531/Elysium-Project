@@ -115,7 +115,7 @@ public class PlayerController : Singletion<PlayerController>
     }
     void GetTileUnderMouse()
     {
-        if (MapController.Instance.mapTiles == null) return;
+        if (MapController.Instance.mapTiles is null) return;
         if (isMouseOverUI) return;
 
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -132,7 +132,7 @@ public class PlayerController : Singletion<PlayerController>
                     {
                         return;
                     }
-                    if (selectedTile == null) return;
+                    if (selectedTile is null) return;
 
                     List<BaseTile> tiles = new List<BaseTile>()
                     {
@@ -163,7 +163,7 @@ public class PlayerController : Singletion<PlayerController>
         if(Input.GetMouseButtonUp(0))
         {
             if (isMouseOverUI) return;
-            if(selectedObject == null)
+            if(selectedObject is null)
             {
                 selectedObject = hoveredObject;
 
@@ -172,7 +172,7 @@ public class PlayerController : Singletion<PlayerController>
                 StartCoroutine(CameraController.Instance.CamFocusOnTarget(selectedObject));
             }else
             {
-                if (selectedObject.curSelectedComp == null) return;
+                if (selectedObject.curSelectedComp is null) return;
 
                 if(hoveredTile != null)
                 {

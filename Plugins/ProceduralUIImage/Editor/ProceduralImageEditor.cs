@@ -82,7 +82,7 @@ namespace UnityEditor.UI
 
 		public override void OnPreviewGUI(Rect rect, GUIStyle background) {
 			ProceduralImage image = target as ProceduralImage;
-			if (image == null|| image.sprite == null) return;
+			if (image is null|| image.sprite is null) return;
 
 			float min = Mathf.Min (rect.width,rect.height-50);
 			rect = new Rect (rect.x+rect.width/2-min/2,rect.y+rect.height/2-min/2-20,min,min);
@@ -113,7 +113,7 @@ namespace UnityEditor.UI
 		/// <param name="reference">Reference component.</param>
 		/// <param name="componentToMove">Component to move.</param>
 		static void MoveComponentBehind (Component reference, Component componentToMove){
-			if(reference == null || componentToMove == null || reference.gameObject != componentToMove.gameObject){
+			if(reference is null || componentToMove is null || reference.gameObject != componentToMove.gameObject){
 				return;
 			}
 			Component[] comps = reference.GetComponents<Component>();

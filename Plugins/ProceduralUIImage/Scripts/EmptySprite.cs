@@ -8,7 +8,7 @@ public static class EmptySprite {
 	/// Returns the instance of a (1 x 1) white Spprite
 	/// </summary>	
 	public static Sprite Get(){
-		if (instance == null) {
+		if (instance is null) {
 			instance = OnePixelWhiteSprite();
 		}
 		return instance;

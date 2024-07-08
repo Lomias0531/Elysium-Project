@@ -9,7 +9,7 @@ public class Singletion<T> : MonoBehaviour where T: MonoBehaviour
     {
         get
         {
-            if(instance == null)
+            if(instance is null)
             {
                 var obj = GameObject.FindObjectOfType<T>();
                 if(obj != null)

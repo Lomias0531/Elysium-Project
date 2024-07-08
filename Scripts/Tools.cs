@@ -385,11 +385,11 @@ public static class ToolsUtility
     public static bool isAvailable(this BaseTile tile)
     {
         BaseObj unit = tile.GetEntitynThisTile();
-        return unit == null;
+        return unit is null;
     }
     public static BaseObj GetObjInThisTile(this BaseTile tile)
     {
-        if (tile == null) return null;
+        if (tile is null) return null;
         foreach (var ent in MapController.Instance.entityDic)
         {
             if(ent.Value.Pos == tile.Pos)

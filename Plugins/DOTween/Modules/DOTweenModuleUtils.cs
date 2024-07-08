@@ -73,7 +73,7 @@ namespace DG.Tweening
         static void PlaymodeStateChanged(UnityEditor.PlayModeStateChange state)
 #endif
         {
-            if (DOTween.instance == null) return;
+            if (DOTween.instance is null) return;
             DOTween.instance.OnApplicationPause(UnityEditor.EditorApplication.isPaused);
         }
 #endif
