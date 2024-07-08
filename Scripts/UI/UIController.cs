@@ -31,6 +31,10 @@ public class UIController : Singletion<UIController>
     public Text txt_energyLevel;
     [Space(1)]
     public UnitSelectMenu unitMenu;
+    [Space(1)]
+    public UnitIndicatorItem unitIndicatorItem;
+    public Transform tsf_UnitIndicatorContainer;
+    public Dictionary<BaseObj,UnitIndicatorItem> unitIndicatorItems = new Dictionary<BaseObj, UnitIndicatorItem>();
     // Start is called before the first frame update
     void Start()
     {
@@ -117,5 +121,17 @@ public class UIController : Singletion<UIController>
     public void HideHoveredSkillInfo()
     {
         obj_HoveredSkill.SetActive(false);
+    }
+    public void CreateUnitIndicators()
+    {
+        foreach (var item in MapController.Instance.entityDic)
+        {
+            if(item.Value.Faction != "Resource")
+            {
+                var indicator = GameObject.Instantiate(unitIndicatorItem, tsf_UnitIndicatorContainer);
+                indicator.InitThis(item.Value);
+                indicator.gameObject.SetActive(true);
+            }
+        }
     }
 }

@@ -25,6 +25,8 @@ public class CameraController : Singletion<CameraController>
     public float camAngleX = 0;
     float camAngleY = 60f;
     float camDistance = 10f;
+
+    bool isFocusing = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,27 +45,30 @@ public class CameraController : Singletion<CameraController>
     }
     private void ApplyMidleMouseButtonMovementSpeed()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse2))
+        if(!isFocusing)
         {
-            oldMousePosition = Input.mousePosition;
-        }
-        else if (Input.GetKey(KeyCode.Mouse2))
-        {
-            Vector3 newMousePos = Input.mousePosition;
-            //获得一帧的相机移动
-            var delta = newMousePos - oldMousePosition;
-
-            var distance = 0f;
-
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
+            if (Input.GetKeyDown(KeyCode.Mouse2))
             {
-                distance = Vector3.Distance(hit.point, transform.position);
+                oldMousePosition = Input.mousePosition;
             }
+            else if (Input.GetKey(KeyCode.Mouse2))
+            {
+                Vector3 newMousePos = Input.mousePosition;
+                //获得一帧的相机移动
+                var delta = newMousePos - oldMousePosition;
 
-            obj_CameraFocusDummy.transform.position = obj_CameraFocusDummy.transform.position - Tools.CalculateMousePosNormal(Camera.main, delta, distance);
+                var distance = 0f;
 
-            oldMousePosition = newMousePos;
+                RaycastHit hit;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
+                {
+                    distance = Vector3.Distance(hit.point, transform.position);
+                }
+
+                obj_CameraFocusDummy.transform.position = obj_CameraFocusDummy.transform.position - Tools.CalculateMousePosNormal(Camera.main, delta, distance);
+
+                oldMousePosition = newMousePos;
+            }
         }
 
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
@@ -120,8 +125,28 @@ public class CameraController : Singletion<CameraController>
         }
         CamMoveTween = obj_CameraFocusDummy.transform.DOMove(targetPos, 0.2f);
     }
+    public IEnumerator CamFocusOnTarget(BaseObj target)
+    {
+        if (CamMoveTween != null)
+        {
+            CamMoveTween.Kill();
+        }
+
+        if (target != null)
+        {
+            isFocusing = true;
+            CamMoveTween = obj_CameraFocusDummy.transform.DOMove(new Vector3(target.transform.position.x, 0, target.transform.position.z), 0.2f);
+            yield return new WaitForSeconds(0.2f);
+            obj_CameraFocusDummy.transform.SetParent(target.gameObject.transform);
+        }else
+        {
+            obj_CameraFocusDummy.transform.SetParent(null);
+            isFocusing = false;
+        }
+    }
     void GetKeyboardCamTranslate()
     {
+        if (isFocusing) return;
         if(Input.GetKey(KeyCode.W))
         {
             obj_CameraFocusDummy.transform.Translate(new Vector3(0, 0, Time.deltaTime * -keyboardTranslateSpeed), obj_CameraFocusDummy.transform);

@@ -157,6 +157,45 @@ public class BaseTile : MonoBehaviour
         GetAdjTriangles(HexDirection.NE);
         GetAdjTriangles(HexDirection.E);
 
+        for (int i = 0; i < 6; i++)
+        {
+            if (!adjacentTiles.ContainsKey((HexDirection)i))
+            {
+                var v1 = ToolsUtility.corners[(int)i];
+
+                var v2 = ToolsUtility.corners[(int)i + 1];
+
+                var v3 = v1 - new Vector3(0, this.transform.position.y + 1f, 0);
+
+                var v4 = v2 - new Vector3(0, this.transform.position.y + 1f, 0);
+
+                for (int t = 0; t < 4; t++)
+                {
+                    var p1 = Vector3.Lerp(v1, v3, (float)t / 4);
+                    var p2 = Vector3.Lerp(v2, v4, (float)t / 4);
+                    var p3 = Vector3.Lerp(v1, v3, (float)(t + 1) / 4);
+                    var p4 = Vector3.Lerp(v2, v4, (float)(t + 1) / 4);
+
+                    AddQuad(p1, p2, p3, p4, color, color, terrainIndex, terrainIndex);
+                }
+
+                var f = i + 1;
+                if (f >= 6) f = 0;
+                if (adjacentTiles.ContainsKey((HexDirection)f))
+                {
+                    var v5 = ToolsUtility.corners[f];
+
+                    var v6 = ToolsUtility.extendCorners[f * 2] - new Vector3(0, this.transform.localPosition.y - adjacentTiles[(HexDirection)f].gameObject.transform.localPosition.y, 0);
+
+                    var v7 = v5 - new Vector3(0, this.transform.position.y + 1f, 0);
+
+                    var v8 = v6 - new Vector3(0, adjacentTiles[(HexDirection)f].gameObject.transform.position.y + 1f, 0);
+
+                    AddQuad(v5, v6, v7, v8, color, adjacentTiles[(HexDirection)f].color, terrainIndex, adjacentTiles[(HexDirection)f].terrainIndex);
+                }
+            }
+        }
+
         hexMesh.SetVertices(vertices);
         hexMesh.SetTriangles(triangles, 0);
         hexMesh.RecalculateNormals();

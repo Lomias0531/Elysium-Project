@@ -168,6 +168,8 @@ public class PlayerController : Singletion<PlayerController>
                 selectedObject = hoveredObject;
 
                 UIController.Instance.DisplaySelectedUnitInfo(selectedObject);
+
+                StartCoroutine(CameraController.Instance.CamFocusOnTarget(selectedObject));
             }else
             {
                 if (selectedObject.curSelectedComp == null) return;
@@ -236,6 +238,7 @@ public class PlayerController : Singletion<PlayerController>
 
         selectedObject = null;
         UIController.Instance.DisplaySelectedUnitInfo(null);
+        StartCoroutine(CameraController.Instance.CamFocusOnTarget(null));
         moveIndicators.Clear();
         attackIndicators.Clear();
         interactIndicators.Clear();

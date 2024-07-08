@@ -346,6 +346,8 @@ public class MapController : Singletion<MapController>
                 Destroy(obj.gameObject);
             }
         }
+
+        UIController.Instance.CreateUnitIndicators();
     }
     #endregion
 }
