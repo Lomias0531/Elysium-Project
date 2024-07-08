@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraController : Singletion<CameraController>
 {
     private Vector3 oldMousePosition;
     public float mapScaleSpeed = 5;
@@ -14,8 +14,17 @@ public class CameraController : MonoBehaviour
 
     Tween CamMoveTween;
 
-    [SerializeField]
-    float camHeight;
+    public float keyboardTranslateSpeed = 5f;
+    public float scrollRollSpeed = 1f;
+    public float scrollSpeedX = 1f;
+    public float scrollSpeedY = 1f;
+
+    public float camYMin;
+    public float camYMax;
+    bool isRMBPresed = false;
+    public float camAngleX = 0;
+    float camAngleY = 60f;
+    float camDistance = 10f;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +39,7 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         ApplyMidleMouseButtonMovementSpeed();
+        GetKeyboardCamTranslate();
     }
     private void ApplyMidleMouseButtonMovementSpeed()
     {
@@ -56,21 +66,45 @@ public class CameraController : MonoBehaviour
             oldMousePosition = newMousePos;
         }
 
-        camHeight = this.transform.position.y;
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-            camHeight += mapScaleSpeed * Time.deltaTime;
+            camDistance += scrollRollSpeed * Time.deltaTime;
+
         }
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            camHeight -= mapScaleSpeed * Time.deltaTime;
+            camDistance -= scrollRollSpeed * Time.deltaTime;
         }
+        camDistance = Mathf.Clamp(camDistance, minScale, maxScale);
 
-        camHeight = Mathf.Clamp(camHeight, minScale, maxScale);
+        isRMBPresed = false;
+        if(Input.GetMouseButton(1))
+        {
+            isRMBPresed = true;
+        }
+        if(Input.GetMouseButtonUp(1))
+        {
+            isRMBPresed = false;
+        }
+        if(isRMBPresed)
+        {
+            camAngleX += Input.GetAxis("Mouse X") * Time.deltaTime * scrollSpeedX;
+            camAngleY -= Input.GetAxis("Mouse Y") * Time.deltaTime * scrollSpeedY;
+
+            camAngleY = ClampAngle(camAngleY, camYMin, camYMax);
+        }
     }
     private void LateUpdate()
     {
-        this.transform.position = new Vector3(obj_CameraFocusDummy.transform.position.x, camHeight, obj_CameraFocusDummy.transform.position.z - camHeight * Mathf.Tan(60f));
+        obj_CameraFocusDummy.transform.eulerAngles = new Vector3(0, camAngleX, 0);
+
+        var horLength = camDistance * Mathf.Cos(Mathf.Deg2Rad * camAngleY);
+        var height = camDistance * Mathf.Sin(Mathf.Deg2Rad * camAngleY);
+        var camX = horLength * Mathf.Sin(Mathf.Deg2Rad * camAngleX);
+        var camZ = horLength * Mathf.Cos(Mathf.Deg2Rad * camAngleX);
+        this.transform.position = obj_CameraFocusDummy.transform.position + new Vector3(camX, height, camZ);
+
+        this.transform.LookAt(obj_CameraFocusDummy.transform);
     }
     public void MoveCamTo(Vector3Int pos)
     {
@@ -85,5 +119,32 @@ public class CameraController : MonoBehaviour
             targetPos = MapController.Instance.mapTiles[pos].gameObject.transform.position;
         }
         CamMoveTween = obj_CameraFocusDummy.transform.DOMove(targetPos, 0.2f);
+    }
+    void GetKeyboardCamTranslate()
+    {
+        if(Input.GetKey(KeyCode.W))
+        {
+            obj_CameraFocusDummy.transform.Translate(new Vector3(0, 0, Time.deltaTime * -keyboardTranslateSpeed), obj_CameraFocusDummy.transform);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            obj_CameraFocusDummy.transform.Translate(new Vector3(0, 0, Time.deltaTime * keyboardTranslateSpeed), obj_CameraFocusDummy.transform);
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            obj_CameraFocusDummy.transform.Translate(new Vector3(Time.deltaTime * keyboardTranslateSpeed, 0, 0), obj_CameraFocusDummy.transform);
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            obj_CameraFocusDummy.transform.Translate(new Vector3(Time.deltaTime * -keyboardTranslateSpeed, 0, 0), obj_CameraFocusDummy.transform);
+        }
+    }
+    float ClampAngle(float angle, float min, float max)
+    {
+        if (angle < -360f)
+            angle += 360f;
+        if (angle > 360f)
+            angle -= 360f;
+        return Mathf.Clamp(angle, min, max);
     }
 }

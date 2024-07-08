@@ -36,6 +36,9 @@ public class PlayerController : Singletion<PlayerController>
     public float borderWidth;
     public bool isFocus;
     public bool isMouseOverUI;
+
+    bool RMBPressed = false;
+    float RMBPressedTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +53,16 @@ public class PlayerController : Singletion<PlayerController>
             return;
         }
 
+        RMBPressed = false;
+        if(Input.GetMouseButton(1))
+        {
+            RMBPressed = true;
+        }
+        if(RMBPressed)
+        {
+            RMBPressedTime += Time.deltaTime;
+        }
+
         isMouseOverUI = EventSystem.current.IsPointerOverGameObject();
 
         GetTileUnderMouse();
@@ -57,6 +70,12 @@ public class PlayerController : Singletion<PlayerController>
         MouseFunctions();
 
         PaintIndicator();
+
+        if (Input.GetMouseButtonUp(1))
+        {
+            RMBPressed = false;
+            RMBPressedTime = 0;
+        }
     }
     void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, List<Vector3> vertices, List<int> triangles)
     {
@@ -203,7 +222,8 @@ public class PlayerController : Singletion<PlayerController>
         }
         if(Input.GetMouseButtonUp(1))
         {
-            CancelAllOperations();
+            if(RMBPressedTime < 0.1f)
+                CancelAllOperations();
         }
     }
     public void CancelAllOperations()
