@@ -30,7 +30,7 @@ public class UnitSelectMenu : MonoBehaviour
         UpdateSelectedObjectStatus();
         //this.transform.eulerAngles = Vector3.zero;
 
-        this.transform.localEulerAngles = new Vector3(0, CameraController.Instance.camAngleX + 180f, 0);
+        this.transform.eulerAngles = new Vector3(0, CameraController.Instance.camAngleX + 180f, 0);
     }
     public void OnSelectUnit(BaseObj thisUnit)
     {

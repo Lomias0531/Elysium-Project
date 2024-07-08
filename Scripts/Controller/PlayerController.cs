@@ -222,7 +222,7 @@ public class PlayerController : Singletion<PlayerController>
         }
         if(Input.GetMouseButtonUp(1))
         {
-            if(RMBPressedTime < 0.1f)
+            if(RMBPressedTime < 0.2f)
                 CancelAllOperations();
         }
     }
