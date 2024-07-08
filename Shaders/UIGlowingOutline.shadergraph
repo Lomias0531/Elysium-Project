@@ -656,7 +656,7 @@
         "preventRotation": false
     },
     "m_Path": "Shader Graphs",
-    "m_GraphPrecision": 1,
+    "m_GraphPrecision": 0,
     "m_PreviewMode": 2,
     "m_OutputNode": {
         "m_Id": ""
@@ -799,6 +799,12 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalSpriteCustomLitSubTarget",
+    "m_ObjectId": "086c652b1e1a49b791b31513b8da65ac"
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
     "m_ObjectId": "08a6de69c4194df2b517e3d83a0c70d2",
     "m_Id": 1,
@@ -893,12 +899,6 @@
         "z": 0.0,
         "w": 0.0
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalSpriteLitSubTarget",
-    "m_ObjectId": "09ef6cf0d8554b868e00a2f2908b7209"
 }
 
 {
@@ -2653,7 +2653,7 @@
         "m_Id": "095c55470f0a42aaaab69176ab633408"
     },
     "m_AllowMaterialOverride": false,
-    "m_SurfaceType": 0,
+    "m_SurfaceType": 1,
     "m_ZWriteControl": 0,
     "m_ZTestMode": 4,
     "m_AlphaMode": 0,
@@ -4378,7 +4378,7 @@
     "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalTarget",
     "m_ObjectId": "fd34ffcc12df4fcdb529eee38f70adf8",
     "m_ActiveSubTarget": {
-        "m_Id": "09ef6cf0d8554b868e00a2f2908b7209"
+        "m_Id": "086c652b1e1a49b791b31513b8da65ac"
     },
     "m_AllowMaterialOverride": false,
     "m_SurfaceType": 0,
