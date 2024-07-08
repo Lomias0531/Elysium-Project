@@ -43,7 +43,7 @@ public class UnitSelectMenu : MonoBehaviour
 
         expandTimeElapsed = 0;
 
-        if (thisUnit is null)
+        if (thisUnit == null)
         {
             expandRoutine = StartCoroutine(RetractThis());
             this.transform.SetParent(null);
@@ -190,7 +190,7 @@ public class UnitSelectMenu : MonoBehaviour
     }
     void UpdateSelectedObjectStatus()
     {
-        if (selectedObj is null) return;
+        if (selectedObj == null) return;
         if(expandFinished)
         {
             img_HP.fillAmount = selectedObj.HP / selectedObj.HPMax;

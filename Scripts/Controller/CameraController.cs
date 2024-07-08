@@ -30,7 +30,7 @@ public class CameraController : Singletion<CameraController>
     // Start is called before the first frame update
     void Start()
     {
-        if (obj_CameraFocusDummy is null)
+        if (!obj_CameraFocusDummy)
         {
             obj_CameraFocusDummy = new GameObject("CamDummy");
             obj_CameraFocusDummy.transform.position = new Vector3(0, 0, 0);

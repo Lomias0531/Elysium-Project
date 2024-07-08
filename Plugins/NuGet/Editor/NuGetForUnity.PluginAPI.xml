@@ -14,7 +14,7 @@
                 This method will be called for each package that is rendered in NugetForUnity window.
             </summary>
             <param name="package">Package being renderer, either online package or installed package.</param>
-            <param name="installedPackage">If package is installed this represents the installed version, otherwise it is null.</param>
+            <param name="installedPackage">If package is installed this represents the installed version, otherwise it == null.</param>
             <param name="existsInUnity">True if package installation should be disabled because it is already included in Unity.</param>
         </member>
         <member name="T:NugetForUnity.PluginAPI.ExtensionPoints.IPackageInstallFileHandler">

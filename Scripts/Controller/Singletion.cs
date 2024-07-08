@@ -9,7 +9,7 @@ public class Singletion<T> : MonoBehaviour where T: MonoBehaviour
     {
         get
         {
-            if(instance is null)
+            if(instance == null)
             {
                 var obj = GameObject.FindObjectOfType<T>();
                 if(obj != null)
@@ -18,13 +18,13 @@ public class Singletion<T> : MonoBehaviour where T: MonoBehaviour
                 }else
                 {
                     GameObject controller = GameObject.Find("Controller");
-                    if (controller is null)
+                    if (controller == null)
                     {
                         controller = new GameObject("Controller");
                         DontDestroyOnLoad(controller);
                     }
                     instance = controller.GetComponent<T>();
-                    if (instance is null)
+                    if (instance == null)
                     {
                         instance = controller.AddComponent<T>();
                     }

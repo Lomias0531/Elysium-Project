@@ -12,7 +12,7 @@ namespace UnityEngine.UI
 		/// <param name="info">Values to set.</param>
 		/// <param name="baseMaterial">Base material.</param>
 		public static Material SetMaterialValues(ProceduralImageMaterialInfo info,Material baseMaterial){
-			if (baseMaterial is null) {
+			if (baseMaterial == null) {
 				throw new System.ArgumentNullException ("baseMaterial");
 			}
 			if (baseMaterial.shader.name != "UI/Procedural UI Image"&&baseMaterial.shader.name != "UI/Procedural UI Image Clip") {

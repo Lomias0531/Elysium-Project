@@ -50,11 +50,11 @@ namespace UnityEngine.UI {
 
 		protected ProceduralImageModifier Modifier {
 			get {
-				if (modifier is null) {
+				if (modifier == null) {
 					//try to get the modifier on the object.
 					modifier = this.GetComponent<ProceduralImageModifier>();
 					//if we did not find any modifier
-					if(modifier is null){
+					if(modifier == null){
 						//Add free modifier
 						ModifierType = typeof(FreeModifier);
 					}
@@ -85,11 +85,11 @@ namespace UnityEngine.UI {
 		}
 
 		override protected void OnEnable(){
-            if (base.sprite is null && m_sprite != null)
+            if (base.sprite == null && m_sprite != null)
                 base.sprite = m_sprite;
             //else
             //    base.sprite = EmptySprite.Get();
-            if (materialInstance is null)
+            if (materialInstance == null)
             {
                 Shader sd = Shader.Find("UI/Procedural UI Image");
                 if (sd != null)
@@ -108,11 +108,11 @@ namespace UnityEngine.UI {
                 base.sprite = m_sprite;
             //else
             //    base.sprite = EmptySprite.Get();
-            //if (materialInstance is null)
+            //if (materialInstance == null)
             //{
             //    materialInstance = new Material(Shader.Find("UI/Procedural UI Image"));
             //}
-            //if (materialInstanceClip is null)
+            //if (materialInstanceClip == null)
             //{
             //    materialInstanceClip = new Material(Shader.Find("UI/Procedural UI Image Clip"));
             //}
@@ -145,7 +145,7 @@ namespace UnityEngine.UI {
 		{
 			//note: Sliced and Tiled have no effect to this currently.
 
-			if (overrideSprite is null)
+			if (overrideSprite == null)
 			{
 				base.OnPopulateMesh(toFill);
 				return;
