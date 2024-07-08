@@ -57,6 +57,7 @@ public class CompSkillTrigger : BaseCompTrigger
     void UpdateAvailable()
     {
         img_FunctionMask.fillAmount = thisComp.functionTimeElapsed / thisComp.thisObj.curSelectedFunction.functionApplyTimeInterval;
+        if (thisComp.thisObj.curSelectedFunction.functionApplyTimeInterval == 0) img_FunctionMask.fillAmount = 0;
 
         if (thisComp.EP < thisComp.functions[skillIndex].functionConsume || thisComp.HP <= 0 || !thisComp.isAvailable)
         {
