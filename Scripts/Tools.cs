@@ -177,6 +177,14 @@ public static class Tools
             this.MoveLife = moveLife;
         }
     }
+    public static Texture2D GetTextureFromSprite(Sprite sprite)
+    {
+        var targetTex = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
+        var pixels = sprite.texture.GetPixels((int)sprite.textureRect.x, (int)sprite.textureRect.y, (int)sprite.textureRect.width, (int)sprite.textureRect.height);
+        targetTex.SetPixels(pixels);
+        targetTex.Apply();
+        return targetTex;
+    }
 }
 public static class ToolsUtility
 {

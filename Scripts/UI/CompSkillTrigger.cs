@@ -30,6 +30,9 @@ public class CompSkillTrigger : BaseCompTrigger
         skillIndex = _skillIndex;
         if(thisComp.functions[skillIndex].functionIcon != null)
             img_Icon.sprite = thisComp.functions[skillIndex].functionIcon;
+
+        img_BG.material.SetTexture("_Sprite", img_BG.mainTexture);
+        img_Icon.material.SetTexture("_Sprite", img_Icon.mainTexture);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
@@ -63,12 +66,12 @@ public class CompSkillTrigger : BaseCompTrigger
         {
             isAvailable = false;
             btn_Click.interactable = false;
-            img_Icon.color = Color.black;
+            //img_Icon.color = Color.black;
         }else
         {
             isAvailable = true;
             btn_Click.interactable = true;
-            img_Icon.color = Tools.HexToColor("#007DFF");
+            //img_Icon.color = Tools.HexToColor("#007DFF");
         }
     }
 }

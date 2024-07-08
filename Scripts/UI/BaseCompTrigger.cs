@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class BaseCompTrigger : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Image img_Icon;
+    public Image img_BG;
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
         
