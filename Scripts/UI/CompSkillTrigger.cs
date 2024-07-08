@@ -63,10 +63,12 @@ public class CompSkillTrigger : BaseCompTrigger
         {
             isAvailable = false;
             btn_Click.interactable = false;
+            img_Icon.color = Color.black;
         }else
         {
             isAvailable = true;
             btn_Click.interactable = true;
+            img_Icon.color = Tools.HexToColor("#007DFF");
         }
     }
 }
