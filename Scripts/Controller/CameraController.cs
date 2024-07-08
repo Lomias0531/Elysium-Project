@@ -86,10 +86,12 @@ public class CameraController : Singletion<CameraController>
         if(Input.GetMouseButton(1))
         {
             isRMBPresed = true;
+            Cursor.lockState = CursorLockMode.Locked;
         }
         if(Input.GetMouseButtonUp(1))
         {
             isRMBPresed = false;
+            Cursor.lockState = CursorLockMode.None;
         }
         if(isRMBPresed)
         {
