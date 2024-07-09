@@ -286,12 +286,8 @@ public class MapController : Singletion<MapController>
                     res1.InitResource(item.Pos, (BaseResource.ResourceType)i);
                     res1.Faction = "Resource";
 
-                    entityDic.Add(res1.ID, res1);
+                    entityDic.Add(res1.EntityID, res1);
                     resourcesDic.Add(res1.Pos, res1);
-
-                    //var resource = res1.gameObject.AddComponent<CompResource>();
-                    //resource.resourceType = (BaseResource.ResourceType)i;
-                    //resource.ResourceAcquireAmount = 5;
                 }
             }
         }
@@ -317,15 +313,8 @@ public class MapController : Singletion<MapController>
             {
                 generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
 
-                var list = obj.moveType;
+                checkTerrainOK = obj.CheckIsTileSuitableForUnit(generateTile);
 
-                foreach (var move in list)
-                {
-                    if (generateTile.GetMoveCost(move) < 8 && generateTile.isAvailable())
-                    {
-                        checkTerrainOK = true;
-                    }
-                }
                 tryCount += 1;
                 if (tryCount >= 1000)
                 {
@@ -340,7 +329,7 @@ public class MapController : Singletion<MapController>
                 obj.gameObject.transform.localPosition = generateTile.gameObject.transform.localPosition;
                 obj.Pos = generateTile.Pos;
 
-                entityDic.Add(obj.ID, obj);
+                entityDic.Add(obj.EntityID, obj);
             }else
             {
                 Destroy(obj.gameObject);
@@ -348,6 +337,12 @@ public class MapController : Singletion<MapController>
         }
 
         UIController.Instance.CreateUnitIndicators();
+    }
+    public void RegisterObject(BaseObj obj)
+    {
+        obj.gameObject.transform.SetParent(entityContainer);
+        entityDic.Add(obj.EntityID, obj);
+        UIController.Instance.AddUnitIndicator(obj);
     }
     #endregion
 }

@@ -7,5 +7,5 @@ using UnityEngine;
 public class SO_EntityData : ScriptableObject
 {
     public string EntityID;
-    public GameObject EntityObject;
+    public BaseObj EntityObject;
 }

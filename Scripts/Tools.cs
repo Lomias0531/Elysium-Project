@@ -407,4 +407,25 @@ public static class ToolsUtility
         }
         return null;
     }
+    public static bool CheckIsTileSuitableForUnit(this BaseObj unit, BaseTile tile)
+    {
+        bool result = false;
+        List<BaseObj.MoveType> list = new List<BaseObj.MoveType>();
+        if(unit.moveType != null)
+        {
+            list = unit.moveType.ToList();
+        }
+        if(list.Count <= 0)
+        {
+            list.Add(BaseObj.MoveType.Ground);
+        }
+        foreach (var move in list)
+        {
+            if (tile.GetMoveCost(move) < 8 && tile.isAvailable())
+            {
+                result = true;
+            }
+        }
+        return result;
+    }
 }

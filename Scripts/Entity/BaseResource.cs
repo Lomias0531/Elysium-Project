@@ -28,7 +28,7 @@ public class BaseResource : BaseObj
     {
         Pos = pos;
         Guid id = Guid.NewGuid();
-        this.ID = id.ToString();
+        this.EntityID = id.ToString();
 
         GameObject obj;
         float rot = Random.Range(0f, 359f);

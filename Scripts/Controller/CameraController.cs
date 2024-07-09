@@ -138,7 +138,7 @@ public class CameraController : Singletion<CameraController>
 
         if (target != null)
         {
-            isFocusing = true;
+            //isFocusing = true;
             CamMoveTween = obj_CameraFocusDummy.transform.DOMove(target.transform.position, 0.2f);
             yield return new WaitForSeconds(0.2f);
             obj_CameraFocusDummy.transform.SetParent(target.gameObject.transform);
@@ -198,5 +198,9 @@ public class CameraController : Singletion<CameraController>
             var y = obj_CameraFocusDummy.transform.position.y + (curLookingTile.transform.position.y - obj_CameraFocusDummy.transform.position.y) * (Time.deltaTime / 0.2f);
             obj_CameraFocusDummy.transform.position = new Vector3(obj_CameraFocusDummy.transform.position.x, y, obj_CameraFocusDummy.transform.position.z);
         }
+    }
+    public void ResetViewPoint()
+    {
+        obj_CameraFocusDummy.transform.DOLocalMove(Vector3.zero, 0.1f);
     }
 }

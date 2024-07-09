@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CompConstructor : BaseComponent
 {
     float constructTimeRequired;
     float constructTimeElapsed;
     public bool isConstructing;
+    int curSelectedIndex = 0;
+
+    public Image img_Progress;
     public float constructProgress
     {
         get
@@ -23,21 +27,23 @@ public class CompConstructor : BaseComponent
         if (isConstructing) return;
         CompStorage storage = thisObj.GetDesiredComponent<CompStorage>();
         bool checkResources = true;
-        if(storage != null )
+        if (storage != null)
         {
-            for(int i = 0;i< functions[index].functionStringVal.Length;i++)
+            for (int i = 1; i < functions[index].functionStringVal.Length; i++)
             {
                 if (storage.GetItemCount(functions[index].functionStringVal[i]) < functions[index].functionIntVal[i])
                 {
                     checkResources = false;
                 }
             }
-        }else
+        }
+        else
         {
             checkResources = false;
         }
-        if(checkResources)
+        if (checkResources)
         {
+            curSelectedIndex = index;
             isConstructing = true;
             for (int i = 0; i < functions[index].functionStringVal.Length; i++)
             {
@@ -48,7 +54,7 @@ public class CompConstructor : BaseComponent
                 storage.RemoveItem(item);
             }
             constructTimeElapsed = 0;
-            constructTimeRequired = functions[index].functionFloatVal[0];
+            constructTimeRequired = functions[index].functionValue;
         }
     }
 
@@ -67,17 +73,48 @@ public class CompConstructor : BaseComponent
     public override void Update()
     {
         base.Update();
+        if(img_Progress != null)
+            img_Progress.gameObject.SetActive(isConstructing);
+
         if(isConstructing)
         {
+            if (img_Progress != null)
+                img_Progress.fillAmount = constructProgress;
+
             if (constructTimeElapsed < constructTimeRequired)
             {
                 constructTimeElapsed += Time.deltaTime;
             }
             else
             {
-                isConstructing = false;
-
+                StartCoroutine(constructItem());
             }
+        }
+    }
+    IEnumerator constructItem()
+    {
+        isConstructing = false;
+        var obj = DataController.Instance.GetEntityViaID(functions[curSelectedIndex].functionStringVal[0]);
+        var objGenerated = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
+        objGenerated.InitThis();
+        yield return null;
+        bool check = false;
+        foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles)
+        {
+            if (obj.CheckIsTileSuitableForUnit(adjTile.Value))
+            {
+                MapController.Instance.RegisterObject(objGenerated);
+                objGenerated.Faction = thisObj.Faction;
+                objGenerated.Pos = adjTile.Value.Pos;
+                objGenerated.gameObject.transform.position = adjTile.Value.gameObject.transform.position;
+                objGenerated.gameObject.SetActive(true);
+                check = true;
+                break;
+            }
+        }
+        if(!check)
+        {
+            Destroy(objGenerated.gameObject);
         }
     }
 }

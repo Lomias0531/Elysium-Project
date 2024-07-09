@@ -8,6 +8,7 @@ using static BaseTile;
 using System;
 using System.Linq;
 using UnityEngine.EventSystems;
+using UnityEditor.Rendering.LookDev;
 
 public class PlayerController : Singletion<PlayerController>
 {
@@ -180,6 +181,7 @@ public class PlayerController : Singletion<PlayerController>
                     {
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
                         StartCoroutine(selectedObject.MoveObjectToTile(hoveredTile));
+                        CameraController.Instance.ResetViewPoint();
                     }
                     if(interactIndicators.Contains(hoveredTile))
                     {

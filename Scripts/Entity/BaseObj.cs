@@ -10,7 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 public abstract class BaseObj : MonoBehaviour
 {
     public Vector3Int Pos;
-    public string ID;
+    public string EntityID;
     Animator animator;
     [HideInInspector]
     public MoveType[] moveType
@@ -136,7 +136,7 @@ public abstract class BaseObj : MonoBehaviour
     public virtual void InitThis()
     {
         Guid id = Guid.NewGuid();
-        this.ID = id.ToString();
+        this.EntityID = id.ToString();
 
         var _components = this.gameObject.GetComponents<BaseComponent>();
         components = _components.ToList();

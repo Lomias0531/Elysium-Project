@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class UIController : Singletion<UIController>
 {
@@ -133,5 +134,11 @@ public class UIController : Singletion<UIController>
                 indicator.gameObject.SetActive(true);
             }
         }
+    }
+    public void AddUnitIndicator(BaseObj obj)
+    {
+        var indicator = GameObject.Instantiate(unitIndicatorItem, tsf_UnitIndicatorContainer);
+        indicator.InitThis(obj);
+        indicator.gameObject.SetActive(true);
     }
 }
