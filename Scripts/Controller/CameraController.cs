@@ -27,6 +27,7 @@ public class CameraController : Singletion<CameraController>
     float camDistance = 10f;
 
     bool isFocusing = false;
+    BaseTile curLookingTile;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +41,7 @@ public class CameraController : Singletion<CameraController>
     // Update is called once per frame
     void Update()
     {
+        GetTileCurLookingAt();
         ApplyMidleMouseButtonMovementSpeed();
         GetKeyboardCamTranslate();
     }
@@ -65,7 +67,7 @@ public class CameraController : Singletion<CameraController>
                     distance = Vector3.Distance(hit.point, transform.position);
                 }
 
-                obj_CameraFocusDummy.transform.position = obj_CameraFocusDummy.transform.position - Tools.CalculateMousePosNormal(Camera.main, delta, distance);
+                obj_CameraFocusDummy.transform.position -= Tools.CalculateMousePosNormal(Camera.main, delta, distance);
 
                 oldMousePosition = newMousePos;
             }
@@ -137,12 +139,13 @@ public class CameraController : Singletion<CameraController>
         if (target != null)
         {
             isFocusing = true;
-            CamMoveTween = obj_CameraFocusDummy.transform.DOMove(new Vector3(target.transform.position.x, 0, target.transform.position.z), 0.2f);
+            CamMoveTween = obj_CameraFocusDummy.transform.DOMove(target.transform.position, 0.2f);
             yield return new WaitForSeconds(0.2f);
             obj_CameraFocusDummy.transform.SetParent(target.gameObject.transform);
         }else
         {
             obj_CameraFocusDummy.transform.SetParent(null);
+            //CamMoveTween = obj_CameraFocusDummy.transform.DOMoveY(0f, 0.2f);
             isFocusing = false;
         }
     }
@@ -173,5 +176,27 @@ public class CameraController : Singletion<CameraController>
         if (angle > 360f)
             angle -= 360f;
         return Mathf.Clamp(angle, min, max);
+    }
+    void GetTileCurLookingAt()
+    {
+        Ray ray = new Ray(new Vector3(obj_CameraFocusDummy.transform.position.x, 1000, obj_CameraFocusDummy.transform.position.z), Vector3.down);
+        var result = Physics.RaycastAll(ray, Mathf.Infinity);
+        if(result.Length > 0)
+        {
+            foreach (var hit in result)
+            {
+                var tile = hit.collider.gameObject.GetComponent<BaseTile>();
+                if (tile != null)
+                {
+                    curLookingTile = tile;
+                    break;
+                }
+            }
+        }
+        if(curLookingTile != null && !isFocusing)
+        {
+            var y = obj_CameraFocusDummy.transform.position.y + (curLookingTile.transform.position.y - obj_CameraFocusDummy.transform.position.y) * (Time.deltaTime / 0.2f);
+            obj_CameraFocusDummy.transform.position = new Vector3(obj_CameraFocusDummy.transform.position.x, y, obj_CameraFocusDummy.transform.position.z);
+        }
     }
 }

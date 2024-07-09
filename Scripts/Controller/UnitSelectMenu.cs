@@ -28,9 +28,29 @@ public class UnitSelectMenu : MonoBehaviour
     void Update()
     {
         UpdateSelectedObjectStatus();
-        //this.transform.eulerAngles = Vector3.zero;
 
-        this.transform.eulerAngles = new Vector3(0, CameraController.Instance.camAngleX + 180f, 0);
+        var target = CameraController.Instance.obj_CameraFocusDummy.transform.eulerAngles.y;
+        var self = this.transform.eulerAngles.y;
+        if(target - self > 180)
+        {
+            target -= 360;
+        }
+        if(target - self < -180)
+        {
+            self -= 360;
+        }
+
+        var angle = (target - self) * (Time.deltaTime / 0.2f);
+
+        if (angle > 180) angle -= 180;
+        if (angle < -180) angle += 180;
+
+        if(Mathf.Abs(angle) > 10)
+        {
+            Debug.Log(target + " " + self);
+        }
+
+        this.transform.Rotate(new Vector3(0, angle, 0));
     }
     public void OnSelectUnit(BaseObj thisUnit)
     {
