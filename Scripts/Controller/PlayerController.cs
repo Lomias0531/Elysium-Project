@@ -221,8 +221,8 @@ public class PlayerController : Singletion<PlayerController>
                     }
                 }
             }
-            if(selectedObject != null)
-                selectedObject.curSelectedComp = null;
+            //if(selectedObject != null)
+            //    selectedObject.curSelectedComp = null;
         }
         if(Input.GetMouseButtonUp(1))
         {
