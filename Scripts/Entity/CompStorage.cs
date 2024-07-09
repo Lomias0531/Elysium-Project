@@ -107,6 +107,46 @@ public class CompStorage : BaseComponent
         }
         return transferedItem;
     }
+    public int GetItemCount(string itemID)
+    {
+        int result = 0;
+        foreach (var item in inventory)
+        {
+            if(item.itemID == itemID)
+            {
+                result += item.stackCount;
+            }
+        }
+        return result;
+    }
+    public void RemoveItem(ItemData itemInfo)
+    {
+        for (int i = inventory.Count - 1; i >= 0; i--)
+        {
+            if (inventory[i].itemID == itemInfo.itemID)
+            {
+                if (inventory[i].stackCount <= itemInfo.stackCount)
+                {
+                    ItemData dataTemp = new ItemData();
+                    dataTemp.itemID = inventory[i].itemID;
+                    dataTemp.stackCount = inventory[i].stackCount;
+
+                    itemInfo.stackCount -= inventory[i].stackCount;
+                    SetInvCount(i, 0);
+                }
+                else
+                {
+                    SetInvCount(i, inventory[i].stackCount - itemInfo.stackCount);
+                    itemInfo.stackCount = 0;
+                }
+            }
+            if (inventory[i].stackCount <= 0)
+            {
+                inventory.RemoveAt(i);
+            }
+            if (itemInfo.stackCount <= 0) break;
+        }
+    }
     void SetInvCount(int index, int count)
     {
         ItemData temp = new ItemData();

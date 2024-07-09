@@ -13,4 +13,9 @@ public class DataController : Singletion<DataController>
     {
         return Resources.Load<SO_ComponentData>("ScriptableItems/Components/" + compID);
     }
+    public GameObject GetEntityViaID(string entityID)
+    {
+        var entityItem = Resources.Load<SO_EntityData>("ScriptableItems/Entities/" +  entityID);
+        return entityItem.EntityObject;
+    }
 }
