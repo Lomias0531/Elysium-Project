@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static Unity.Burst.Intrinsics.X86.Avx;
+using static UnityEditor.Progress;
 
 public class UnitSelectMenu : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class UnitSelectMenu : MonoBehaviour
     public CompItemTrigger itemTrigger;
     public Transform tsf_SkillTriggerContainer;
     List<BaseCompTrigger> skillTriggers = new List<BaseCompTrigger>();
+    Dictionary<BaseComponent,Image> HPBars = new Dictionary<BaseComponent,Image>();
+    Dictionary<BaseComponent,Image> MPBars = new Dictionary<BaseComponent,Image>();
+    public Transform tsf_BarContainer;
     // Start is called before the first frame update
     void Start()
     {
@@ -70,9 +74,46 @@ public class UnitSelectMenu : MonoBehaviour
         }else
         {
             selectedObj = thisUnit;
-            //this.gameObject.transform.position = thisUnit.transform.position;
+
+            foreach (var item in HPBars)
+            {
+                Destroy(item.Value.gameObject);
+            }
+            foreach (var item in MPBars)
+            {
+                Destroy(item.Value.gameObject);
+            }
+            HPBars.Clear();
+            MPBars.Clear();
+
             this.transform.SetParent(thisUnit.transform);
             this.transform.localPosition = Vector3.zero;
+
+            for(int i =0;i<selectedObj.components.Count;i++)
+            {
+                var hpBar = GameObject.Instantiate(img_HP, tsf_BarContainer);
+                float hpVal = 0;
+                for(int t = 0;t<i;t++)
+                {
+                    hpVal += selectedObj.components[t].MaxHP;
+                }
+                float thisHPAng = 180f * hpVal / selectedObj.HPMax;
+                hpBar.gameObject.SetActive(true);
+                hpBar.transform.localEulerAngles = new Vector3(0, 0, 180f + thisHPAng);
+
+                var mpBar = GameObject.Instantiate(img_MP, tsf_BarContainer);
+                float mpVal = 0;
+                for(int t = 0; t<i;t++)
+                {
+                    mpVal += selectedObj.components[t].MaxEP;
+                }
+                float thisMPAng = 180f * mpVal / selectedObj.EPMax;
+                mpBar.gameObject.SetActive(true);
+                mpBar.transform.localEulerAngles = new Vector3(0, 0, -thisMPAng);
+
+                HPBars.Add(selectedObj.components[i], hpBar);
+                MPBars.Add(selectedObj.components[i], mpBar);
+            }
 
             if (selectedObj.Faction == "Elysium")
             {
@@ -174,24 +215,34 @@ public class UnitSelectMenu : MonoBehaviour
     }
     void SetUIDegrees(float val)
     {
-        var HPDiv = selectedObj.HP / selectedObj.HPMax;
-        var MPDiv = selectedObj.EP / selectedObj.EPMax;
+        //var HPDiv = selectedObj.HP / selectedObj.HPMax;
+        //var MPDiv = selectedObj.EP / selectedObj.EPMax;
 
-        if (val <= HPDiv)
+        foreach (var item in HPBars)
         {
-            img_HP.fillAmount = val;
+            var fullDiv = item.Key.MaxHP / selectedObj.HPMax;
+            var HPDiv = item.Key.HP / item.Key.MaxHP;
+            if (val <= HPDiv)
+            {
+                item.Value.fillAmount = val * fullDiv;
+            }
+            else
+            {
+                item.Value.fillAmount = HPDiv * fullDiv;
+            }
         }
-        else
+        foreach (var item in MPBars)
         {
-            img_HP.fillAmount = HPDiv;
-        }
-        if (val <= MPDiv)
-        {
-            img_MP.fillAmount = val;
-        }
-        else
-        {
-            img_MP.fillAmount = MPDiv;
+            var fullDiv = item.Key.MaxEP / selectedObj.EPMax;
+            var MPDiv = item.Key.EP / item.Key.MaxEP;
+            if (val <= MPDiv)
+            {
+                item.Value.fillAmount = val * fullDiv;
+            }
+            else
+            {
+                item.Value.fillAmount = MPDiv * fullDiv;
+            }
         }
         SetIconDegrees(val);
     }
@@ -213,8 +264,7 @@ public class UnitSelectMenu : MonoBehaviour
         if (selectedObj == null) return;
         if(expandFinished)
         {
-            img_HP.fillAmount = selectedObj.HP / selectedObj.HPMax;
-            img_MP.fillAmount = selectedObj.EP / selectedObj.EPMax;
+            SetUIDegrees(1f);
         }
     }
     public void RemoveTrigger()
