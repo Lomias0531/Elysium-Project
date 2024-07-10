@@ -30,9 +30,6 @@ public class CompSkillTrigger : BaseCompTrigger
         skillIndex = _skillIndex;
         if(thisComp.functions[skillIndex].functionIcon != null)
             img_Icon.sprite = thisComp.functions[skillIndex].functionIcon;
-
-        img_BG.material.SetTexture("_Sprite", img_BG.mainTexture);
-        img_Icon.material.SetTexture("_Sprite", img_Icon.mainTexture);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)

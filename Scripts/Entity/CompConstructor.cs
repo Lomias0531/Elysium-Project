@@ -9,8 +9,9 @@ public class CompConstructor : BaseComponent
     float constructTimeElapsed;
     public bool isConstructing;
     int curSelectedIndex = 0;
-
     public Image img_Progress;
+    public Canvas canvas;
+
     public float constructProgress
     {
         get
@@ -41,6 +42,21 @@ public class CompConstructor : BaseComponent
         {
             checkResources = false;
         }
+
+        int availableTileCount = 0;
+        var obj = DataController.Instance.GetEntityViaID(functions[curSelectedIndex].functionStringVal[0]);
+        foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles)
+        {
+            if(obj.CheckIsTileSuitableForUnit(adjTile.Value))
+            {
+                availableTileCount += 1;
+            }
+        }
+        if (availableTileCount <= 0)
+        {
+            checkResources = false;
+        }
+
         if (checkResources)
         {
             curSelectedIndex = index;
@@ -67,20 +83,16 @@ public class CompConstructor : BaseComponent
     public override void Start()
     {
         base.Start();
+        canvas.worldCamera = Camera.main;
     }
 
     // Update is called once per frame
     public override void Update()
     {
         base.Update();
-        if(img_Progress != null)
-            img_Progress.gameObject.SetActive(isConstructing);
 
         if(isConstructing)
         {
-            if (img_Progress != null)
-                img_Progress.fillAmount = constructProgress;
-
             if (constructTimeElapsed < constructTimeRequired)
             {
                 constructTimeElapsed += Time.deltaTime;
@@ -90,10 +102,15 @@ public class CompConstructor : BaseComponent
                 StartCoroutine(constructItem());
             }
         }
+        if(img_Progress!=null)
+        {
+            img_Progress.fillAmount = constructProgress;
+        }
     }
     IEnumerator constructItem()
     {
         isConstructing = false;
+        constructTimeElapsed = 0;
         var obj = DataController.Instance.GetEntityViaID(functions[curSelectedIndex].functionStringVal[0]);
         var objGenerated = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
         objGenerated.InitThis();
