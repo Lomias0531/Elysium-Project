@@ -9,6 +9,7 @@ public class UnitIndicatorItem : MonoBehaviour
 
     public Text txt_Name;
     public Image img_Frame;
+    public ProceduralImage bg;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +34,20 @@ public class UnitIndicatorItem : MonoBehaviour
         }else
         {
             img_Frame.color = Color.red;
+        }
+
+        var dir = obj_TargetedItem.gameObject.transform.position - Camera.main.transform.position;
+        var tes = Vector3.Dot(CameraController.Instance.obj_CameraFocusDummy.transform.forward, dir);
+        if(tes >= 0)
+        {
+            txt_Name.enabled = false;
+            img_Frame.enabled = false;
+            bg.enabled = false;
+        }else
+        {
+            txt_Name.enabled = true;
+            img_Frame.enabled = true;
+            bg.enabled = true;
         }
 
         var pos = Camera.main.WorldToScreenPoint(obj_TargetedItem.gameObject.transform.position);
