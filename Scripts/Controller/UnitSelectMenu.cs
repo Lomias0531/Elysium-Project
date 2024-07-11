@@ -1,9 +1,8 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.Burst.Intrinsics.X86.Avx;
-using static UnityEditor.Progress;
 
 public class UnitSelectMenu : MonoBehaviour
 {
@@ -124,7 +123,7 @@ public class UnitSelectMenu : MonoBehaviour
                         var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
                         trigger.gameObject.SetActive(true);
                         skillTriggers.Add(trigger);
-                        trigger.InitThis(true, i, comp);
+                        trigger.InitThis(true, i, comp, this);
                     }
                 }
             }
@@ -215,9 +214,6 @@ public class UnitSelectMenu : MonoBehaviour
     }
     void SetUIDegrees(float val)
     {
-        //var HPDiv = selectedObj.HP / selectedObj.HPMax;
-        //var MPDiv = selectedObj.EP / selectedObj.EPMax;
-
         foreach (var item in HPBars)
         {
             var fullDiv = item.Key.MaxHP / selectedObj.HPMax;
@@ -270,5 +266,29 @@ public class UnitSelectMenu : MonoBehaviour
     public void RemoveTrigger()
     {
         StartCoroutine(ShowEntityInventory());
+    }
+    public void HoveringComponent(BaseComponent comp)
+    {
+        foreach (var item in HPBars)
+        {
+            if(item.Key == comp)
+            {
+                item.Value.transform.DOLocalMoveZ(-0.1f, 0.2f);
+            }else
+            {
+                item.Value.transform.DOLocalMoveZ(0f, 0.2f);
+            }
+        }
+        foreach (var item in MPBars)
+        {
+            if (item.Key == comp)
+            {
+                item.Value.transform.DOLocalMoveZ(-0.1f, 0.2f);
+            }
+            else
+            {
+                item.Value.transform.DOLocalMoveZ(0f, 0.2f);
+            }
+        }
     }
 }

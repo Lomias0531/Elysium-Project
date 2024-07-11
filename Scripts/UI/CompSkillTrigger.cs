@@ -10,6 +10,9 @@ public class CompSkillTrigger : BaseCompTrigger
     int skillIndex;
     public Button btn_Click;
     public Image img_FunctionMask;
+    public Image img_PowerOff;
+
+    UnitSelectMenu menu;
 
     // Start is called before the first frame update
     void Start()
@@ -22,10 +25,11 @@ public class CompSkillTrigger : BaseCompTrigger
     {
         UpdateAvailable();
     }
-    public void InitThis(bool _isAvailable, int _skillIndex, BaseComponent comp)
+    public void InitThis(bool _isAvailable, int _skillIndex, BaseComponent comp, UnitSelectMenu _menu)
     {
         isAvailable = _isAvailable;
         thisComp = comp;
+        menu = _menu;
         
         skillIndex = _skillIndex;
         if(thisComp.functions[skillIndex].functionIcon != null)
@@ -35,11 +39,13 @@ public class CompSkillTrigger : BaseCompTrigger
     public override void OnPointerEnter(PointerEventData eventData)
     {
         UIController.Instance.DisplayHoveredSkillInfo(thisComp.functions[skillIndex], UIController.DisplayInfoType.skill);
+        menu.HoveringComponent(thisComp);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
     {
         UIController.Instance.HideHoveredSkillInfo();
+        menu.HoveringComponent(null);
     }
     public override void OnPointerClick(PointerEventData eventData)
     {
@@ -63,12 +69,12 @@ public class CompSkillTrigger : BaseCompTrigger
         {
             isAvailable = false;
             btn_Click.interactable = false;
-            //img_Icon.color = Color.black;
+            img_PowerOff.gameObject.SetActive(true);
         }else
         {
             isAvailable = true;
             btn_Click.interactable = true;
-            //img_Icon.color = Tools.HexToColor("#007DFF");
+            img_PowerOff.gameObject.SetActive(false);
         }
     }
 }
