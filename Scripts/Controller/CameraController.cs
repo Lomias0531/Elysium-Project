@@ -36,6 +36,7 @@ public class CameraController : Singletion<CameraController>
             obj_CameraFocusDummy = new GameObject("CamDummy");
             obj_CameraFocusDummy.transform.position = new Vector3(0, 0, 0);
         }
+        DOTween.To(() => camAngleX, x => camAngleX = x, 180f, 0.2f);
     }
 
     // Update is called once per frame
