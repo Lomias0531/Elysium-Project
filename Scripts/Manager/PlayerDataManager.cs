@@ -52,10 +52,10 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
             {
                 value += construct.EnergyProduced;
             }
-            foreach (var unit in myUnits)
-            {
-                value += unit.EPMax;
-            }
+            //foreach (var unit in myUnits)
+            //{
+            //    value += unit.EP;
+            //}
             return value;
         }
     }
@@ -70,7 +70,7 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
             }
             foreach (var unit in myUnits)
             {
-                value += unit.EP;
+                value += unit.EPMax - unit.EP;
             }
             return value;
         }
