@@ -65,7 +65,14 @@ public class CompSkillTrigger : BaseCompTrigger
         img_FunctionMask.fillAmount = thisComp.functionTimeElapsed / thisComp.thisObj.curSelectedFunction.functionApplyTimeInterval;
         if (thisComp.thisObj.curSelectedFunction.functionApplyTimeInterval == 0) img_FunctionMask.fillAmount = 0;
 
-        if (thisComp.EP < thisComp.functions[skillIndex].functionConsume || thisComp.HP <= 0 || !thisComp.isAvailable)
+        bool isPowerSufficent = true;
+        var thisBase = thisComp.thisObj.GetDesiredComponent<CompBase>();
+        if (thisBase != null)
+        {
+            isPowerSufficent = thisBase.isPowerSufficent;
+        }
+
+        if (thisComp.EP < thisComp.functions[skillIndex].functionConsume || thisComp.HP <= 0 || !thisComp.isAvailable || !isPowerSufficent)
         {
             isAvailable = false;
             btn_Click.interactable = false;

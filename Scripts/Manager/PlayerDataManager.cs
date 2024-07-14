@@ -76,6 +76,41 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
         }
     }
 
-    public List<BaseConstruction> myConstructions = new List<BaseConstruction>();
-    public List<BaseObj> myUnits = new List<BaseObj>();
+    public List<BaseConstruction> myConstructions
+    {
+        get
+        {
+            var list = new List<BaseConstruction>();
+            foreach (var entity in MapController.Instance.entityDic)
+            {
+                if(entity.Value.Faction == "Elysium")
+                {
+                    if(entity.Value.GetDesiredComponent<CompBase>() != null)
+                    {
+                        list.Add((BaseConstruction)entity.Value);
+                    }
+                }
+            }
+            return list;
+        }
+    }
+    public List<BaseObj> myUnits
+    {
+        get
+        {
+            var list = new List<BaseObj>();
+            foreach (var entity in MapController.Instance.entityDic)
+            {
+                if (entity.Value.Faction == "Elysium")
+                {
+                    if (entity.Value.GetDesiredComponent<CompBase>() == null)
+                    {
+                        list.Add(entity.Value);
+                    }
+                }
+            }
+            return list;
+        }
+
+    }
 }
