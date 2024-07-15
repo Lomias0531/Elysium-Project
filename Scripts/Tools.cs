@@ -192,7 +192,7 @@ public static class Tools
         targetTex.Apply();
         return targetTex;
     }
-    public static List<BaseTile> GetTileWithinRange(BaseTile origin, int range)
+    public static List<BaseTile> GetTileWithinRange(BaseTile origin, int range, bool ignoreUnit)
     {
         List<BaseTile> result = new List<BaseTile>();
 
@@ -282,6 +282,7 @@ public static class Tools
 
         return result;
     }
+    public enum 
 }
 public static class ToolsUtility
 {
