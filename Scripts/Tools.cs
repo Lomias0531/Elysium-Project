@@ -227,7 +227,7 @@ public static class Tools
                         var cost = 1;
 
                         float life = (float)item.Value.MoveLife - cost;
-                        if (!adjTile.Value.isAvailable())
+                        if (!adjTile.Value.isAvailable() && !ignoreUnit)
                         {
                             friendlyTile.Add(adjTile.Value);
                         }
@@ -282,7 +282,13 @@ public static class Tools
 
         return result;
     }
-    public enum 
+    public enum IgnoreType
+    {
+        None,
+        All,
+        IgnoreEnemy,
+        IgnoreFriendly,
+    }
 }
 public static class ToolsUtility
 {
