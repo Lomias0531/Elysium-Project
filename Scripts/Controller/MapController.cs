@@ -295,6 +295,9 @@ public class MapController : Singletion<MapController>
 
     IEnumerator GenerateUnits()
     {
+        var keyTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
+
+
         foreach (var unit in unitsToGenerate)
         {
             bool checkTerrainOK = false;
@@ -314,6 +317,9 @@ public class MapController : Singletion<MapController>
                 generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
 
                 checkTerrainOK = obj.CheckIsTileSuitableForUnit(generateTile);
+
+                if (Tools.GetDistance(keyTile.Pos, generateTile.Pos) > 7)
+                    checkTerrainOK = false;
 
                 tryCount += 1;
                 if (tryCount >= 1000)

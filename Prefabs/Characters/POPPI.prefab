@@ -1880,6 +1880,7 @@ GameObject:
   - component: {fileID: 8442122793450793066}
   - component: {fileID: 4972859180769544076}
   - component: {fileID: 4107342644199083685}
+  - component: {fileID: 7974992703576846278}
   m_Layer: 0
   m_Name: POPPI
   m_TagString: Untagged
@@ -1978,6 +1979,31 @@ MonoBehaviour:
   isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+--- !u!114 &7974992703576846278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2919332615130540202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b2604fd0be55364485960e3f8a4c3f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compName: 
+  HP: 0
+  MaxHP: 0
+  EP: 0
+  MaxEP: 0
+  functions: []
+  thisObj: {fileID: 0}
+  compResID: StorageComp01
+  isCritical: 0
+  functionTimeElapsed: 0
+  isAvailable: 1
+  maxStorageSlot: 0
+  inventory: []
 --- !u!1 &2969407270076441885
 GameObject:
   m_ObjectHideFlags: 0
