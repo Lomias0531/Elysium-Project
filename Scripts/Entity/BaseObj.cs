@@ -148,6 +148,8 @@ public abstract class BaseObj : MonoBehaviour
     }
     public abstract void OnInteracted();
     public abstract void OnBeingDestroyed();
+    public abstract void OnSelected();
+    public abstract void OnUnselected();
 
     public IEnumerator MoveObjectToTile(BaseTile tile)
     {

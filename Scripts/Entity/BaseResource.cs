@@ -94,4 +94,14 @@ public class BaseResource : BaseObj
             comp.OnApply(0);
         }
     }
+
+    public override void OnSelected()
+    {
+        
+    }
+
+    public override void OnUnselected()
+    {
+        
+    }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class CompGenerator : BaseComponent
 {
     public int powerCapacity;
+    public int powerRadiationRange;
     public override void OnApply(int index)
     {
         

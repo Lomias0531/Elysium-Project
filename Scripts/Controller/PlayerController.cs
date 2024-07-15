@@ -172,6 +172,8 @@ public class PlayerController : Singletion<PlayerController>
 
                 UIController.Instance.DisplaySelectedUnitInfo(selectedObject);
 
+                selectedObject.OnSelected();
+
                 StartCoroutine(CameraController.Instance.CamFocusOnTarget(selectedObject));
             }else
             {
@@ -239,6 +241,8 @@ public class PlayerController : Singletion<PlayerController>
             Destroy(item.Value.gameObject);
         }
         rangeIndicators.Clear();
+
+        selectedObject.OnUnselected();
 
         selectedObject = null;
         UIController.Instance.DisplaySelectedUnitInfo(null);
@@ -505,8 +509,21 @@ public class PlayerController : Singletion<PlayerController>
     {
         foreach (var construct in PlayerDataManager.Instance.myConstructions)
         {
-            
+            var generator = construct.GetDesiredComponent<CompGenerator>();
+            if(generator != null)
+            {
+                var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange);
+                foreach (var tile in gridList)
+                {
+                    if(!powerGridIndicator.Contains(tile))
+                    {
+                        powerGridIndicator.Add(tile);
+                    }
+                }
+            }
         }
+
+        DrawRangeIndicator(powerGridIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "PowerGridIndicator", col_PowerGrid, 2f);
     }
     private void OnApplicationFocus(bool focus)
     {

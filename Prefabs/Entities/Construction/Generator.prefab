@@ -209,6 +209,7 @@ MonoBehaviour:
   functionTimeElapsed: 0
   isAvailable: 1
   powerCapacity: 15
+  powerRadiationRange: 5
 --- !u!1 &2889321769584244631
 GameObject:
   m_ObjectHideFlags: 0

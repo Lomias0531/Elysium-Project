@@ -16,6 +16,16 @@ public class BaseUnit : BaseObj
         
     }
 
+    public override void OnSelected()
+    {
+        
+    }
+
+    public override void OnUnselected()
+    {
+        
+    }
+
     // Start is called before the first frame update
     public override void Start()
     {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using UnityEngine;
+using static BaseObj;
 using static UnityEngine.Rendering.DebugUI;
 
 public static class Tools
@@ -190,6 +191,96 @@ public static class Tools
         targetTex.SetPixels(pixels);
         targetTex.Apply();
         return targetTex;
+    }
+    public static List<BaseTile> GetTileWithinRange(BaseTile origin, int range)
+    {
+        List<BaseTile> result = new List<BaseTile>();
+
+        Dictionary<BaseTile, MoveIndicator> openList = new Dictionary<BaseTile, MoveIndicator>();
+        Dictionary<BaseTile, MoveIndicator> closeList = new Dictionary<BaseTile, MoveIndicator>();
+        int availableMove;
+        List<BaseTile> friendlyTile = new List<BaseTile>();
+
+        openList.Add(origin, new MoveIndicator(origin, range + 1));
+
+        int count = 0;
+
+        do
+        {
+            //临时向关闭格添加单元格的容器
+            var tempList = new Dictionary<BaseTile, MoveIndicator>();
+            //临时从开放格移除单元格的容器
+            var tempList1 = new Dictionary<BaseTile, MoveIndicator>();
+
+            foreach (var item in openList)
+            {
+                //遍历所有的开放格，将其加入待移除容器
+                tempList.Add(item.Key, item.Value);
+
+                foreach (var adjTile in item.Value.curTile.adjacentTiles)
+                {
+                    if (!closeList.ContainsKey(adjTile.Value))
+                    {
+                        count += 1;
+
+                        //遍历当前单元格的相邻单元格，若该单元格不存在于关闭格中，则计算其移动力消耗。
+                        var cost = 1;
+
+                        float life = (float)item.Value.MoveLife - cost;
+                        if (!adjTile.Value.isAvailable())
+                        {
+                            friendlyTile.Add(adjTile.Value);
+                        }
+                        if (life > 0 && !tempList1.ContainsKey(adjTile.Value))
+                            tempList1.Add(adjTile.Value, new MoveIndicator(adjTile.Value, life));
+                    }
+                }
+            }
+
+            //将临时容器中的单元格添加进开放列表
+            foreach (var item in tempList1)
+            {
+                if (!openList.ContainsKey(item.Key))
+                    openList.Add(item.Key, item.Value);
+            }
+
+            //将临时容器中的单元格从开放列表移入关闭列表
+            foreach (var item in tempList)
+            {
+                if (openList.ContainsKey(item.Key))
+                {
+                    openList.Remove(item.Key);
+                    if (!closeList.ContainsKey(item.Key))
+                        closeList.Add(item.Key, item.Value);
+                }
+            }
+
+            availableMove = 0;
+            foreach (var tile in openList)
+            {
+                if (tile.Value.MoveLife > 0)
+                {
+                    availableMove += 1;
+                }
+            }
+        } while (availableMove > 0);
+
+        Debug.Log("Steps: " + count);
+
+        foreach (var tile in friendlyTile)
+        {
+            if (closeList.ContainsKey(tile))
+            {
+                closeList.Remove(tile);
+            }
+        }
+
+        foreach (var tile in closeList)
+        {
+            result.Add(tile.Key);
+        }
+
+        return result;
     }
 }
 public static class ToolsUtility
