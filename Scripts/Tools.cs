@@ -58,6 +58,8 @@ public static class Tools
 
         openList.Add(originTile, new MoveIndicator(originTile, mobility + 1));
 
+        int count = 0;
+
         do
         {
             //临时向关闭格添加单元格的容器
@@ -74,6 +76,8 @@ public static class Tools
                 {
                     if (!closeList.ContainsKey(adjTile.Value))
                     {
+                        count += 1;
+
                         //遍历当前单元格的相邻单元格，若该单元格不存在于关闭格中，则计算其移动力消耗。
                         var cost = (float)adjTile.Value.GetMoveCost(moveType);
                         if (moveStyle == BaseObj.MoveStyle.Jump || moveStyle == BaseObj.MoveStyle.Teleport)
@@ -141,6 +145,8 @@ public static class Tools
                 }
             }
         } while (availableMove > 0);
+
+        Debug.Log("Steps: " + count);
 
         foreach (var tile in friendlyTile)
         {

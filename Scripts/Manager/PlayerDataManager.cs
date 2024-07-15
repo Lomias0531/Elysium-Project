@@ -10,10 +10,10 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
         get
         {
             float value = 0;
-            foreach (var construct in myConstructions)
-            {
-                value += construct.OrganicStorage;
-            }
+            //foreach (var construct in myConstructions)
+            //{
+            //    value += construct.OrganicStorage;
+            //}
             return value;
         }
     }
@@ -23,10 +23,10 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
         get
         {
             float value = 0;
-            foreach (var construct in myConstructions)
-            {
-                value += construct.ConstructStorage;
-            }
+            //foreach (var construct in myConstructions)
+            //{
+            //    value += construct.ConstructStorage;
+            //}
             return value;
         }
     }
@@ -36,10 +36,10 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
         get
         {
             float value = 0;
-            foreach (var construct in myConstructions)
-            {
-                value += construct.MetalStorage;
-            }
+            //foreach (var construct in myConstructions)
+            //{
+            //    value += construct.MetalStorage;
+            //}
             return value;
         }
     }

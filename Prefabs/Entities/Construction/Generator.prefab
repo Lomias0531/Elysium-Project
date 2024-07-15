@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 1526185545335098386}
   - component: {fileID: 6953394697777499655}
   - component: {fileID: 326078578107120391}
+  - component: {fileID: -2209044357892873509}
   m_Layer: 0
   m_Name: Generator
   m_TagString: Untagged
@@ -158,11 +159,7 @@ MonoBehaviour:
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 
-  EnergyProduced: 10
   EnergyConsumed: 0
-  OrganicStorage: 0
-  ConstructStorage: 0
-  MetalStorage: 0
   BuildProgress: 0
 --- !u!114 &326078578107120391
 MonoBehaviour:
@@ -188,6 +185,30 @@ MonoBehaviour:
   functionTimeElapsed: 0
   isAvailable: 1
   img_PowerOff: {fileID: 6746611488939427394}
+--- !u!114 &-2209044357892873509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2190377822495217320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58c9af3fcb60b664dadef4e1cbac74ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compName: 
+  HP: 10
+  MaxHP: 10
+  EP: 20
+  MaxEP: 20
+  functions: []
+  thisObj: {fileID: 0}
+  compResID: 
+  isCritical: 0
+  functionTimeElapsed: 0
+  isAvailable: 1
+  powerCapacity: 15
 --- !u!1 &2889321769584244631
 GameObject:
   m_ObjectHideFlags: 0

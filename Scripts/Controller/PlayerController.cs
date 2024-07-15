@@ -30,6 +30,8 @@ public class PlayerController : Singletion<PlayerController>
     List<BaseTile> attackRangeIndicators = new List<BaseTile>();
     public Color col_VisionRange;
     List<BaseTile> visionRangeIndicators = new List<BaseTile>();
+    public Color col_PowerGrid;
+    List<BaseTile> powerGridIndicator = new List<BaseTile>();
 
     Dictionary<string, GameObject> rangeIndicators = new Dictionary<string, GameObject>();
     public Material indicatorCenterMat;
@@ -497,6 +499,13 @@ public class PlayerController : Singletion<PlayerController>
         if(interactIndicators.Count > 0)
         {
             DrawRangeIndicator(interactIndicators, selectedObject.GetTileWhereUnitIs(), "InteractIndicator", col_Interact, 2f);
+        }
+    }
+    public void GetPowerGridRange()
+    {
+        foreach (var construct in PlayerDataManager.Instance.myConstructions)
+        {
+            
         }
     }
     private void OnApplicationFocus(bool focus)

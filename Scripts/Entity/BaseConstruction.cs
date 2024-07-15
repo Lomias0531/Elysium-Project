@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class BaseConstruction : BaseObj
 {
-    public float EnergyProduced;
+    public float EnergyProduced
+    {
+        get
+        {
+            float val = 0;
+            var generator = this.GetDesiredComponent<CompGenerator>();
+            if(generator != null )
+            {
+                val += generator.powerCapacity;
+            }
+            return val;
+        }
+    }
     public float EnergyConsumed;
-    public float OrganicStorage;
-    public float ConstructStorage;
-    public float MetalStorage;
 
     public float BuildProgress;
     public override void OnBeingDestroyed()
