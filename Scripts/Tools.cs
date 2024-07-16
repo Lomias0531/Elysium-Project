@@ -192,7 +192,7 @@ public static class Tools
         targetTex.Apply();
         return targetTex;
     }
-    public static List<BaseTile> GetTileWithinRange(BaseTile origin, int range, bool ignoreUnit)
+    public static List<BaseTile> GetTileWithinRange(BaseTile origin, int range, IgnoreType ignoreType, string faction = "Elysium")
     {
         List<BaseTile> result = new List<BaseTile>();
 
@@ -224,12 +224,45 @@ public static class Tools
                         count += 1;
 
                         //遍历当前单元格的相邻单元格，若该单元格不存在于关闭格中，则计算其移动力消耗。
-                        var cost = 1;
-
-                        float life = (float)item.Value.MoveLife - cost;
-                        if (!adjTile.Value.isAvailable() && !ignoreUnit)
+                        float life = (float)item.Value.MoveLife - 1;
+                        switch(ignoreType)
                         {
-                            friendlyTile.Add(adjTile.Value);
+                            case IgnoreType.None:
+                                {
+                                    if (!adjTile.Value.isAvailable())
+                                    {
+                                        friendlyTile.Add(adjTile.Value);
+                                    }
+                                    break;
+                                }
+                            case IgnoreType.All:
+                                {
+                                    break;
+                                }
+                            case IgnoreType.IgnoreFriendly:
+                                {
+                                    var entity = adjTile.Value.GetEntitynThisTile();
+                                    if(entity != null)
+                                    {
+                                        if(entity.Faction != faction)
+                                        {
+                                            friendlyTile.Add(adjTile.Value);
+                                        }
+                                    }
+                                    break;
+                                }
+                            case IgnoreType.IgnoreEnemy:
+                                {
+                                    var entity = adjTile.Value.GetEntitynThisTile();
+                                    if (entity != null)
+                                    {
+                                        if (entity.Faction == faction)
+                                        {
+                                            friendlyTile.Add(adjTile.Value);
+                                        }
+                                    }
+                                    break;
+                                }
                         }
                         if (life > 0 && !tempList1.ContainsKey(adjTile.Value))
                             tempList1.Add(adjTile.Value, new MoveIndicator(adjTile.Value, life));

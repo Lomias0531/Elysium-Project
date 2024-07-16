@@ -172,7 +172,8 @@ public class PlayerController : Singletion<PlayerController>
 
                 UIController.Instance.DisplaySelectedUnitInfo(selectedObject);
 
-                selectedObject.OnSelected();
+                if(selectedObject) 
+                    selectedObject.OnSelected();
 
                 StartCoroutine(CameraController.Instance.CamFocusOnTarget(selectedObject));
             }else
@@ -512,7 +513,7 @@ public class PlayerController : Singletion<PlayerController>
             var generator = construct.GetDesiredComponent<CompGenerator>();
             if(generator != null)
             {
-                var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange,false);
+                var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange, Tools.IgnoreType.None);
                 foreach (var tile in gridList)
                 {
                     if(!powerGridIndicator.Contains(tile))
