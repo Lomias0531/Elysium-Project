@@ -93,13 +93,20 @@ public class CompConstructor : BaseComponent
 
         if(isConstructing)
         {
-            if (constructTimeElapsed < constructTimeRequired)
+            this.EP -= functions[curSelectedIndex].functionConsume * Time.deltaTime;
+            if (this.EP < 0)
             {
-                constructTimeElapsed += Time.deltaTime;
-            }
-            else
+                this.EP = 0;
+            }else
             {
-                StartCoroutine(constructItem());
+                if (constructTimeElapsed < constructTimeRequired)
+                {
+                    constructTimeElapsed += Time.deltaTime;
+                }
+                else
+                {
+                    StartCoroutine(constructItem());
+                }
             }
         }
         if(img_Progress!=null)

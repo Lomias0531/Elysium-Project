@@ -510,10 +510,10 @@ public class PlayerController : Singletion<PlayerController>
     {
         foreach (var construct in PlayerDataManager.Instance.myConstructions)
         {
-            var generator = construct.GetDesiredComponent<CompGenerator>();
+            var generator = construct.GetDesiredComponent<CompPowerDispathcer>();
             if(generator != null)
             {
-                var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange, Tools.IgnoreType.None);
+                var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange, Tools.IgnoreType.All);
                 foreach (var tile in gridList)
                 {
                     if(!powerGridIndicator.Contains(tile))

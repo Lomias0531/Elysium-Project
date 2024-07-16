@@ -53,7 +53,7 @@ public abstract class BaseComponent : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        EP += Time.deltaTime * 1f;
+        EP += Time.deltaTime * 0.1f;
         if(EP > MaxEP) EP = MaxEP;
 
         functionTimeElapsed -= Time.deltaTime;

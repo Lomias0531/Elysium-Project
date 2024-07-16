@@ -318,7 +318,7 @@ public class MapController : Singletion<MapController>
 
                 checkTerrainOK = obj.CheckIsTileSuitableForUnit(generateTile);
 
-                if (Tools.GetDistance(keyTile.Pos, generateTile.Pos) > 5)
+                if (Tools.GetDistance(keyTile.Pos, generateTile.Pos) > 4)
                     checkTerrainOK = false;
 
                 tryCount += 1;

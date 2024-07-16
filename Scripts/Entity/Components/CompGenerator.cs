@@ -5,7 +5,7 @@ using UnityEngine;
 public class CompGenerator : BaseComponent
 {
     public int powerCapacity;
-    public int powerRadiationRange;
+    public int powerRegenRate;
     public override void OnApply(int index)
     {
         
@@ -26,5 +26,10 @@ public class CompGenerator : BaseComponent
     public override void Update()
     {
         base.Update();
+        foreach (var comp in thisObj.components)
+        {
+            comp.EP += powerRegenRate * Time.deltaTime;
+            if(comp.EP > comp.MaxEP) comp.EP = comp.MaxEP;
+        }
     }
 }
