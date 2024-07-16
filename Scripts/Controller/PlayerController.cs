@@ -9,6 +9,8 @@ using System;
 using System.Linq;
 using UnityEngine.EventSystems;
 using UnityEditor.Rendering.LookDev;
+using UnityEditor;
+using Unity.VisualScripting;
 
 public class PlayerController : Singletion<PlayerController>
 {
@@ -32,6 +34,9 @@ public class PlayerController : Singletion<PlayerController>
     List<BaseTile> visionRangeIndicators = new List<BaseTile>();
     public Color col_PowerGrid;
     List<BaseTile> powerGridIndicator = new List<BaseTile>();
+    public Color col_Build;
+    List<BaseTile> buildIndicator = new List<BaseTile>();
+    BaseObj obj_Build;
 
     Dictionary<string, GameObject> rangeIndicators = new Dictionary<string, GameObject>();
     public Material indicatorCenterMat;
@@ -186,7 +191,7 @@ public class PlayerController : Singletion<PlayerController>
                     {
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
                         selectedObject.curSelectedComp.OnTriggerFunction(hoveredTile);
-                        //StartCoroutine(selectedObject.MoveObjectToTile(hoveredTile));
+
                         CameraController.Instance.ResetViewPoint();
                     }
                     if(interactIndicators.Contains(hoveredTile))
@@ -205,7 +210,8 @@ public class PlayerController : Singletion<PlayerController>
                                     if (res != null)
                                     {
                                         var resource = res.GetDesiredComponent<CompResource>();
-                                        resource.OnInteract(selectedObject);
+
+                                        resource.OnTriggerFunction(selectedObject);
                                     }
 
                                     break;
@@ -219,7 +225,8 @@ public class PlayerController : Singletion<PlayerController>
                                     var storage = res.GetDesiredComponent<CompStorage>();
                                     var ees = selectedObject.GetDesiredComponent<CompStorage>();
                                     var item = ees.inventory[selectedObject.curSelectedFunction.functionIntVal[1]];
-                                    ees.TransferItem(storage, item);
+                                    //ees.TransferItem(storage, item);
+                                    ees.OnTriggerFunction(storage, item);
                                     break;
                                 }
                         }
@@ -227,8 +234,6 @@ public class PlayerController : Singletion<PlayerController>
                     }
                 }
             }
-            //if(selectedObject != null)
-            //    selectedObject.curSelectedComp = null;
         }
         if(Input.GetMouseButtonUp(1))
         {
@@ -509,6 +514,7 @@ public class PlayerController : Singletion<PlayerController>
     }
     public void GetPowerGridRange()
     {
+        powerGridIndicator.Clear();
         foreach (var construct in PlayerDataManager.Instance.myConstructions)
         {
             var generator = construct.GetDesiredComponent<CompPowerDispathcer>();
@@ -529,7 +535,22 @@ public class PlayerController : Singletion<PlayerController>
     }
     public void GetBuildRange()
     {
+        buildIndicator.Clear();
+        obj_Build = null;
 
+        var builder = selectedObject.GetDesiredComponent<CompBuilder>();
+        if(builder != null)
+            buildIndicator = Tools.GetTileWithinRange(selectedObject.GetTileWhereUnitIs(), builder.buildRange, Tools.IgnoreType.All);
+
+        DrawRangeIndicator(buildIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "BuildIndicator", col_Build, 2f);
+
+        var obj = DataController.Instance.GetEntityViaID(selectedObject.curSelectedFunction.functionStringVal[0]);
+        if (obj != null)
+        {
+            obj_Build = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
+            obj_Build.AddComponent<CompConstructTemp>();
+            MapController.Instance.RegisterObject(obj_Build);
+        }
     }
     private void OnApplicationFocus(bool focus)
     {

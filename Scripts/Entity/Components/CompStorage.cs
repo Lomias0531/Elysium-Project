@@ -155,9 +155,51 @@ public class CompStorage : BaseComponent
         inventory[index] = temp;
     }
 
-    public override void OnTriggerFunction(object obj)
+    public override void OnTriggerFunction(params object[] obj)
     {
-        
+        if (obj[0] is CompStorage && obj[1] is ItemData)
+        {
+            CompStorage targetStorage = (CompStorage)obj[0];
+            ItemData transferedItem = (ItemData)obj[1];
+
+            for (int i = inventory.Count - 1; i >= 0; i--)
+            {
+                if (inventory[i].itemID == transferedItem.itemID)
+                {
+                    if (inventory[i].stackCount <= transferedItem.stackCount)
+                    {
+                        ItemData dataTemp = new ItemData();
+                        dataTemp.itemID = inventory[i].itemID;
+                        dataTemp.stackCount = inventory[i].stackCount;
+
+                        var itemData = targetStorage.ReceiveItem(dataTemp);
+                        transferedItem.stackCount -= inventory[i].stackCount;
+                        if (itemData.stackCount <= 0)
+                        {
+                            SetInvCount(i, 0);
+                        }
+                        else
+                        {
+                            SetInvCount(i, itemData.stackCount);
+                        }
+                    }
+                    else
+                    {
+                        var itemCount = transferedItem.stackCount;
+                        var itemData = targetStorage.ReceiveItem(transferedItem);
+                        var itemTransfered = itemCount - itemData.stackCount;
+
+                        transferedItem.stackCount -= itemTransfered;
+                        SetInvCount(i, inventory[i].stackCount - itemTransfered);
+                    }
+                }
+                if (inventory[i].stackCount <= 0)
+                {
+                    inventory.RemoveAt(i);
+                }
+                if (transferedItem.stackCount <= 0) break;
+            }
+        }
     }
 }
 [Serializable]

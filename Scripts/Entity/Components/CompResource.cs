@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 
 public class CompResource : CompInteractable
@@ -26,20 +27,22 @@ public class CompResource : CompInteractable
 
     public override void OnInteract(BaseObj invoker)
     {
-        //var storage = invoker.gameObject.GetComponent<CompStorage>();
-        var storage = invoker.GetDesiredComponent<CompStorage>();
-        if(storage != null)
-        {
-            ItemData data = new ItemData();
-            data.itemID = resourceCollectableOnce.itemID;
-            data.stackCount = resourceCollectableOnce.stackCount;
-            storage.ReceiveItem(data);
-        }
+
     }
 
-    public override void OnTriggerFunction(object obj)
+    public override void OnTriggerFunction(params object[] obj)
     {
-        
+        if(obj[0] is BaseObj)
+        {
+            var storage = ((BaseObj)obj[0]).GetDesiredComponent<CompStorage>();
+            if (storage != null)
+            {
+                ItemData data = new ItemData();
+                data.itemID = resourceCollectableOnce.itemID;
+                data.stackCount = resourceCollectableOnce.stackCount;
+                storage.ReceiveItem(data);
+            }
+        }
     }
 
     // Start is called before the first frame update

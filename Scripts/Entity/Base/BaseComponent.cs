@@ -64,7 +64,7 @@ public abstract class BaseComponent : MonoBehaviour
     }
     public abstract void OnApply(int index);
     public abstract void OnDestroyThis();
-    public abstract void OnTriggerFunction(object obj);
+    public abstract void OnTriggerFunction(params object[] obj);
     public void FunctionTriggered(CompFunctionDetail function)
     {
         functionTimeElapsed = function.functionApplyTimeInterval;

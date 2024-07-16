@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class CompBuilder : BaseComponent
 {
+    public int buildRange;
     public override void OnApply(int index)
     {
-        
+        PlayerController.Instance.GetBuildRange();
     }
 
     public override void OnDestroyThis()
@@ -14,7 +15,7 @@ public class CompBuilder : BaseComponent
         
     }
 
-    public override void OnTriggerFunction(object obj)
+    public override void OnTriggerFunction(params object[] obj)
     {
         
     }

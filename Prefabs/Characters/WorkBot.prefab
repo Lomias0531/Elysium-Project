@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7991404404025900937}
   - component: {fileID: -3663101869440365015}
   - component: {fileID: -8234934090759607655}
+  - component: {fileID: 6822658525846763612}
   m_Layer: 0
   m_Name: WorkBot
   m_TagString: Untagged
@@ -49,7 +50,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Pos: {x: 0, y: 0, z: 0}
-  ID: 
+  EntityID: 
+  animator: {fileID: 0}
   objName: Worker
   components: []
   Faction: 
@@ -137,6 +139,31 @@ MonoBehaviour:
   isAvailable: 1
   maxStorageSlot: 5
   inventory: []
+--- !u!114 &6822658525846763612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389244388165440043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58c9af3fcb60b664dadef4e1cbac74ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compName: 
+  HP: 1
+  MaxHP: 1
+  EP: 1
+  MaxEP: 1
+  functions: []
+  thisObj: {fileID: 0}
+  compResID: 
+  isCritical: 0
+  functionTimeElapsed: 0
+  isAvailable: 1
+  powerCapacity: 20
+  powerRegenRate: 2
 --- !u!1 &8801693143224486690
 GameObject:
   m_ObjectHideFlags: 0

@@ -142,7 +142,7 @@ public class CompConstructor : BaseComponent
         }
     }
 
-    public override void OnTriggerFunction(object obj)
+    public override void OnTriggerFunction(params object[] obj)
     {
         
     }

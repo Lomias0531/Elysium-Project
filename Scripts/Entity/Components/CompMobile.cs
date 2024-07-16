@@ -130,11 +130,11 @@ public class CompMobile : BaseComponent
         yield return new WaitForSeconds(0.1f);
     }
 
-    public override void OnTriggerFunction(object obj)
+    public override void OnTriggerFunction(params object[] obj)
     {
-        if(obj is BaseTile)
+        if(obj[0] is BaseTile)
         {
-            StartCoroutine(MoveObject((BaseTile)obj));
+            StartCoroutine(MoveObject((BaseTile)obj[0]));
         }
     }
 }
