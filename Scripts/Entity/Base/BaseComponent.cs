@@ -30,6 +30,7 @@ public abstract class BaseComponent : MonoBehaviour
         Harvest,
         Active,
         Store,
+        Construct,
     }
     // Start is called before the first frame update
     public virtual void Start()
@@ -63,6 +64,7 @@ public abstract class BaseComponent : MonoBehaviour
     }
     public abstract void OnApply(int index);
     public abstract void OnDestroyThis();
+    public abstract void OnTriggerFunction(object obj);
     public void FunctionTriggered(CompFunctionDetail function)
     {
         functionTimeElapsed = function.functionApplyTimeInterval;

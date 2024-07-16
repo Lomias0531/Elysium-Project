@@ -185,7 +185,8 @@ public class PlayerController : Singletion<PlayerController>
                     if(moveIndicators.Contains(hoveredTile))
                     {
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
-                        StartCoroutine(selectedObject.MoveObjectToTile(hoveredTile));
+                        selectedObject.curSelectedComp.OnTriggerFunction(hoveredTile);
+                        //StartCoroutine(selectedObject.MoveObjectToTile(hoveredTile));
                         CameraController.Instance.ResetViewPoint();
                     }
                     if(interactIndicators.Contains(hoveredTile))
@@ -525,6 +526,10 @@ public class PlayerController : Singletion<PlayerController>
         }
 
         DrawRangeIndicator(powerGridIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "PowerGridIndicator", col_PowerGrid, 2f);
+    }
+    public void GetBuildRange()
+    {
+
     }
     private void OnApplicationFocus(bool focus)
     {

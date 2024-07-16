@@ -141,4 +141,9 @@ public class CompConstructor : BaseComponent
             Destroy(objGenerated.gameObject);
         }
     }
+
+    public override void OnTriggerFunction(object obj)
+    {
+        
+    }
 }

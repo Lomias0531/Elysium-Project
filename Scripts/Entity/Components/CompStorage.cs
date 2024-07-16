@@ -154,6 +154,11 @@ public class CompStorage : BaseComponent
         temp.stackCount = count;
         inventory[index] = temp;
     }
+
+    public override void OnTriggerFunction(object obj)
+    {
+        
+    }
 }
 [Serializable]
 public struct ItemData

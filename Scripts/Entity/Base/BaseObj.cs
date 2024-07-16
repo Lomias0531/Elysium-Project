@@ -11,7 +11,7 @@ public abstract class BaseObj : MonoBehaviour
 {
     public Vector3Int Pos;
     public string EntityID;
-    Animator animator;
+    public Animator animator;
     [HideInInspector]
     public MoveType[] moveType
     {
@@ -150,106 +150,6 @@ public abstract class BaseObj : MonoBehaviour
     public abstract void OnBeingDestroyed();
     public abstract void OnSelected();
     public abstract void OnUnselected();
-
-    public IEnumerator MoveObjectToTile(BaseTile tile)
-    {
-        var moveQueue = this.UnitFindPath(tile, (MoveType)curSelectedFunction.functionIntVal[0]);
-
-        switch ((MoveStyle)curSelectedFunction.functionIntVal[1])
-        {
-            default:
-                {
-                    if(animator != null)
-                    {
-                        animator.CrossFadeInFixedTime("Walk", 0.1f);
-                        yield return new WaitForSeconds(0.1f);
-                    }
-
-                    do
-                    {
-                        var target = moveQueue.Dequeue();
-                        if (target == this.GetTileWhereUnitIs())
-                            continue;
-
-                        var facing = Vector3.Angle(new Vector3(0, 0, 1f), target.transform.position - this.transform.position);
-                        if (target.transform.position.x < this.transform.position.x) facing *= -1;
-
-                        this.transform.localEulerAngles = new Vector3(0, facing, 0);
-
-                        float moveTimeElapsed = 0;
-                        var originPos = this.transform.position;
-                        do
-                        {
-                            this.transform.position = Vector3.Lerp(originPos, target.transform.position, moveTimeElapsed / 0.2f);
-                            moveTimeElapsed += Time.deltaTime;
-                            yield return null;
-                        } while (moveTimeElapsed < 0.2f);
-                        this.transform.position = target.transform.position;
-                        //this.transform.DOMove(target.transform.position, 0.2f, false);
-                        this.Pos = target.Pos;
-                        //yield return new WaitForSeconds(0.2f);
-                    } while (moveQueue.Count > 0);
-
-                    break;
-                }
-            case MoveStyle.Teleport:
-                {
-                    if (animator != null)
-                    {
-                        animator.CrossFadeInFixedTime("Interact", 0.1f);
-                        yield return new WaitForSeconds(0.2f);
-                        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-                    }
-
-                    var facing = Vector3.Angle(new Vector3(0, 0, 1f), tile.transform.position - this.transform.position);
-                    if (tile.transform.position.x < this.transform.position.x) facing *= -1;
-
-                    this.transform.localEulerAngles = new Vector3(0, facing, 0);
-
-                    //yield return new WaitForSeconds(0.2f);
-
-                    this.transform.position = tile.transform.position;
-                    this.Pos = tile.Pos;
-                    break;
-                }
-            case MoveStyle.Jump:
-                {
-                    if (animator != null)
-                    {
-                        animator.CrossFadeInFixedTime("Jump", 0.1f);
-                        yield return new WaitForSeconds(0.1f);
-                        //animator.speed = animator.GetCurrentAnimatorStateInfo(0).length / 1f;
-                    }
-
-                    var facing = Vector3.Angle(new Vector3(0, 0, 1f), tile.transform.position - this.transform.position);
-                    if (tile.transform.position.x < this.transform.position.x) facing *= -1;
-
-                    this.transform.localEulerAngles = new Vector3(0, facing, 0);
-
-                    float jumpTileElapsed = 0;
-                    do
-                    {
-                        this.transform.position = Tools.GetBezierCurve(this.GetTileWhereUnitIs().transform.position, tile.transform.position, jumpTileElapsed / 1f);
-                        jumpTileElapsed += Time.deltaTime;
-
-                        yield return null;
-                    } while (jumpTileElapsed <= 1f);
-                    this.transform.position = tile.transform.position;
-                    this.Pos = tile.Pos;
-
-                    break;
-                }
-        }
-
-        PlayerController.Instance.EntityFinishedAction();
-
-        if (animator != null)
-        {
-            animator.speed = 1f;
-            animator.CrossFadeInFixedTime("Idle", 0.1f);
-        }
-        yield return new WaitForSeconds(0.1f);
-    }
     public T GetDesiredComponent<T>() where T:BaseComponent
     {
         foreach (var comp in components)

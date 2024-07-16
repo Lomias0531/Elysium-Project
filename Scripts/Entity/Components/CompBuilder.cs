@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CompHarvest : BaseComponent
+public class CompBuilder : BaseComponent
 {
     public override void OnApply(int index)
     {
-        PlayerController.Instance.GetInteractRange(InteractFunction.Harvest);
+        
     }
 
     public override void OnDestroyThis()
