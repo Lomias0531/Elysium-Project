@@ -45,6 +45,8 @@ public class CompPowerDispathcer : BaseComponent
                         float powerTranfered = 0;
                         for (int i = 0; i < unit.components.Count; i++)
                         {
+                            if (unit.components[i].EP / unit.components[i].MaxEP > 0.8f) continue;
+
                             var targetEPDis = unit.components[i].MaxEP - unit.components[i].EP;
                             if (targetEPDis <= 0) continue;
                             powerTranfered = targetEPDis;

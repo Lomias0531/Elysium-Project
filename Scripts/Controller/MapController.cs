@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
@@ -346,9 +347,20 @@ public class MapController : Singletion<MapController>
     }
     public void RegisterObject(BaseObj obj)
     {
+        GUID uid = GUID.Generate();
+        obj.EntityID = uid.ToString();
+
         obj.gameObject.transform.SetParent(entityContainer);
         entityDic.Add(obj.EntityID, obj);
         UIController.Instance.AddUnitIndicator(obj);
+    }
+    public void RemoveObject(BaseObj obj)
+    {
+        if(entityDic.ContainsKey(obj.EntityID))
+        {
+            entityDic.Remove(obj.EntityID);
+            DestroyImmediate(obj.gameObject);
+        }
     }
     #endregion
 }

@@ -132,6 +132,7 @@ public class UIController : Singletion<UIController>
                 var indicator = GameObject.Instantiate(unitIndicatorItem, tsf_UnitIndicatorContainer);
                 indicator.InitThis(item.Value);
                 indicator.gameObject.SetActive(true);
+                unitIndicatorItems.Add(item.Value, indicator);
             }
         }
     }
@@ -140,5 +141,14 @@ public class UIController : Singletion<UIController>
         var indicator = GameObject.Instantiate(unitIndicatorItem, tsf_UnitIndicatorContainer);
         indicator.InitThis(obj);
         indicator.gameObject.SetActive(true);
+        unitIndicatorItems.Add(obj, indicator);
+    }
+    public void RemoveUnitIndicator(BaseObj obj)
+    {
+        if(unitIndicatorItems.ContainsKey(obj))
+        {
+            Destroy(unitIndicatorItems[obj].gameObject);
+            unitIndicatorItems.Remove(obj);
+        }
     }
 }

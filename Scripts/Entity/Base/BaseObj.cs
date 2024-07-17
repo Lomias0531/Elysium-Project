@@ -143,6 +143,7 @@ public abstract class BaseObj : MonoBehaviour
         foreach (var item in components)
         {
             item.thisObj = this;
+            item.LoadCompDataViaID();
         }
         animator = this.gameObject.GetComponent<Animator>();
     }

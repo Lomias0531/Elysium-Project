@@ -35,20 +35,7 @@ public abstract class BaseComponent : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Start()
     {
-        if(!string.IsNullOrEmpty(compResID))
-        {
-            SO_ComponentData compData = DataController.Instance.GetComponentData(compResID);
-            if(compData != null)
-            {
-                compName = compData.name;
-                HP = compData.ComponentEndurance;
-                MaxHP = compData.ComponentEndurance;
-                EP = compData.ComponentInternalBattery;
-                MaxEP = compData.ComponentInternalBattery;
-                isCritical = compData.isFatalComponent;
-                functions = compData.functions;
-            }
-        }
+        LoadCompDataViaID();
     }
 
     // Update is called once per frame
@@ -69,5 +56,22 @@ public abstract class BaseComponent : MonoBehaviour
     {
         functionTimeElapsed = function.functionApplyTimeInterval;
         EP -= function.functionConsume;
+    }
+    public void LoadCompDataViaID()
+    {
+        if (!string.IsNullOrEmpty(compResID))
+        {
+            SO_ComponentData compData = DataController.Instance.GetComponentData(compResID);
+            if (compData != null)
+            {
+                compName = compData.name;
+                HP = compData.ComponentEndurance;
+                MaxHP = compData.ComponentEndurance;
+                EP = compData.ComponentInternalBattery;
+                MaxEP = compData.ComponentInternalBattery;
+                isCritical = compData.isFatalComponent;
+                functions = compData.functions;
+            }
+        }
     }
 }

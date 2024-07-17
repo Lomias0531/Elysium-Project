@@ -55,9 +55,9 @@ public class CompSkillTrigger : BaseCompTrigger
     {
         if (isAvailable)
         {
-            thisComp.OnApply(skillIndex);
             thisComp.thisObj.curSelectedComp = thisComp;
             thisComp.thisObj.curSelectedFunction = thisComp.functions[skillIndex];
+            thisComp.OnApply(skillIndex);
         }
     }
     void UpdateAvailable()

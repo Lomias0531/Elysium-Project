@@ -148,6 +148,14 @@ public class PlayerController : Singletion<PlayerController>
                     };
                     DrawRangeIndicator(tiles, selectedTile, "HoverIndicator", Color.white);
 
+                    if(obj_Build != null && buildIndicator.Contains(selectedTile) && selectedTile.isAvailable())
+                    {
+                        obj_Build.Pos = selectedTile.Pos;
+                        obj_Build.transform.position = selectedTile.transform.position;
+
+                        GetPowerGridRange();
+                    }
+
                     hoveredTile = selectedTile;
 
                     UIController.Instance.DisplayHoveredTileInfo(hoveredTile);
@@ -232,6 +240,22 @@ public class PlayerController : Singletion<PlayerController>
                         }
                         EntityFinishedAction();
                     }
+                    if(buildIndicator.Contains(hoveredTile))
+                    {
+                        var newConstruct = GameObject.Instantiate(obj_Build, MapController.Instance.entityContainer);
+                        newConstruct.Faction = "Elysium";
+                        newConstruct.AddComponent<CompConstructTemp>();
+                        newConstruct.InitThis();
+                        MapController.Instance.RegisterObject(newConstruct);
+                        newConstruct.Pos = hoveredTile.Pos;
+                        newConstruct.transform.position = hoveredTile.gameObject.transform.position;
+                        var compBuild = newConstruct.AddComponent<CompConstructTemp>();
+                        compBuild.thisObj = newConstruct;
+                        compBuild.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
+                        compBuild.InitConstruct();
+
+                        CancelAllOperations();
+                    }
                 }
             }
         }
@@ -249,7 +273,8 @@ public class PlayerController : Singletion<PlayerController>
         }
         rangeIndicators.Clear();
 
-        selectedObject.OnUnselected();
+        if(selectedObject)
+            selectedObject.OnUnselected();
 
         selectedObject = null;
         UIController.Instance.DisplaySelectedUnitInfo(null);
@@ -259,6 +284,14 @@ public class PlayerController : Singletion<PlayerController>
         interactIndicators.Clear();
         attackRangeIndicators.Clear();
         visionRangeIndicators.Clear();
+        powerGridIndicator.Clear();
+        buildIndicator.Clear();
+        if(obj_Build)
+        {
+            UIController.Instance.RemoveUnitIndicator(obj_Build);
+            MapController.Instance.RemoveObject(obj_Build);
+            obj_Build = null;
+        }
     }
     public void EntityFinishedAction()
     {
@@ -548,7 +581,8 @@ public class PlayerController : Singletion<PlayerController>
         if (obj != null)
         {
             obj_Build = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
-            obj_Build.AddComponent<CompConstructTemp>();
+            obj_Build.Faction = "Elysium";
+            obj_Build.InitThis();
             MapController.Instance.RegisterObject(obj_Build);
         }
     }

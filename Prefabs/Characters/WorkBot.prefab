@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -3663101869440365015}
   - component: {fileID: -8234934090759607655}
   - component: {fileID: 6822658525846763612}
+  - component: {fileID: -1753991528745762685}
   m_Layer: 0
   m_Name: WorkBot
   m_TagString: Untagged
@@ -164,6 +165,56 @@ MonoBehaviour:
   isAvailable: 1
   powerCapacity: 20
   powerRegenRate: 2
+--- !u!114 &-1753991528745762685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389244388165440043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71c244b27d573844abae756992a4aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compName: 
+  HP: 5
+  MaxHP: 5
+  EP: 5
+  MaxEP: 5
+  functions:
+  - functionName: "\u5EFA\u9020\u53D1\u7535\u7AD9"
+    function: 2
+    functionIcon: {fileID: 193079915, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
+    functionApplyTimeInterval: 5
+    functionValue: 0
+    functionConsume: 3
+    functionIntVal: 
+    functionFloatVal:
+    - 3
+    functionBoolVal: 
+    functionStringVal:
+    - Generator
+    functionDescription: 
+  - functionName: "\u5EFA\u9020\u5DE5\u5382"
+    function: 2
+    functionIcon: {fileID: 193079915, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
+    functionApplyTimeInterval: 5
+    functionValue: 0
+    functionConsume: 3
+    functionIntVal: 
+    functionFloatVal:
+    - 5
+    functionBoolVal: 
+    functionStringVal:
+    - Factory
+    functionDescription: 
+  thisObj: {fileID: 0}
+  compResID: 
+  isCritical: 0
+  functionTimeElapsed: 0
+  isAvailable: 1
+  buildRange: 4
 --- !u!1 &8801693143224486690
 GameObject:
   m_ObjectHideFlags: 0

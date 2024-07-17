@@ -118,6 +118,7 @@ public class UnitSelectMenu : MonoBehaviour
             {
                 foreach (var comp in selectedObj.components)
                 {
+                    if (comp.functions == null) continue;
                     for (int i = 0; i < comp.functions.Length; i++)
                     {
                         var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
