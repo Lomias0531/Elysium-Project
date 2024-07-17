@@ -325,19 +325,46 @@ public class PlayerController : Singletion<PlayerController>
         DestroyRangeIndicator(rangeName);
         DestroyRangeIndicator(rangeName + "Border");
 
-        GameObject indicatorObj = new GameObject(rangeName);
+        GameObject indicatorObj;
+        GameObject indicatorBorder;
+        if (rangeIndicators.ContainsKey(rangeName))
+        {
+            indicatorObj = rangeIndicators[rangeName];
+            indicatorBorder = rangeIndicators[rangeName + "Border"];
+        }else
+        {
+            indicatorObj = new GameObject(rangeName);
+            indicatorBorder = new GameObject(rangeName + "Border");
+
+            rangeIndicators.Add(rangeName, indicatorObj);
+            rangeIndicators.Add(rangeName + "Border", indicatorBorder);
+        }
+
+        indicatorObj.SetActive(true);
+        indicatorBorder.SetActive(true);
+
         indicatorObj.transform.position = originCenter.gameObject.transform.position + new Vector3(0, 0.01f + layer * 0.01f, 0);
-        GameObject indicatorBorder = new GameObject(rangeName + "Border");
         indicatorBorder.transform.position = originCenter.gameObject.transform.position + new Vector3(0, 0.02f + layer * 0.01f, 0);
         indicatorBorder.transform.SetParent(indicatorObj.transform);
 
-        rangeIndicators.Add(rangeName, indicatorObj);
-        rangeIndicators.Add(rangeName + "Border", indicatorBorder);
+        var filter = indicatorObj.GetComponent<MeshFilter>();
+        if(filter == null)
+        {
+            filter = indicatorObj.AddComponent<MeshFilter>();
+        }
+        var meshRenderer = indicatorObj.GetComponent<MeshRenderer>();
+        if(meshRenderer == null) meshRenderer = indicatorObj.AddComponent<MeshRenderer>();
 
-        Mesh hexMesh = indicatorObj.AddComponent<MeshFilter>().mesh = new Mesh();
-        MeshRenderer meshRenderer = indicatorObj.AddComponent<MeshRenderer>();
-        Mesh borderMesh = indicatorBorder.AddComponent<MeshFilter>().mesh = new Mesh();
-        MeshRenderer borderRenderer = indicatorBorder.AddComponent<MeshRenderer>();
+        Mesh hexMesh = filter.mesh = new Mesh();
+
+        var borderFilter = indicatorBorder.GetComponent<MeshFilter>();
+        if (borderFilter == null)
+        {
+            borderFilter = indicatorBorder.AddComponent<MeshFilter>();
+        }
+        var borderRenderer = indicatorBorder.GetComponent<MeshRenderer>();
+        if(borderRenderer == null) borderRenderer = indicatorBorder.AddComponent<MeshRenderer>();
+        Mesh borderMesh = borderFilter.mesh = new Mesh();
 
         List<List<Vector3>> tempList = new List<List<Vector3>>();
 
@@ -487,8 +514,9 @@ public class PlayerController : Singletion<PlayerController>
     {
         if(rangeIndicators.ContainsKey(rangeName))
         {
-            Destroy(rangeIndicators[rangeName].gameObject);
-            rangeIndicators.Remove(rangeName);
+            //Destroy(rangeIndicators[rangeName].gameObject);
+            //rangeIndicators.Remove(rangeName);
+            rangeIndicators[rangeName].gameObject.SetActive(false);
         }
     }
 
