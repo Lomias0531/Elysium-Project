@@ -147,7 +147,7 @@ public static class Tools
             }
         } while (availableMove > 0);
 
-        Debug.Log("Steps: " + count);
+        //Debug.Log("Steps: " + count);
 
         foreach (var tile in friendlyTile)
         {
