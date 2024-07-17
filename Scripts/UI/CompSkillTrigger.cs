@@ -49,7 +49,7 @@ public class CompSkillTrigger : BaseCompTrigger
     }
     public override void OnPointerClick(PointerEventData eventData)
     {
-        ApplySkill();
+        //ApplySkill();
     }
     void ApplySkill()
     {

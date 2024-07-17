@@ -359,7 +359,7 @@ public class MapController : Singletion<MapController>
         if(entityDic.ContainsKey(obj.EntityID))
         {
             entityDic.Remove(obj.EntityID);
-            DestroyImmediate(obj.gameObject);
+            Destroy(obj.gameObject);
         }
     }
     #endregion

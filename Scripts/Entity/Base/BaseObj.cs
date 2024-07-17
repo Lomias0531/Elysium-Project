@@ -162,4 +162,12 @@ public abstract class BaseObj : MonoBehaviour
         }
         return null;
     }
+    public void RemoveDesiredComponent(BaseComponent comp)
+    {
+        if(components.Contains(comp))
+        {
+            components.Remove(comp);
+            Destroy(comp);
+        }
+    }
 }

@@ -82,8 +82,7 @@ public class CompConstructTemp : BaseComponent
                 mesh.Key.materials = list.ToArray();
             }
 
-            thisObj.components.Remove(this);
-            DestroyImmediate(this);
+            thisObj.RemoveDesiredComponent(this);
         }
     }
 }

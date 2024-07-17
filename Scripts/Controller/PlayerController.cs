@@ -244,12 +244,12 @@ public class PlayerController : Singletion<PlayerController>
                     {
                         var newConstruct = GameObject.Instantiate(obj_Build, MapController.Instance.entityContainer);
                         newConstruct.Faction = "Elysium";
-                        newConstruct.AddComponent<CompConstructTemp>();
                         newConstruct.InitThis();
                         MapController.Instance.RegisterObject(newConstruct);
                         newConstruct.Pos = hoveredTile.Pos;
                         newConstruct.transform.position = hoveredTile.gameObject.transform.position;
                         var compBuild = newConstruct.AddComponent<CompConstructTemp>();
+                        newConstruct.components.Add(compBuild);
                         compBuild.thisObj = newConstruct;
                         compBuild.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
                         compBuild.InitConstruct();
@@ -286,7 +286,7 @@ public class PlayerController : Singletion<PlayerController>
         visionRangeIndicators.Clear();
         powerGridIndicator.Clear();
         buildIndicator.Clear();
-        if(obj_Build)
+        if(obj_Build != null)
         {
             UIController.Instance.RemoveUnitIndicator(obj_Build);
             MapController.Instance.RemoveObject(obj_Build);
