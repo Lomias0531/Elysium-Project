@@ -111,7 +111,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2190377822495217320}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 16.5, y: 0.48, z: 19.918585}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -142,11 +142,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65776914856f09d4391b3a895978d451, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Pos: {x: 0, y: 0, z: 0}
-  EntityID: 
+  Pos: {x: 5, y: -28, z: 23}
+  EntityID: 1e0e6f86740aa5443904242b56a20f7d
+  animator: {fileID: 0}
   objName: "\u53D1\u7535\u7AD9"
-  components: []
-  Faction: 
+  components:
+  - {fileID: 326078578107120391}
+  - {fileID: -2209044357892873509}
+  - {fileID: -5517626163135998944}
+  Faction: Elysium
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
     functionName: 
@@ -180,7 +184,7 @@ MonoBehaviour:
   EP: 20
   MaxEP: 20
   functions: []
-  thisObj: {fileID: 0}
+  thisObj: {fileID: 6953394697777499655}
   compResID: 
   isCritical: 0
   functionTimeElapsed: 0
@@ -204,7 +208,7 @@ MonoBehaviour:
   EP: 20
   MaxEP: 20
   functions: []
-  thisObj: {fileID: 0}
+  thisObj: {fileID: 6953394697777499655}
   compResID: 
   isCritical: 0
   functionTimeElapsed: 0
@@ -240,7 +244,7 @@ MonoBehaviour:
     functionBoolVal: 
     functionStringVal: []
     functionDescription: "\u8F93\u9001\u7535\u529B"
-  thisObj: {fileID: 0}
+  thisObj: {fileID: 6953394697777499655}
   compResID: 
   isCritical: 0
   functionTimeElapsed: 0

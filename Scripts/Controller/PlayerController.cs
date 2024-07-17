@@ -602,6 +602,22 @@ public class PlayerController : Singletion<PlayerController>
         var builder = selectedObject.GetDesiredComponent<CompBuilder>();
         if(builder != null)
             buildIndicator = Tools.GetTileWithinRange(selectedObject.GetTileWhereUnitIs(), builder.buildRange, Tools.IgnoreType.All);
+        List<BaseTile> tilesToRemove = new List<BaseTile>();    
+        foreach (var tile in buildIndicator)
+        {
+            if(tile.terrainType != TerrainType.Plain && tile.terrainType != TerrainType.Rocks)
+            {
+                tilesToRemove.Add(tile);
+            }
+            if(!tile.isAvailable())
+            {
+                tilesToRemove.Add(tile);
+            }
+        }
+        foreach (var item in tilesToRemove)
+        {
+            buildIndicator.Remove(item);
+        }
 
         DrawRangeIndicator(buildIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "BuildIndicator", col_Build, 2f);
 

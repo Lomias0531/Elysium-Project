@@ -6,6 +6,7 @@ public class BaseUnit : BaseObj
 {
     //DO NOT DELETE THIS!
     //USE FOR ABSTRACT CLASS!
+    bool lookAtCam = false;
     public override void OnBeingDestroyed()
     {
         
@@ -18,12 +19,22 @@ public class BaseUnit : BaseObj
 
     public override void OnSelected()
     {
-        
+        lookAtCam = true;
+        StartCoroutine(SayHello());
+    }
+    IEnumerator SayHello()
+    {
+        if (animator != null)
+        {
+            animator.CrossFadeInFixedTime("Interact", 0.1f);
+            yield return new WaitForSeconds(1f);
+            animator.CrossFadeInFixedTime("Idle", 0.1f);
+        }
     }
 
     public override void OnUnselected()
     {
-        
+        lookAtCam = false;
     }
 
     // Start is called before the first frame update
@@ -36,5 +47,17 @@ public class BaseUnit : BaseObj
     public override void Update()
     {
         base.Update();
+    }
+    private void OnAnimatorIK(int layerIndex)
+    {
+        if(lookAtCam && animator != null)
+        {
+            animator.SetLookAtPosition(Camera.main.transform.position);
+            animator.SetLookAtWeight(1f);
+        }else
+        {
+            animator.SetLookAtPosition(this.transform.position + this.transform.forward);
+            animator.SetLookAtWeight(0f);
+        }
     }
 }
