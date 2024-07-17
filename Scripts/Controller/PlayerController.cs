@@ -76,6 +76,7 @@ public class PlayerController : Singletion<PlayerController>
         GetTileUnderMouse();
         GetObjUnderMouse();
         MouseFunctions();
+        GetKeyboardInteractions();
 
         PaintIndicator();
 
@@ -243,6 +244,7 @@ public class PlayerController : Singletion<PlayerController>
                     if(buildIndicator.Contains(hoveredTile))
                     {
                         var newConstruct = GameObject.Instantiate(obj_Build, MapController.Instance.entityContainer);
+                        newConstruct.transform.eulerAngles = obj_Build.transform.eulerAngles;
                         newConstruct.Faction = "Elysium";
                         newConstruct.InitThis();
                         MapController.Instance.RegisterObject(newConstruct);
@@ -263,6 +265,16 @@ public class PlayerController : Singletion<PlayerController>
         {
             if(RMBPressedTime < 0.2f)
                 CancelAllOperations();
+        }
+    }
+    void GetKeyboardInteractions()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            if(obj_Build != null)
+            {
+                obj_Build.gameObject.transform.Rotate(new Vector3(0, 60f, 0));
+            }
         }
     }
     public void CancelAllOperations()
