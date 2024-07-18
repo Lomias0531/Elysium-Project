@@ -9,6 +9,7 @@ public class CompConstructTemp : BaseComponent
     public float buildTime;
     public Material buildMat;
     Dictionary<MeshRenderer, Material> matDic = new Dictionary<MeshRenderer, Material>();
+    public bool startConstruct = false;
     public override void OnApply(int index)
     {
         
@@ -30,15 +31,10 @@ public class CompConstructTemp : BaseComponent
         //base.Start();
         
     }
-    public void InitConstruct()
+    public void SimBuild()
     {
         buildMat = Resources.Load<Material>("Materials/WireFrame");
         var meshRenderers = thisObj.GetComponentsInChildren<MeshRenderer>();
-
-        this.EP = 20;
-        this.MaxEP = 20;
-        this.HP = 20;
-        this.MaxHP = 20;
 
         foreach (var meshRenderer in meshRenderers)
         {
@@ -49,14 +45,34 @@ public class CompConstructTemp : BaseComponent
             matDic.Add(meshRenderer, thisMaterial);
         }
     }
+    public void InitConstruct()
+    {
+        this.EP = 20;
+        this.MaxEP = 20;
+        this.HP = 20;
+        this.MaxHP = 20;
+
+        var meshRenderers = thisObj.GetComponentsInChildren<MeshRenderer>();
+
+        matDic.Clear();
+        foreach (var meshRenderer in meshRenderers)
+        {
+            List<Material> mat = meshRenderer.materials.ToList();
+            matDic.Add(meshRenderer, mat.LastOrDefault());
+        }
+
+        startConstruct = true;
+    }
 
     // Update is called once per frame
     public override void Update()
     {
         base.Update();
+        if (!startConstruct) return;
+
         if(buildProgress < 1f)
         {
-            if (this.EP > 0)
+            if (this.EP >= 10f * Time.deltaTime)
             {
                 this.EP -= 10f * Time.deltaTime;
                 buildProgress += (1f / buildTime) * Time.deltaTime;

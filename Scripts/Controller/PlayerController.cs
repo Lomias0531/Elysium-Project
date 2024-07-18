@@ -250,10 +250,11 @@ public class PlayerController : Singletion<PlayerController>
                         MapController.Instance.RegisterObject(newConstruct);
                         newConstruct.Pos = hoveredTile.Pos;
                         newConstruct.transform.position = hoveredTile.gameObject.transform.position;
-                        var compBuild = newConstruct.AddComponent<CompConstructTemp>();
-                        newConstruct.components.Add(compBuild);
-                        compBuild.thisObj = newConstruct;
-                        compBuild.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
+                        //var compBuild = newConstruct.AddComponent<CompConstructTemp>();
+                        //newConstruct.components.Add(compBuild);
+                        //compBuild.thisObj = newConstruct;
+                        //compBuild.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
+                        var compBuild = newConstruct.GetDesiredComponent<CompConstructTemp>();
                         compBuild.InitConstruct();
 
                         CancelAllOperations();
@@ -639,6 +640,11 @@ public class PlayerController : Singletion<PlayerController>
             obj_Build = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
             obj_Build.Faction = "Elysium";
             obj_Build.InitThis();
+            var temp = obj_Build.AddComponent<CompConstructTemp>();
+            obj_Build.components.Add(temp);
+            temp.thisObj = obj_Build;
+            temp.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
+            temp.SimBuild();
             MapController.Instance.RegisterObject(obj_Build);
         }
     }

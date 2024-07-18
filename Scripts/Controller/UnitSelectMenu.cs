@@ -21,6 +21,9 @@ public class UnitSelectMenu : MonoBehaviour
     Dictionary<BaseComponent,Image> HPBars = new Dictionary<BaseComponent,Image>();
     Dictionary<BaseComponent,Image> MPBars = new Dictionary<BaseComponent,Image>();
     public Transform tsf_BarContainer;
+
+    public Transform tsf_LeftSkillContainer;
+    public Transform tsf_RightSkillContainer;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,10 +51,10 @@ public class UnitSelectMenu : MonoBehaviour
         if (angle > 180) angle -= 180;
         if (angle < -180) angle += 180;
 
-        if(Mathf.Abs(angle) > 10)
-        {
-            Debug.Log(target + " " + self);
-        }
+        //if(Mathf.Abs(angle) > 10)
+        //{
+        //    Debug.Log(target + " " + self);
+        //}
 
         this.transform.Rotate(new Vector3(0, angle, 0));
     }
@@ -245,14 +248,19 @@ public class UnitSelectMenu : MonoBehaviour
     }
     void SetIconDegrees(float val)
     {
-
         if (skillTriggers.Count > 0)
         {
             for (int i = 0; i < skillTriggers.Count; i++)
             {
-                var posX = Mathf.Sin(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
-                var posY = Mathf.Cos(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
-                skillTriggers[i].transform.localPosition = new Vector3(posX, posY, 0);
+                //var posX = Mathf.Sin(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
+                //var posY = Mathf.Cos(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
+                //skillTriggers[i].transform.localPosition = new Vector3(posX, posY, 0);
+
+                var isLeft = i % 2 == 0 ? 1 : -1;
+                var arrange = Mathf.FloorToInt(i / 2);
+
+                var posX = (0.75f + arrange * val * 0.35f) * isLeft;
+                skillTriggers[i].transform.localPosition = new Vector3(posX, 0, 0);
             }
         }
     }

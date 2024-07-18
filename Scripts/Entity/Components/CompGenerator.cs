@@ -31,6 +31,7 @@ public class CompGenerator : BaseComponent
     public override void Update()
     {
         base.Update();
+        if (thisObj.GetDesiredComponent<CompConstructTemp>() != null) return;
         foreach (var comp in thisObj.components)
         {
             comp.EP += powerRegenRate * Time.deltaTime;

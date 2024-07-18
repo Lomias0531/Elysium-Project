@@ -8,6 +8,8 @@ public class CompPowerDispathcer : BaseComponent
 {
     public int powerRadiationRange;
     public float maxPowerDispathable;
+    public LineRenderer powerProject;
+    public GameObject obj_TransferStart;
     public override void OnApply(int index)
     {
         FunctionTriggered(functions[index]);
@@ -33,7 +35,8 @@ public class CompPowerDispathcer : BaseComponent
     public override void Update()
     {
         base.Update();
-        if(functionTimeElapsed <= 0)
+        if (thisObj.GetDesiredComponent<CompConstructTemp>() != null) return;
+        if (functionTimeElapsed <= 0)
         {
             foreach (var unit in MapController.Instance.entityDic.Values)
             {
@@ -76,6 +79,8 @@ public class CompPowerDispathcer : BaseComponent
                                     unit.components[i].EP += targetEPDis;
                                 }
                             }
+
+                            StartCoroutine(DisplayPowerDispatcher(unit));
                             break;
                         }
 
@@ -87,6 +92,30 @@ public class CompPowerDispathcer : BaseComponent
                     }
                 }
             }
+        }
+    }
+    IEnumerator DisplayPowerDispatcher(BaseObj target)
+    {
+        var time = 0f;
+        if(powerProject != null)
+        {
+            do
+            {
+                powerProject.enabled = true;
+                Vector3[] pos = new Vector3[2];
+                pos[0] = obj_TransferStart.transform.position;
+                pos[1] = target.transform.position;
+                powerProject.SetPositions(pos);
+                var width = (0.25f - Mathf.Abs(time - 0.25f)) / 0.25f * 0.06f;
+                powerProject.startWidth = width;
+                powerProject.endWidth = width;
+
+                yield return null;
+
+                time += Time.deltaTime;
+            } while (time < 0.5f);
+
+            powerProject.enabled = false;
         }
     }
 }
