@@ -240,6 +240,8 @@ public class PlayerController : Singletion<PlayerController>
                                 }
                         }
                         EntityFinishedAction();
+
+                        CancelAllOperations();
                     }
                     if(buildIndicator.Contains(hoveredTile))
                     {
@@ -250,10 +252,7 @@ public class PlayerController : Singletion<PlayerController>
                         MapController.Instance.RegisterObject(newConstruct);
                         newConstruct.Pos = hoveredTile.Pos;
                         newConstruct.transform.position = hoveredTile.gameObject.transform.position;
-                        //var compBuild = newConstruct.AddComponent<CompConstructTemp>();
-                        //newConstruct.components.Add(compBuild);
-                        //compBuild.thisObj = newConstruct;
-                        //compBuild.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
+
                         var compBuild = newConstruct.GetDesiredComponent<CompConstructTemp>();
                         compBuild.InitConstruct();
 
