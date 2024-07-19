@@ -6,6 +6,8 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Random = UnityEngine.Random;
+using static UnityEditor.Progress;
 
 public abstract class BaseObj : MonoBehaviour
 {
@@ -168,6 +170,60 @@ public abstract class BaseObj : MonoBehaviour
         {
             components.Remove(comp);
             Destroy(comp);
+        }
+    }
+
+    public void TakeDamage(float damageValue, CompWeapon.WeaponAttackType damageType)
+    {
+        switch(damageType)
+        {
+            default:
+                {
+                    break;
+                }
+            case CompWeapon.WeaponAttackType.Pierce:
+                {
+                    Dictionary<int, int> dic = new Dictionary<int, int>();
+                    int index = 0;
+                    for (int i = 0; i < components.Count; i++)
+                    {
+                        for (int t = 0; t < components[i].HP; t++)
+                        {
+                            dic.Add(index, i);
+                            index += 1;
+                        }
+                    }
+
+                    int compIndex = Random.Range(0, dic.Count);
+                    var damagedComp = components[dic[compIndex]];
+
+                    damagedComp.HP -= damageValue - damagedComp.Defense;
+                    if (damagedComp.HP < 0)
+                    {
+                        damagedComp.HP = 0;
+                        Debug.Log("Component destroyed");
+                        components.Remove(damagedComp);
+
+                        if(damagedComp.isCritical)
+                        {
+                            Debug.Log("Critical component lost, unit destroyed");
+                            MapController.Instance.RemoveObject(this);
+                        }
+
+                        if(components.Count <= 0)
+                        {
+                            Debug.Log("All components lost, unit destroyed");
+                            MapController.Instance.RemoveObject(this);
+                        }
+
+                        Destroy(damagedComp);
+                    }
+                    break;
+                }
+            case CompWeapon.WeaponAttackType.Blast:
+                {
+                    break;
+                }
         }
     }
 }

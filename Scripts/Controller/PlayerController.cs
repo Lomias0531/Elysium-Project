@@ -149,7 +149,9 @@ public class PlayerController : Singletion<PlayerController>
                     };
                     DrawRangeIndicator(tiles, selectedTile, "HoverIndicator", Color.white);
 
-                    if(obj_Build != null && buildIndicator.Contains(selectedTile) && selectedTile.isAvailable())
+                    hoveredTile = selectedTile;
+
+                    if (obj_Build != null && buildIndicator.Contains(selectedTile) && selectedTile.isAvailable())
                     {
                         obj_Build.Pos = selectedTile.Pos;
                         obj_Build.transform.position = selectedTile.transform.position;
@@ -157,7 +159,10 @@ public class PlayerController : Singletion<PlayerController>
                         GetPowerGridRange();
                     }
 
-                    hoveredTile = selectedTile;
+                    if (attackRangeIndicators.Contains(selectedTile))
+                    {
+                        GetAOERange();
+                    }
 
                     UIController.Instance.DisplayHoveredTileInfo(hoveredTile);
                     
@@ -245,6 +250,8 @@ public class PlayerController : Singletion<PlayerController>
                     }
                     if(buildIndicator.Contains(hoveredTile))
                     {
+                        selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
+
                         var newConstruct = GameObject.Instantiate(obj_Build, MapController.Instance.entityContainer);
                         newConstruct.transform.eulerAngles = obj_Build.transform.eulerAngles;
                         newConstruct.Faction = "Elysium";
@@ -257,6 +264,15 @@ public class PlayerController : Singletion<PlayerController>
                         compBuild.InitConstruct();
 
                         CancelAllOperations();
+                    }
+                    if(attackRangeIndicators.Contains(hoveredTile))
+                    {
+                        var targetUnit = hoveredTile.GetEntitynThisTile();
+                        if(targetUnit != null)
+                        {
+                            selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
+                            selectedObject.curSelectedComp.OnTriggerFunction(targetUnit);
+                        }
                     }
                 }
             }
@@ -646,6 +662,33 @@ public class PlayerController : Singletion<PlayerController>
             temp.SimBuild();
             MapController.Instance.RegisterObject(obj_Build);
         }
+    }
+    public void GetAttackRange()
+    {
+        attackRangeIndicators.Clear();
+
+        var attackRangeMax = Tools.GetTileWithinRange(selectedObject.GetTileWhereUnitIs(), selectedObject.curSelectedFunction.functionIntVal[1], Tools.IgnoreType.All);
+        var attackRangeMin = Tools.GetTileWithinRange(selectedObject.GetTileWhereUnitIs(), selectedObject.curSelectedFunction.functionIntVal[0], Tools.IgnoreType.All);
+
+        foreach (var item in attackRangeMin)
+        {
+            if(attackRangeMax.Contains(item))
+            {
+                attackRangeMax.Remove(item);
+            }
+        }
+
+        attackRangeIndicators = attackRangeMax;
+
+        DrawRangeIndicator(attackRangeIndicators, selectedObject.GetTileWhereUnitIs(), "AttackRangeIndicator", col_AttackRange, 2f);
+    }
+    void GetAOERange()
+    {
+        attackIndicators.Clear();
+
+        attackIndicators = Tools.GetTileWithinRange(hoveredTile, selectedObject.curSelectedFunction.functionIntVal[2], Tools.IgnoreType.All);
+
+        DrawRangeIndicator(attackIndicators, hoveredTile, "AttackIndicator", col_Attack, 3f);
     }
     private void OnApplicationFocus(bool focus)
     {

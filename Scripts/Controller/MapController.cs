@@ -353,11 +353,21 @@ public class MapController : Singletion<MapController>
         obj.gameObject.transform.SetParent(entityContainer);
         entityDic.Add(obj.EntityID, obj);
         UIController.Instance.AddUnitIndicator(obj);
+
+        Debug.Log("Unit registered");
     }
     public void RemoveObject(BaseObj obj)
     {
         if(entityDic.ContainsKey(obj.EntityID))
         {
+            Debug.Log("Remove object");
+
+            UIController.Instance.RemoveUnitIndicator(obj);
+            if(CameraController.Instance.focusingTarget == obj)
+            {
+                CameraController.Instance.CamFocusOnTarget(null);
+            }
+
             entityDic.Remove(obj.EntityID);
             Destroy(obj.gameObject);
         }

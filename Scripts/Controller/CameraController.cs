@@ -28,6 +28,10 @@ public class CameraController : Singletion<CameraController>
 
     bool isFocusing = false;
     BaseTile curLookingTile;
+    public BaseObj focusingTarget;
+
+    Vector3 lastDummyPos;
+    Vector3 lastDummyRot;
     // Start is called before the first frame update
     void Start()
     {
@@ -106,6 +110,12 @@ public class CameraController : Singletion<CameraController>
     }
     private void LateUpdate()
     {
+        if(obj_CameraFocusDummy == null)
+        {
+            obj_CameraFocusDummy = new GameObject("CamDummy");
+            obj_CameraFocusDummy.transform.position = lastDummyPos;
+            obj_CameraFocusDummy.transform.eulerAngles = lastDummyRot;
+        }
         obj_CameraFocusDummy.transform.eulerAngles = new Vector3(0, camAngleX, 0);
 
         var horLength = camDistance * Mathf.Cos(Mathf.Deg2Rad * camAngleY);
@@ -115,6 +125,9 @@ public class CameraController : Singletion<CameraController>
         this.transform.position = obj_CameraFocusDummy.transform.position + new Vector3(camX, height, camZ);
 
         this.transform.LookAt(obj_CameraFocusDummy.transform);
+
+        lastDummyPos = obj_CameraFocusDummy.transform.position;
+        lastDummyRot = obj_CameraFocusDummy.transform.eulerAngles;
     }
     public void MoveCamTo(Vector3Int pos)
     {
@@ -136,6 +149,8 @@ public class CameraController : Singletion<CameraController>
         {
             CamMoveTween.Kill();
         }
+
+        focusingTarget = target;
 
         if (target != null)
         {

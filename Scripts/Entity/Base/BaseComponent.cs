@@ -9,6 +9,7 @@ public abstract class BaseComponent : MonoBehaviour
     public float MaxHP;
     public float EP;
     public float MaxEP;
+    public float Defense;
     public CompFunctionDetail[] functions;
     [HideInInspector]
     public BaseObj thisObj;
