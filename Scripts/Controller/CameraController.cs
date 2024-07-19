@@ -195,20 +195,7 @@ public class CameraController : Singletion<CameraController>
     }
     void GetTileCurLookingAt()
     {
-        Ray ray = new Ray(new Vector3(obj_CameraFocusDummy.transform.position.x, 1000, obj_CameraFocusDummy.transform.position.z), Vector3.down);
-        var result = Physics.RaycastAll(ray, Mathf.Infinity);
-        if(result.Length > 0)
-        {
-            foreach (var hit in result)
-            {
-                var tile = hit.collider.gameObject.GetComponent<BaseTile>();
-                if (tile != null)
-                {
-                    curLookingTile = tile;
-                    break;
-                }
-            }
-        }
+        curLookingTile = Tools.GetTileViaCoord(obj_CameraFocusDummy.transform.position);
         if(curLookingTile != null && !isFocusing)
         {
             var y = obj_CameraFocusDummy.transform.position.y + (curLookingTile.transform.position.y - obj_CameraFocusDummy.transform.position.y) * (Time.deltaTime / 0.2f);

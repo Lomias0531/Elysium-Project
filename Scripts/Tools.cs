@@ -322,6 +322,23 @@ public static class Tools
         IgnoreEnemy,
         IgnoreFriendly,
     }
+    public static BaseTile GetTileViaCoord(Vector3 coord)
+    {
+        Ray ray = new Ray(coord + new Vector3(0, 1000f, 0), Vector3.down);
+        var result = Physics.RaycastAll(ray, Mathf.Infinity);
+        if (result.Length > 0)
+        {
+            foreach (var hit in result)
+            {
+                var tile = hit.collider.gameObject.GetComponent<BaseTile>();
+                if (tile != null)
+                {
+                    return tile;
+                }
+            }
+        }
+        return null;
+    }
 }
 public static class ToolsUtility
 {
