@@ -119,6 +119,11 @@ public class CompWeapon : BaseComponent
                     {
                         break;
                     }
+                case WeaponProjectileType.Melee:
+                    {
+                        attackTarget.TakeDamage(thisObj.curSelectedFunction.functionFloatVal[0], WeaponAttackType.Pierce);
+                        break;
+                    }
             }
         }
     }

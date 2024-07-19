@@ -1,0 +1,11 @@
+Model Information:
+* title:	Medieval Sci-fi Pillar
+* source:	https://sketchfab.com/3d-models/medieval-sci-fi-pillar-60c1b1f74df24898a54968ec3008fc63
+* author:	Nick.Amalin (https://sketchfab.com/Nick.Amalin)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Medieval Sci-fi Pillar" (https://sketchfab.com/3d-models/medieval-sci-fi-pillar-60c1b1f74df24898a54968ec3008fc63) by Nick.Amalin (https://sketchfab.com/Nick.Amalin) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

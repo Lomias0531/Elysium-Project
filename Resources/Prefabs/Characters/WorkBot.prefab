@@ -64,6 +64,8 @@ MonoBehaviour:
     functionApplyTimeInterval: 0
     functionValue: 0
     functionConsume: 0
+    canBeAuto: 0
+    isAuto: 0
     functionIntVal: 
     functionFloatVal: []
     functionBoolVal: 
@@ -93,6 +95,7 @@ MonoBehaviour:
   isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  isMoving: 0
 --- !u!114 &-3663101869440365015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,6 +197,8 @@ MonoBehaviour:
     functionApplyTimeInterval: 5
     functionValue: 0
     functionConsume: 3
+    canBeAuto: 0
+    isAuto: 0
     functionIntVal: 
     functionFloatVal:
     - 3
@@ -207,6 +212,8 @@ MonoBehaviour:
     functionApplyTimeInterval: 5
     functionValue: 0
     functionConsume: 3
+    canBeAuto: 0
+    isAuto: 0
     functionIntVal: 
     functionFloatVal:
     - 5
@@ -220,12 +227,29 @@ MonoBehaviour:
     functionApplyTimeInterval: 5
     functionValue: 0
     functionConsume: 3
+    canBeAuto: 0
+    isAuto: 0
     functionIntVal: 
     functionFloatVal:
     - 8
     functionBoolVal: 
     functionStringVal:
     - Turret
+    functionDescription: 
+  - functionName: "\u5EFA\u9020\u56F4\u5899"
+    function: 2
+    functionIcon: {fileID: 193079915, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
+    functionApplyTimeInterval: 5
+    functionValue: 0
+    functionConsume: 3
+    canBeAuto: 0
+    isAuto: 0
+    functionIntVal: 
+    functionFloatVal:
+    - 2
+    functionBoolVal: 
+    functionStringVal:
+    - Fense
     functionDescription: 
   thisObj: {fileID: 0}
   compResID: 

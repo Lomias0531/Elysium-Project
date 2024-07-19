@@ -26,6 +26,8 @@ public struct CompFunctionDetail
     public float functionApplyTimeInterval;
     public float functionValue;
     public float functionConsume;
+    public bool canBeAuto;
+    public bool isAuto;
     public int[] functionIntVal;
     public float[] functionFloatVal;
     public bool[] functionBoolVal;

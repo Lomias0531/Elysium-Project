@@ -244,7 +244,6 @@ public class PlayerController : Singletion<PlayerController>
                                     break;
                                 }
                         }
-                        EntityFinishedAction();
 
                         CancelAllOperations();
                     }
@@ -328,9 +327,6 @@ public class PlayerController : Singletion<PlayerController>
             Destroy(item.Value.gameObject);
         }
         rangeIndicators.Clear();
-
-        //selectedObject.curSelectedComp = null;
-        //selectedObject.curSelectedFunction = null;
     }
     void PaintIndicator()
     {

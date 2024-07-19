@@ -5,6 +5,7 @@ using static BaseObj;
 
 public class CompMobile : BaseComponent
 {
+    public bool isMoving;
     public override void OnApply(int index)
     {
         var moveType = (BaseObj.MoveType)functions[index].functionIntVal[0];
@@ -32,6 +33,7 @@ public class CompMobile : BaseComponent
     }
     public IEnumerator MoveObject(BaseTile tile)
     {
+        isMoving = true;
         var moveQueue = thisObj.UnitFindPath(tile, (MoveType)thisObj.curSelectedFunction.functionIntVal[0]);
 
         switch ((MoveStyle)thisObj.curSelectedFunction.functionIntVal[1])
@@ -128,6 +130,8 @@ public class CompMobile : BaseComponent
             thisObj.animator.CrossFadeInFixedTime("Idle", 0.1f);
         }
         yield return new WaitForSeconds(0.1f);
+
+        isMoving = false;
     }
 
     public override void OnTriggerFunction(params object[] obj)
