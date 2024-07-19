@@ -198,7 +198,7 @@ public abstract class BaseObj : MonoBehaviour
                     var damagedComp = components[dic[compIndex]];
 
                     damagedComp.HP -= damageValue - damagedComp.Defense;
-                    if (damagedComp.HP < 0)
+                    if (damagedComp.HP <= 0)
                     {
                         damagedComp.HP = 0;
                         Debug.Log("Component destroyed");

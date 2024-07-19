@@ -9,6 +9,7 @@ public class UnitSelectMenu : MonoBehaviour
     BaseObj selectedObj;
     Coroutine expandRoutine;
     bool expandFinished = true;
+    bool isTracking = false;
 
     float expandTimeElapsed;
     public Image img_MP;
@@ -21,9 +22,6 @@ public class UnitSelectMenu : MonoBehaviour
     Dictionary<BaseComponent,Image> HPBars = new Dictionary<BaseComponent,Image>();
     Dictionary<BaseComponent,Image> MPBars = new Dictionary<BaseComponent,Image>();
     public Transform tsf_BarContainer;
-
-    public Transform tsf_LeftSkillContainer;
-    public Transform tsf_RightSkillContainer;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,6 +53,20 @@ public class UnitSelectMenu : MonoBehaviour
         //{
         //    Debug.Log(target + " " + self);
         //}
+        if(selectedObj != null)
+        {
+            this.transform.position = selectedObj.transform.position;
+            isTracking = true;
+        }else
+        {
+            if(isTracking)
+            {
+                expandTimeElapsed = 0;
+                StartCoroutine(RetractThis());
+
+                isTracking = false;
+            }
+        }
 
         this.transform.Rotate(new Vector3(0, angle, 0));
     }
@@ -72,7 +84,7 @@ public class UnitSelectMenu : MonoBehaviour
         if (thisUnit == null)
         {
             expandRoutine = StartCoroutine(RetractThis());
-            this.transform.SetParent(null);
+            //this.transform.SetParent(null);
         }else
         {
             selectedObj = thisUnit;
@@ -88,7 +100,7 @@ public class UnitSelectMenu : MonoBehaviour
             HPBars.Clear();
             MPBars.Clear();
 
-            this.transform.SetParent(thisUnit.transform);
+            //this.transform.SetParent(thisUnit.transform);
             this.transform.localPosition = Vector3.zero;
 
             for(int i =0;i<selectedObj.components.Count;i++)
@@ -220,28 +232,62 @@ public class UnitSelectMenu : MonoBehaviour
     {
         foreach (var item in HPBars)
         {
-            var fullDiv = item.Key.MaxHP / selectedObj.HPMax;
-            var HPDiv = item.Key.HP / item.Key.MaxHP;
-            if (val <= HPDiv)
+            if(item.Key == null)
             {
-                item.Value.fillAmount = val * fullDiv;
+                item.Value.fillAmount = 0;
             }
             else
             {
-                item.Value.fillAmount = HPDiv * fullDiv;
+                float fullDiv;
+                float HPDiv;
+                if(selectedObj != null)
+                {
+                    fullDiv = item.Key.MaxHP / selectedObj.HPMax;
+                    HPDiv = item.Key.HP / item.Key.MaxHP;
+                }
+                else
+                {
+                    fullDiv = 1;
+                    HPDiv = item.Value.fillAmount;
+                }
+                if (val <= HPDiv)
+                {
+                    item.Value.fillAmount = val * fullDiv;
+                }
+                else
+                {
+                    item.Value.fillAmount = HPDiv * fullDiv;
+                }
             }
         }
         foreach (var item in MPBars)
         {
-            var fullDiv = item.Key.MaxEP / selectedObj.EPMax;
-            var MPDiv = item.Key.EP / item.Key.MaxEP;
-            if (val <= MPDiv)
+            if (item.Key == null)
             {
-                item.Value.fillAmount = val * fullDiv;
+                item.Value.fillAmount = 0;
             }
             else
             {
-                item.Value.fillAmount = MPDiv * fullDiv;
+                float fullDiv;
+                float MPDiv;
+                if(selectedObj != null)
+                {
+                    fullDiv = item.Key.MaxEP / selectedObj.EPMax;
+                    MPDiv = item.Key.EP / item.Key.MaxEP;
+                }
+                else
+                {
+                    fullDiv = 1;
+                    MPDiv = item.Value.fillAmount;
+                }
+                if (val <= MPDiv)
+                {
+                    item.Value.fillAmount = val * fullDiv;
+                }
+                else
+                {
+                    item.Value.fillAmount = MPDiv * fullDiv;
+                }
             }
         }
         SetIconDegrees(val);

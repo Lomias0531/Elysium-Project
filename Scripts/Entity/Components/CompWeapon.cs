@@ -17,6 +17,7 @@ public class CompWeapon : BaseComponent
         Laser,
         CurveProjectile,
         StraightProjectile,
+        Melee,
     }
     public enum WeaponAttackType
     {
@@ -61,7 +62,6 @@ public class CompWeapon : BaseComponent
     void CommenceAttack()
     {
         if (attackTarget == null) return;
-        if (functionTimeElapsed > 0) return;
         if (EP < thisObj.curSelectedFunction.functionConsume) return;
 
         var dir = thisObj.gameObject.transform.position - attackTarget.gameObject.transform.position;
@@ -84,6 +84,8 @@ public class CompWeapon : BaseComponent
             step = angle;
 
             tsf_Turret.Rotate(0, step, 0);
+
+            if (functionTimeElapsed > 0) return;
 
             Debug.Log("Attack");
 
