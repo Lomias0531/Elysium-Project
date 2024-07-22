@@ -242,6 +242,46 @@ public abstract class BaseObj : MonoBehaviour
                 }
             case CompWeapon.WeaponAttackType.Blast:
                 {
+                    do
+                    {
+                        var dam = Random.Range(1f, damageValue);
+                        Dictionary<int, int> dic = new Dictionary<int, int>();
+                        int index = 0;
+                        for (int i = 0; i < components.Count; i++)
+                        {
+                            for (int t = 0; t < components[i].HP; t++)
+                            {
+                                dic.Add(index, i);
+                                index += 1;
+                            }
+                        }
+
+                        int compIndex = Random.Range(0, dic.Count);
+                        var damagedComp = components[dic[compIndex]];
+
+                        damagedComp.HP -= dam - damagedComp.Defense;
+                        damageValue -= dam;
+                        if (damagedComp.HP <= 0)
+                        {
+                            damagedComp.HP = 0;
+                            Debug.Log("Component destroyed");
+                            components.Remove(damagedComp);
+
+                            if (damagedComp.isCritical)
+                            {
+                                Debug.Log("Critical component lost, unit destroyed");
+                                MapController.Instance.RemoveObject(this);
+                            }
+
+                            if (components.Count <= 0)
+                            {
+                                Debug.Log("All components lost, unit destroyed");
+                                MapController.Instance.RemoveObject(this);
+                            }
+
+                            Destroy(damagedComp);
+                        }
+                    } while (damageValue > 0);
                     break;
                 }
         }

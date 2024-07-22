@@ -63,7 +63,12 @@ public class CompWeapon : BaseComponent
     }
     public void CommenceAttack(BaseObj target)
     {
-        if (target == null) return;
+        if (target == null)
+        {
+            var cpu = thisObj.GetDesiredComponent<CompAutoController>();
+            if (cpu != null) cpu.ReceiveActionException(CompAutoController.UnitActException.IllegalAttack);
+            return;
+        }
         attackTarget = target;
         if (EP < thisObj.curSelectedFunction.functionConsume) return;
 
@@ -116,10 +121,12 @@ public class CompWeapon : BaseComponent
                     }
                 case WeaponProjectileType.CurveProjectile:
                     {
+                        StartCoroutine(CreateProjectile(attackTarget));
                         break;
                     }
                 case WeaponProjectileType.StraightProjectile:
                     {
+                        StartCoroutine(CreateProjectile(attackTarget));
                         break;
                     }
                 case WeaponProjectileType.Melee:
@@ -130,5 +137,22 @@ public class CompWeapon : BaseComponent
             }
             attackTarget = null;
         }
+    }
+    IEnumerator CreateProjectile(BaseObj target)
+    {
+        for(int i = 0;i< thisObj.curSelectedFunction.functionIntVal[4];i++)
+        {
+            var projectile = (GameObject)Resources.Load("Prefabs/Projectile/Ballistic");
+            if (projectile != null)
+            {
+                var proj = ObjectPool.Instance.CreateObject("Ballistic", projectile, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_Ballistic>();
+
+                var index = Random.Range(0, tsf_FirePos.Length);
+                proj.InitThis(tsf_FirePos[index].position, target.gameObject.transform.position, 2f, false);
+            }
+            yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[1]);
+        }
+        yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[2]);
+        target.TakeDamage(thisObj.curSelectedFunction.functionFloatVal[0], WeaponAttackType.Blast);
     }
 }

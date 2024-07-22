@@ -122,6 +122,20 @@ public class CompAutoController : BaseComponent
                 {
                     break;
                 }
+            case UnitActException.IllegalInteract:
+                {
+                    break;
+                }
+            case UnitActException.IllegalMove:
+                {
+                    curMovingDestination = null;
+                    break;
+                }
+            case UnitActException.IllegalAttack:
+                {
+                    curAttackingTarget = null;
+                    break;
+                }
         }
     }
 }

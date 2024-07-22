@@ -164,12 +164,18 @@ public static class Tools
 
         return result;
     }
-    public static Vector3 GetBezierCurve(Vector3 startPoint, Vector3 destination, float timeDiv, float maxHeightDev = 0.5f)
+    public static Vector3 GetBezierCurve(Vector3 startPoint, Vector3 destination, float timeDiv, float maxHeightDev = 0.5f, bool isAdjusting = false, Transform transform = null)
     {
         var length = Vector3.Distance(startPoint, destination);
         var midPoint = (startPoint + destination) / 2 + new Vector3(0, length * maxHeightDev, 0);
 
         Vector3 curPos = Mathf.Pow((1 - timeDiv), 2) * startPoint + 2 * timeDiv * (1 - timeDiv) * midPoint + Mathf.Pow(timeDiv, 2) * destination;
+
+        if(isAdjusting)
+        {
+            var tangent = startPoint * 2 * (1 - timeDiv) * -1 + midPoint * 2 * ((1 - timeDiv) + timeDiv * -1) + destination * 2 * timeDiv;
+            transform.rotation = Quaternion.LookRotation(tangent, transform.up);
+        }
 
         return curPos;
     }
