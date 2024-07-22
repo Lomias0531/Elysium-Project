@@ -5279,7 +5279,7 @@ MonoBehaviour:
     functionConsume: 3
     canBeAuto: 0
     isAuto: 0
-    functionIntVal: 0000000008000000020000000200000004000000
+    functionIntVal: 0200000008000000000000000200000004000000
     functionFloatVal:
     - 4
     - 0.2
