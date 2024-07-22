@@ -35,7 +35,7 @@ public class CompPowerDispathcer : BaseComponent
     public override void Update()
     {
         base.Update();
-        if (thisObj.GetDesiredComponent<CompConstructTemp>() != null) return;
+        if (thisObj.isUniderConstruction) return;
         if (functionTimeElapsed <= 0)
         {
             foreach (var unit in MapController.Instance.entityDic.Values)

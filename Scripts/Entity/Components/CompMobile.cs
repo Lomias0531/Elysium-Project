@@ -110,7 +110,7 @@ public class CompMobile : BaseComponent
                     float jumpTileElapsed = 0;
                     do
                     {
-                        this.transform.position = Tools.GetBezierCurve(thisObj.GetTileWhereUnitIs().transform.position, tile.transform.position, jumpTileElapsed / 1f);
+                        this.transform.position = Tools.GetBezierCurve(thisObj.GetTileWhereUnitIs().transform.position, tile.transform.position, jumpTileElapsed / 1f, 5f);
                         jumpTileElapsed += Time.deltaTime;
 
                         yield return null;

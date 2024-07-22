@@ -164,10 +164,10 @@ public static class Tools
 
         return result;
     }
-    public static Vector3 GetBezierCurve(Vector3 startPoint, Vector3 destination, float timeDiv)
+    public static Vector3 GetBezierCurve(Vector3 startPoint, Vector3 destination, float timeDiv, float maxHeightDev = 0.5f)
     {
         var length = Vector3.Distance(startPoint, destination);
-        var midPoint = (startPoint + destination) / 2 + new Vector3(0, length / 2f, 0);
+        var midPoint = (startPoint + destination) / 2 + new Vector3(0, length * maxHeightDev, 0);
 
         Vector3 curPos = Mathf.Pow((1 - timeDiv), 2) * startPoint + 2 * timeDiv * (1 - timeDiv) * midPoint + Mathf.Pow(timeDiv, 2) * destination;
 

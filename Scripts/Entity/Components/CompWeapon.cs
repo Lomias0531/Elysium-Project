@@ -44,6 +44,7 @@ public class CompWeapon : BaseComponent
         {
             attackTarget = (BaseObj)obj[0];
             //attactCoroutine = StartCoroutine(CommenceAttack());
+            CommenceAttack(attackTarget);
         }
     }
 
@@ -57,11 +58,13 @@ public class CompWeapon : BaseComponent
     public override void Update()
     {
         base.Update();
-        CommenceAttack();
+        //CommenceAttack();
+        CommenceAttack(attackTarget);
     }
-    void CommenceAttack()
+    public void CommenceAttack(BaseObj target)
     {
-        if (attackTarget == null) return;
+        if (target == null) return;
+        attackTarget = target;
         if (EP < thisObj.curSelectedFunction.functionConsume) return;
 
         var dir = thisObj.gameObject.transform.position - attackTarget.gameObject.transform.position;
@@ -125,6 +128,7 @@ public class CompWeapon : BaseComponent
                         break;
                     }
             }
+            attackTarget = null;
         }
     }
 }

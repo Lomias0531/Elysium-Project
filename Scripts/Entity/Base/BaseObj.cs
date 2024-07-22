@@ -119,6 +119,14 @@ public abstract class BaseObj : MonoBehaviour
         Jump,
         Teleport,
     }
+    public bool isUniderConstruction
+    {
+        get
+        {
+            var comp = GetDesiredComponent<CompConstructTemp>();
+            return comp != null;
+        }
+    }
 
     [HideInInspector]
     public BaseComponent curSelectedComp;
@@ -163,6 +171,18 @@ public abstract class BaseObj : MonoBehaviour
             }
         }
         return null;
+    }
+    public T[] GetDesiredComponents<T>() where T:BaseComponent
+    {
+        List<BaseComponent> result = new List<BaseComponent>();
+        foreach (var comp in components)
+        {
+            if (comp.GetType() == typeof(T))
+            {
+                result.Add(comp);
+            }
+        }
+        return result.OfType<T>().ToArray();
     }
     public void RemoveDesiredComponent(BaseComponent comp)
     {
