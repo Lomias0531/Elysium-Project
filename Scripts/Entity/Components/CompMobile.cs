@@ -33,6 +33,7 @@ public class CompMobile : BaseComponent
     }
     public IEnumerator MoveObject(BaseTile tile)
     {
+        if (tile == null) yield break;
         isMoving = true;
         var moveQueue = thisObj.UnitFindPath(tile, (MoveType)thisObj.curSelectedFunction.functionIntVal[0]);
 
@@ -130,6 +131,12 @@ public class CompMobile : BaseComponent
             thisObj.animator.CrossFadeInFixedTime("Idle", 0.1f);
         }
         yield return new WaitForSeconds(0.1f);
+
+        var cpu = thisObj.GetDesiredComponent<CompAutoController>();
+        if (cpu != null)
+        {
+            cpu.ReceiveActionException(CompAutoController.UnitActException.IllegalMove);
+        }
 
         isMoving = false;
     }

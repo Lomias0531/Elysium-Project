@@ -46,37 +46,37 @@ public class CompPowerDispathcer : BaseComponent
                     if (unit.Faction == thisObj.Faction)
                     {
                         float powerTranfered = 0;
-                        for (int i = 0; i < unit.components.Count; i++)
+                        for (int i = 0; i < unit.Components.Count; i++)
                         {
-                            if (unit.components[i].EP / unit.components[i].MaxEP > 0.8f) continue;
+                            if (unit.Components[i].EP / unit.Components[i].MaxEP > 0.8f) continue;
 
-                            var targetEPDis = unit.components[i].MaxEP - unit.components[i].EP;
+                            var targetEPDis = unit.Components[i].MaxEP - unit.Components[i].EP;
                             if (targetEPDis <= 0) continue;
                             powerTranfered = targetEPDis;
                             if (targetEPDis >= maxPowerDispathable)
                             {
                                 if (this.EP < maxPowerDispathable)
                                 {
-                                    unit.components[i].EP += this.EP;
+                                    unit.Components[i].EP += this.EP;
                                     this.EP = 0;
                                 }
                                 else
                                 {
                                     this.EP -= maxPowerDispathable;
-                                    unit.components[i].EP += maxPowerDispathable;
+                                    unit.Components[i].EP += maxPowerDispathable;
                                 }
                             }
                             else
                             {
                                 if (this.EP < targetEPDis)
                                 {
-                                    unit.components[i].EP += this.EP;
+                                    unit.Components[i].EP += this.EP;
                                     this.EP = 0;
                                 }
                                 else
                                 {
                                     this.EP -= targetEPDis;
-                                    unit.components[i].EP += targetEPDis;
+                                    unit.Components[i].EP += targetEPDis;
                                 }
                             }
 

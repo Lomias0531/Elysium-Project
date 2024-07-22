@@ -32,7 +32,7 @@ public class CompGenerator : BaseComponent
     {
         base.Update();
         if (thisObj.isUniderConstruction) return;
-        foreach (var comp in thisObj.components)
+        foreach (var comp in thisObj.Components)
         {
             comp.EP += powerRegenRate * Time.deltaTime;
             if(comp.EP > comp.MaxEP) comp.EP = comp.MaxEP;

@@ -54,35 +54,7 @@ public class CompAutoController : BaseComponent
             return;
         }
 
-        var targetDistance = Tools.GetDistance(curAttackingTarget.Pos, thisObj.Pos);
-        var weapons = thisObj.GetDesiredComponents<CompWeapon>();
-        foreach(var weapon in weapons)
-        {
-            if (weapon.functionTimeElapsed > 0) continue;
-            var randomList = new List<CompFunctionDetail>();
-            var random = new System.Random();
-            foreach (var item in weapon.functions.ToList())
-            {
-                randomList.Insert(random.Next(randomList.Count), item);
-            }
-            bool fired = false;
-            for(int i = 0;i< randomList.Count;i++)
-            {
-                if (weapon.EP < randomList[i].functionConsume) continue;
-                if (targetDistance > randomList[i].functionIntVal[1]) continue;
-                if (targetDistance < randomList[i].functionIntVal[0]) continue;
-                weapon.FunctionTriggered(randomList[i]);
-                weapon.CommenceAttack(curAttackingTarget);
-                fired = true;
-                thisObj.curSelectedFunction = randomList[i];
-                thisObj.curSelectedComp = weapon;
-                break;
-            }
-            if(!fired)
-            {
-                curAttackingTarget = null;
-            }
-        }
+        CommenceAttack();
     }
     void ScanForTarget()
     {
@@ -108,11 +80,80 @@ public class CompAutoController : BaseComponent
     }
     void WayFinding()
     {
-
+        var mobile = thisObj.GetDesiredComponent<CompMobile>();
+        var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+        var maxAttackRange = 0;
+        foreach (var weapon in weapons)
+        {
+            foreach (var range in weapon.functions)
+            {
+                if (range.functionIntVal[1] > maxAttackRange)
+                {
+                    maxAttackRange = range.functionIntVal[1];
+                }
+            }
+        }
+        if(mobile != null)
+        {
+            if (mobile.functionTimeElapsed > 0) return;
+            if (mobile.EP < mobile.functions[0].functionConsume) return;
+            var defaultMoveType = (BaseObj.MoveType)mobile.functions[0].functionIntVal[0];
+            var defaultMoveRange = mobile.functions[0].functionValue;
+            var path = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType);
+            curMovingDestination = curAttackingTarget.GetTileWhereUnitIs();
+            if(defaultMoveRange + maxAttackRange > path.Count)
+            {
+                BaseTile destination = null;
+                for (int i = 0; i < path.Count - maxAttackRange; i++)
+                {
+                    destination = path.Dequeue();
+                }
+                mobile.FunctionTriggered(mobile.functions[0]);
+                StartCoroutine(mobile.MoveObject(destination));
+            }
+            else
+            {
+                BaseTile destination = null;
+                for(int i = 0;i<defaultMoveRange;i++)
+                {
+                    destination = path.Dequeue();
+                }
+                mobile.FunctionTriggered(mobile.functions[0]);
+                StartCoroutine(mobile.MoveObject(destination));
+            }
+        }
     }
     void CommenceAttack()
     {
-
+        var targetDistance = Tools.GetDistance(curAttackingTarget.Pos, thisObj.Pos);
+        var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+        foreach (var weapon in weapons)
+        {
+            if (weapon.functionTimeElapsed > 0) continue;
+            var randomList = new List<CompFunctionDetail>();
+            var random = new System.Random();
+            foreach (var item in weapon.functions.ToList())
+            {
+                randomList.Insert(random.Next(randomList.Count), item);
+            }
+            bool fired = false;
+            for (int i = 0; i < randomList.Count; i++)
+            {
+                if (weapon.EP < randomList[i].functionConsume) continue;
+                if (targetDistance > randomList[i].functionIntVal[1]) continue;
+                if (targetDistance < randomList[i].functionIntVal[0]) continue;
+                weapon.FunctionTriggered(randomList[i]);
+                weapon.CommenceAttack(curAttackingTarget);
+                fired = true;
+                thisObj.curSelectedFunction = randomList[i];
+                thisObj.curSelectedComp = weapon;
+                break;
+            }
+            if (!fired)
+            {
+                curAttackingTarget = null;
+            }
+        }
     }
     public void ReceiveActionException(UnitActException exception)
     {

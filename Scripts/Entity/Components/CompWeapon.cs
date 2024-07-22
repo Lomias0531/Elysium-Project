@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
 
 public class CompWeapon : BaseComponent
@@ -59,7 +60,8 @@ public class CompWeapon : BaseComponent
     {
         base.Update();
         //CommenceAttack();
-        CommenceAttack(attackTarget);
+        if(attackTarget != null)
+            CommenceAttack(attackTarget);
     }
     public void CommenceAttack(BaseObj target)
     {
@@ -72,73 +74,77 @@ public class CompWeapon : BaseComponent
         attackTarget = target;
         if (EP < thisObj.curSelectedFunction.functionConsume) return;
 
-        var dir = thisObj.gameObject.transform.position - attackTarget.gameObject.transform.position;
-        dir.y = 0;
-
-        float angle = Vector3.SignedAngle(tsf_Turret.forward, dir, Vector3.up);
-        float rotateDir = Mathf.Sign(angle);
-
-        float step;
-
-        if(angle >= rotateDir * turretTurnRate * Time.deltaTime)
+        if(tsf_Turret != null)
         {
-            step = rotateDir * turretTurnRate * Time.deltaTime;
+            var dir = thisObj.gameObject.transform.position - attackTarget.gameObject.transform.position;
+            dir.y = 0;
 
-            tsf_Turret.Rotate(0, step, 0);
-            return;
-        }
-        else
-        {
-            step = angle;
+            float angle = Vector3.SignedAngle(tsf_Turret.forward, dir, Vector3.up);
+            float rotateDir = Mathf.Sign(angle);
 
-            tsf_Turret.Rotate(0, step, 0);
+            float step;
 
-            if (functionTimeElapsed > 0) return;
-
-            Debug.Log("Attack");
-
-            FunctionTriggered(thisObj.curSelectedFunction);
-
-            switch ((WeaponProjectileType)thisObj.curSelectedFunction.functionIntVal[3])
+            if (Mathf.Abs(angle) >= turretTurnRate * Time.deltaTime)
             {
-                default:
-                    {
-                        break;
-                    }
-                case WeaponProjectileType.Laser:
-                    {
-                        var laserInstance = (GameObject)Resources.Load("Prefabs/Projectile/LaserBeam");
-                        if (laserInstance != null)
-                        {
-                            var laserBeam = ObjectPool.Instance.CreateObject("LaserBeam", laserInstance, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_LaerBeam>();
+                step = rotateDir * turretTurnRate * Time.deltaTime;
 
-                            var index = Random.Range(0, tsf_FirePos.Length);
-
-                            laserBeam.TriggerThis(tsf_FirePos[index].position, attackTarget.gameObject.transform.position, new Color(1, 0, 0, 0.75f));
-                        }
-                        attackTarget.TakeDamage(thisObj.curSelectedFunction.functionFloatVal[0], WeaponAttackType.Pierce);
-                        break;
-                    }
-                case WeaponProjectileType.CurveProjectile:
-                    {
-                        StartCoroutine(CreateProjectile(attackTarget));
-                        break;
-                    }
-                case WeaponProjectileType.StraightProjectile:
-                    {
-                        StartCoroutine(CreateProjectile(attackTarget));
-                        break;
-                    }
-                case WeaponProjectileType.Melee:
-                    {
-                        attackTarget.TakeDamage(thisObj.curSelectedFunction.functionFloatVal[0], WeaponAttackType.Pierce);
-                        break;
-                    }
+                tsf_Turret.Rotate(0, step, 0);
+                return;
             }
-            attackTarget = null;
+            else
+            {
+                step = angle;
+
+                tsf_Turret.Rotate(0, step, 0);
+
+                if (functionTimeElapsed > 0) return;
+            }
         }
+
+        Debug.Log("Attack");
+
+        FunctionTriggered(thisObj.curSelectedFunction);
+
+        switch ((WeaponProjectileType)thisObj.curSelectedFunction.functionIntVal[3])
+        {
+            default:
+                {
+                    break;
+                }
+            case WeaponProjectileType.Laser:
+                {
+                    var laserInstance = (GameObject)Resources.Load("Prefabs/Projectile/LaserBeam");
+                    if (laserInstance != null)
+                    {
+                        var laserBeam = ObjectPool.Instance.CreateObject("LaserBeam", laserInstance, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_LaerBeam>();
+
+                        var index = Random.Range(0, tsf_FirePos.Length);
+
+                        laserBeam.TriggerThis(tsf_FirePos[index].position, attackTarget.gameObject.transform.position, new Color(1, 0, 0, 0.75f));
+                    }
+                    attackTarget.TakeDamage(thisObj.curSelectedFunction.functionValue, WeaponAttackType.Pierce);
+                    break;
+                }
+            case WeaponProjectileType.CurveProjectile:
+                {
+                    StartCoroutine(CreateProjectile(attackTarget, attackTarget.transform.position, true));
+                    break;
+                }
+            case WeaponProjectileType.StraightProjectile:
+                {
+                    StartCoroutine(CreateProjectile(attackTarget, attackTarget.transform.position, false));
+                    break;
+                }
+            case WeaponProjectileType.Melee:
+                {
+                    attackTarget.TakeDamage(thisObj.curSelectedFunction.functionValue, WeaponAttackType.Pierce);
+                    break;
+                }
+        }
+        attackTarget = null;
+
     }
-    IEnumerator CreateProjectile(BaseObj target)
+    IEnumerator CreateProjectile(BaseObj target, Vector3 destination, bool curve)
     {
         for(int i = 0;i< thisObj.curSelectedFunction.functionIntVal[4];i++)
         {
@@ -148,11 +154,11 @@ public class CompWeapon : BaseComponent
                 var proj = ObjectPool.Instance.CreateObject("Ballistic", projectile, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_Ballistic>();
 
                 var index = Random.Range(0, tsf_FirePos.Length);
-                proj.InitThis(tsf_FirePos[index].position, target.gameObject.transform.position, 2f, false);
+                proj.InitThis(tsf_FirePos[index].position, destination, thisObj, target, 2f, !curve, thisObj.curSelectedFunction.functionFloatVal[0]);
             }
             yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[1]);
         }
-        yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[2]);
-        target.TakeDamage(thisObj.curSelectedFunction.functionFloatVal[0], WeaponAttackType.Blast);
+        yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[0]);
+        //target.TakeDamage(thisObj.curSelectedFunction.functionFloatVal[0], WeaponAttackType.Blast);
     }
 }

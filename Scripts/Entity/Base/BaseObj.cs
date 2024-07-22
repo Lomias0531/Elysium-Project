@@ -54,7 +54,14 @@ public abstract class BaseObj : MonoBehaviour
     }
     public string objName;
     [HideInInspector]
-    public List<BaseComponent> components = new List<BaseComponent>();
+    List<BaseComponent> components = new List<BaseComponent>();
+    public List<BaseComponent> Components
+    {
+        get
+        {
+            return components;
+        }
+    }
     public string Faction;
     public float HP
     {
@@ -205,9 +212,9 @@ public abstract class BaseObj : MonoBehaviour
                 {
                     Dictionary<int, int> dic = new Dictionary<int, int>();
                     int index = 0;
-                    for (int i = 0; i < components.Count; i++)
+                    for (int i = 0; i < Components.Count; i++)
                     {
-                        for (int t = 0; t < components[i].HP; t++)
+                        for (int t = 0; t < Components[i].HP; t++)
                         {
                             dic.Add(index, i);
                             index += 1;
@@ -215,14 +222,14 @@ public abstract class BaseObj : MonoBehaviour
                     }
 
                     int compIndex = Random.Range(0, dic.Count);
-                    var damagedComp = components[dic[compIndex]];
+                    var damagedComp = Components[dic[compIndex]];
 
                     damagedComp.HP -= damageValue - damagedComp.Defense;
                     if (damagedComp.HP <= 0)
                     {
                         damagedComp.HP = 0;
                         Debug.Log("Component destroyed");
-                        components.Remove(damagedComp);
+                        Components.Remove(damagedComp);
 
                         if(damagedComp.isCritical)
                         {
@@ -230,7 +237,7 @@ public abstract class BaseObj : MonoBehaviour
                             MapController.Instance.RemoveObject(this);
                         }
 
-                        if(components.Count <= 0)
+                        if(Components.Count <= 0)
                         {
                             Debug.Log("All components lost, unit destroyed");
                             MapController.Instance.RemoveObject(this);
@@ -247,9 +254,9 @@ public abstract class BaseObj : MonoBehaviour
                         var dam = Random.Range(1f, damageValue);
                         Dictionary<int, int> dic = new Dictionary<int, int>();
                         int index = 0;
-                        for (int i = 0; i < components.Count; i++)
+                        for (int i = 0; i < Components.Count; i++)
                         {
-                            for (int t = 0; t < components[i].HP; t++)
+                            for (int t = 0; t < Components[i].HP; t++)
                             {
                                 dic.Add(index, i);
                                 index += 1;
@@ -257,7 +264,7 @@ public abstract class BaseObj : MonoBehaviour
                         }
 
                         int compIndex = Random.Range(0, dic.Count);
-                        var damagedComp = components[dic[compIndex]];
+                        var damagedComp = Components[dic[compIndex]];
 
                         damagedComp.HP -= dam - damagedComp.Defense;
                         damageValue -= dam;
@@ -265,7 +272,7 @@ public abstract class BaseObj : MonoBehaviour
                         {
                             damagedComp.HP = 0;
                             Debug.Log("Component destroyed");
-                            components.Remove(damagedComp);
+                            Components.Remove(damagedComp);
 
                             if (damagedComp.isCritical)
                             {
@@ -273,7 +280,7 @@ public abstract class BaseObj : MonoBehaviour
                                 MapController.Instance.RemoveObject(this);
                             }
 
-                            if (components.Count <= 0)
+                            if (Components.Count <= 0)
                             {
                                 Debug.Log("All components lost, unit destroyed");
                                 MapController.Instance.RemoveObject(this);

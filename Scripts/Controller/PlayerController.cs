@@ -652,7 +652,7 @@ public class PlayerController : Singletion<PlayerController>
             obj_Build.Faction = "Elysium";
             obj_Build.InitThis();
             var temp = obj_Build.AddComponent<CompConstructTemp>();
-            obj_Build.components.Add(temp);
+            obj_Build.Components.Add(temp);
             temp.thisObj = obj_Build;
             temp.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
             temp.SimBuild();

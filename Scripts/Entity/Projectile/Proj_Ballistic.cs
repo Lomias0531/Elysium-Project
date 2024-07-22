@@ -8,6 +8,7 @@ public class Proj_Ballistic : MonoBehaviour
     float launchTimeElapsed;
     float damage;
     BaseObj launcher;
+    BaseObj target;
     Vector3 StartPos;
     Vector3 Destination;
     float flightTime;
@@ -26,12 +27,15 @@ public class Proj_Ballistic : MonoBehaviour
     {
 
     }
-    public void InitThis(Vector3 From, Vector3 To, float flightTimeEstimated, bool isStraight)
+    public void InitThis(Vector3 From, Vector3 To, BaseObj origin, BaseObj _target, float flightTimeEstimated, bool isStraight, float _damage)
     {
         StartPos = From;
         Destination = To;
-        flightTime = flightTimeEstimated;
+        flightTime = Vector3.Distance(From, To) / flightTimeEstimated;
         straight = isStraight;
+        launcher = origin;
+        target = _target;
+        damage = _damage;
 
         StartCoroutine(FlightSequence());
     }
@@ -39,9 +43,9 @@ public class Proj_Ballistic : MonoBehaviour
     {
         launchTimeElapsed = 0;
         do
-        {
+        { 
             launchTimeElapsed += Time.deltaTime;
-            this.gameObject.transform.position = Tools.GetBezierCurve(StartPos, Destination, launchTimeElapsed / flightTime, straight ? 0 : .05f, true, this.gameObject.transform);
+            this.gameObject.transform.position = Tools.GetBezierCurve(StartPos, Destination, launchTimeElapsed / flightTime, straight ? 0 : 2f, true, this.gameObject.transform);
 
             if(trails.Count < maxTrailCount)
             {
@@ -54,6 +58,10 @@ public class Proj_Ballistic : MonoBehaviour
             trail.SetPositions(trails.ToArray());
             yield return null;
         } while (launchTimeElapsed < flightTime);
+        if(target != null)
+        {
+            target.TakeDamage(damage, CompWeapon.WeaponAttackType.Blast);
+        }
         ObjectPool.Instance.CollectObject(this.gameObject);
     }
 }

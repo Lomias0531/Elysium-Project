@@ -89,7 +89,7 @@ public class BaseResource : BaseObj
     }
     public override void OnInteracted()
     {
-        foreach (var comp in components)
+        foreach (var comp in Components)
         {
             comp.OnApply(0);
         }

@@ -5219,7 +5219,6 @@ MonoBehaviour:
   EntityID: 
   animator: {fileID: 0}
   objName: "\u6FC0\u5149\u70AE\u5854"
-  components: []
   Faction: 
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
@@ -5257,33 +5256,31 @@ MonoBehaviour:
   MaxEP: 30
   Defense: 0
   functions:
-  - functionName: "\u6FC0\u5149\u653B\u51FB"
-    function: 1
-    functionIcon: {fileID: 515103687, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
-    functionApplyTimeInterval: 0.7
-    functionValue: 0
-    functionConsume: 3
-    canBeAuto: 0
-    isAuto: 0
-    functionIntVal: 00000000060000000000000001000000
-    functionFloatVal:
-    - 2
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: 
   - functionName: "\u5BFC\u5F39\u653B\u51FB"
     function: 1
     functionIcon: {fileID: 515103687, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
     functionApplyTimeInterval: 0.7
-    functionValue: 0
+    functionValue: 2
     functionConsume: 3
     canBeAuto: 0
     isAuto: 0
     functionIntVal: 0200000008000000000000000200000004000000
     functionFloatVal:
-    - 4
     - 0.2
     - 0.5
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: 
+  - functionName: "\u6FC0\u5149\u653B\u51FB"
+    function: 1
+    functionIcon: {fileID: 515103687, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
+    functionApplyTimeInterval: 0.3
+    functionValue: 6
+    functionConsume: 3
+    canBeAuto: 0
+    isAuto: 0
+    functionIntVal: 00000000060000000000000001000000
+    functionFloatVal: []
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 

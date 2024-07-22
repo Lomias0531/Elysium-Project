@@ -103,13 +103,13 @@ public class UnitSelectMenu : MonoBehaviour
             //this.transform.SetParent(thisUnit.transform);
             this.transform.localPosition = Vector3.zero;
 
-            for(int i =0;i<selectedObj.components.Count;i++)
+            for(int i =0;i<selectedObj.Components.Count;i++)
             {
                 var hpBar = GameObject.Instantiate(img_HP, tsf_BarContainer);
                 float hpVal = 0;
                 for(int t = 0;t<i;t++)
                 {
-                    hpVal += selectedObj.components[t].MaxHP;
+                    hpVal += selectedObj.Components[t].MaxHP;
                 }
                 float thisHPAng = 180f * hpVal / selectedObj.HPMax;
                 hpBar.gameObject.SetActive(true);
@@ -119,19 +119,19 @@ public class UnitSelectMenu : MonoBehaviour
                 float mpVal = 0;
                 for(int t = 0; t<i;t++)
                 {
-                    mpVal += selectedObj.components[t].MaxEP;
+                    mpVal += selectedObj.Components[t].MaxEP;
                 }
                 float thisMPAng = 180f * mpVal / selectedObj.EPMax;
                 mpBar.gameObject.SetActive(true);
                 mpBar.transform.localEulerAngles = new Vector3(0, 0, -thisMPAng);
 
-                HPBars.Add(selectedObj.components[i], hpBar);
-                MPBars.Add(selectedObj.components[i], mpBar);
+                HPBars.Add(selectedObj.Components[i], hpBar);
+                MPBars.Add(selectedObj.Components[i], mpBar);
             }
 
             if (selectedObj.Faction == "Elysium")
             {
-                foreach (var comp in selectedObj.components)
+                foreach (var comp in selectedObj.Components)
                 {
                     if (comp.functions == null) continue;
                     for (int i = 0; i < comp.functions.Length; i++)
