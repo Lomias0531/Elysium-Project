@@ -57,6 +57,7 @@ public class Proj_Ballistic : MonoBehaviour
             midPoints.Add(StartPos + new Vector3(0, 3f, 0));
             midPoints.Add((StartPos + Destination) / 2 + new Vector3(0, 3f, 0));
 
+            if (launchTimeElapsed > flightTime) break;
             this.gameObject.transform.position = Tools.GetBezierCurve(StartPos, Destination,midPoints.ToArray(), launchTimeElapsed / flightTime, true, this.gameObject.transform);
             yield return null;
         } while (launchTimeElapsed < flightTime);

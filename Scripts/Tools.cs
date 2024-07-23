@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using UnityEngine;
 using static BaseObj;
+using static UnityEngine.GraphicsBuffer;
 using static UnityEngine.Rendering.DebugUI;
 
 public static class Tools
@@ -205,21 +206,13 @@ public static class Tools
 
         if (isAdjusting)
         {
-            Vector3 tangent = Vector3.zero;
-
-            for(int i = 0;i< count - 1;i++)
+            if(timeDiv > 0.05f)
             {
-                var deltaP = controlPoints[i+1] - controlPoints[i];
-                int binomialCoeff = BinomialCoefficient(count - 1, i);
-                double factor = (count - 1) * binomialCoeff * Math.Pow(timeDiv, i) * Math.Pow(1 - timeDiv, count - 2 - i);
+                var lastPos = GetBezierCurve(startPoint, destination, midPoints, timeDiv - 0.05f, false);
+                var tangent = curPos - lastPos;
 
-                // 乘以t的导数项 (i - (n-1-i)*t)  
-                factor *= (i - (count - 1 - i) * timeDiv);
-
-                tangent += deltaP * (float)factor;
+                transform.rotation = Quaternion.LookRotation(tangent, transform.up);
             }
-
-            transform.rotation = Quaternion.LookRotation(tangent, transform.up);
         }
 
         return curPos;
