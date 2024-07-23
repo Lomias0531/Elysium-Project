@@ -8,6 +8,10 @@ public class CompAutoController : BaseComponent
     BaseObj curAttackingTarget;
     BaseTile curMovingDestination;
     UnitActionStatus curStatus;
+    bool inited = false;
+
+    public int ScanRange;
+    float actionTimeElapsed = 0;
     public enum UnitActException
     {
         None,
@@ -73,14 +77,21 @@ public class CompAutoController : BaseComponent
     public override void Start()
     {
         base.Start();
+        inited = true;
     }
 
     // Update is called once per frame
     public override void Update()
     {
         base.Update();
+        if (!inited) return;
         if (thisObj.isUniderConstruction) return;
 
+        if(actionTimeElapsed > 0)
+        {
+            actionTimeElapsed -= Time.deltaTime;
+            return;
+        }
         switch(curStatus)
         {
             default:
@@ -114,20 +125,36 @@ public class CompAutoController : BaseComponent
     void ScanForTarget()
     {
         var closestDistance = Mathf.Infinity;
-        var closestTarget = "";
+        string closestTarget;
+        List<BaseObj> targets = new List<BaseObj>();
+        var mobile = thisObj.GetDesiredComponent<CompMobile>();
         foreach (var entity in MapController.Instance.entityDic)
         {
             if(entity.Value.Faction != thisObj.Faction)
             {
                 if (entity.Value.HP <= 0) continue;
-                var distance = Tools.GetDistance(entity.Value.Pos, thisObj.Pos);
+
+                int distance = 0;
+                if(mobile != null)
+                {
+                    distance = thisObj.UnitFindPath(entity.Value.GetTileWhereUnitIs(), (BaseObj.MoveType)mobile.functions[0].functionIntVal[0], (int)defaultMobileRange * 5).Count;
+                    if (distance <= 0) distance = 100000;
+                }else
+                {
+                    distance = Tools.GetDistance(entity.Value.Pos, thisObj.Pos);
+                }
+                if (distance > 1000) continue;
                 if(distance < closestDistance)
                 {
                     closestDistance = distance;
                     closestTarget = entity.Key;
+                    targets.Insert(0, entity.Value);
                 }
             }
         }
+
+        var index = Random.Range(0, targets.Count > 5 ? 5 : targets.Count);
+        closestTarget = targets[index].EntityID;
 
 
         if(MapController.Instance.entityDic.ContainsKey(closestTarget))
@@ -155,21 +182,33 @@ public class CompAutoController : BaseComponent
     {
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
 
-        if(mobile != null)
+        //if (Tools.GetDistance(thisObj.Pos, curAttackingTarget.Pos) > defaultMobileRange * 5 && mobile != null)
+        //{
+        //    curStatus = UnitActionStatus.Idle;
+        //    return;
+        //}
+
+        if (mobile != null)
         {
             if (mobile.functionTimeElapsed > 0) return;
             if (mobile.EP < mobile.functions[0].functionConsume) return;
             var defaultMoveType = (BaseObj.MoveType)mobile.functions[0].functionIntVal[0];
 
-            List<BaseTile> path = new List<BaseTile>();
+            Queue<BaseTile> path = new Queue<BaseTile>();
             if(curMovingDestination == null || thisObj.Pos == curMovingDestination.Pos)
             {
-                var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType);
+                var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType, (int)defaultMobileRange * 5);
+                if(path1.Count <= 0)
+                {
+                    curStatus = UnitActionStatus.Idle;
+                    actionTimeElapsed = 1f;
+                    return;
+                }
                 var maxRange = defaultMobileRange;
                 if (path1.Count < maxRange) maxRange = path1.Count;
                 for(int i  = 0;i< maxRange; i++)
                 {
-                    path.Add(path1.Dequeue());
+                    path.Enqueue(path1.Dequeue());
                 }
                 curMovingDestination = path.Last();
             }
@@ -183,7 +222,7 @@ public class CompAutoController : BaseComponent
                 thisObj.curSelectedFunction = mobile.functions[0];
 
                 mobile.FunctionTriggered(mobile.functions[0]);
-                StartCoroutine(mobile.MoveObject(curMovingDestination));
+                StartCoroutine(mobile.MoveObject(path));
             }
         }
     }
@@ -192,6 +231,7 @@ public class CompAutoController : BaseComponent
         if(curAttackingTarget == null)
         {
             curStatus = UnitActionStatus.Idle;
+            actionTimeElapsed = 1f;
             return;
         }
         var targetDistance = Tools.GetDistance(curAttackingTarget.Pos, thisObj.Pos);
@@ -200,6 +240,7 @@ public class CompAutoController : BaseComponent
         if(targetDistance > maxAttackRange)
         {
             curStatus = UnitActionStatus.Idle;
+            actionTimeElapsed = 1f;
             return;
         }
 
@@ -252,7 +293,7 @@ public class CompAutoController : BaseComponent
                 }
             case UnitActException.IllegalAttack:
                 {
-                    curAttackingTarget = null;
+                    //curAttackingTarget = null;
                     break;
                 }
         }

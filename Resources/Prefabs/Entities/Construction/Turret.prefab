@@ -5317,6 +5317,7 @@ MonoBehaviour:
   isCritical: 1
   functionTimeElapsed: 0
   isAvailable: 1
+  ScanRange: 12
 --- !u!1 &1942678493693213016
 GameObject:
   m_ObjectHideFlags: 0

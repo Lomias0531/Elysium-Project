@@ -390,7 +390,7 @@ public static class ToolsUtility
         new Vector3(-extendDistanceX, 0, outerRadius + extendDistanceZ),
     };
 
-    public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination, BaseObj.MoveType selectedMoveType, bool isPathingToTarget = false)
+    public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination, BaseObj.MoveType selectedMoveType,int moveRange, bool isPathingToTarget = false)
     {
         int calculateCycle = 0;
 
@@ -408,7 +408,8 @@ public static class ToolsUtility
         // 将开始的地格添加到开放列表中。
         openPathTiles.Add(currentTile);
 
-        while (openPathTiles.Count != 0)
+        int moveStep = 0;
+        while (openPathTiles.Count != 0 && moveStep < moveRange)
         {
             // 对打开的列表进行排序，以获得F值最低的那块地格。
             openPathTiles = openPathTiles.OrderBy(x => x.F).ThenByDescending(x => x.g).ToList();
@@ -465,6 +466,7 @@ public static class ToolsUtility
 
                 calculateCycle += 1;
             }
+            moveStep += 1;
         }
 
         List<BaseTile> finalPathTiles = new List<BaseTile>();

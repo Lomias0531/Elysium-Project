@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static BaseObj;
 
@@ -35,7 +36,23 @@ public class CompMobile : BaseComponent
     {
         if (tile == null) yield break;
         isMoving = true;
-        var moveQueue = thisObj.UnitFindPath(tile, (MoveType)thisObj.curSelectedFunction.functionIntVal[0]);
+        var moveQueue = thisObj.UnitFindPath(tile, (MoveType)thisObj.curSelectedFunction.functionIntVal[0], (int)thisObj.curSelectedFunction.functionValue);
+
+        StartCoroutine(MoveObject(moveQueue));
+    }
+
+    public IEnumerator MoveObject(Queue<BaseTile> moveQueue)
+    {
+        if(moveQueue == null || moveQueue.Count == 0)
+        {
+            var cpu = thisObj.GetDesiredComponent<CompAutoController>();
+            if (cpu != null)
+            {
+                cpu.ReceiveActionException(CompAutoController.UnitActException.IllegalMove);
+            }
+            yield break;
+        }
+        var tile = moveQueue.Last();
 
         switch ((MoveStyle)thisObj.curSelectedFunction.functionIntVal[1])
         {
@@ -131,12 +148,6 @@ public class CompMobile : BaseComponent
             thisObj.animator.CrossFadeInFixedTime("Idle", 0.1f);
         }
         yield return new WaitForSeconds(0.1f);
-
-        var cpu = thisObj.GetDesiredComponent<CompAutoController>();
-        if (cpu != null)
-        {
-            cpu.ReceiveActionException(CompAutoController.UnitActException.IllegalMove);
-        }
 
         isMoving = false;
     }
