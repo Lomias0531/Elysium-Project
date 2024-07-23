@@ -7,12 +7,19 @@ public class CompAutoController : BaseComponent
 {
     BaseObj curAttackingTarget;
     BaseTile curMovingDestination;
+    UnitActionStatus curStatus;
     public enum UnitActException
     {
         None,
         IllegalMove,
         IllegalAttack,
         IllegalInteract,
+    }
+    public enum UnitActionStatus
+    {
+        Idle,
+        Moving,
+        Attacking,
     }
     public override void OnApply(int index)
     {
@@ -52,6 +59,13 @@ public class CompAutoController : BaseComponent
         {
             WayFinding();
             return;
+        }
+        if(mobile != null)
+        {
+            if (thisObj.Pos != curMovingDestination.Pos)
+            {
+                return;
+            }
         }
 
         CommenceAttack();

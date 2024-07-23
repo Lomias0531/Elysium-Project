@@ -107,7 +107,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5768334294554344393}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 25}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -280,7 +280,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trail: {fileID: 4496861081532229719}
-  maxTrailCount: 100
+  maxTrailCount: 20
+  blast: {fileID: 4504952102586986591, guid: 7723c1b95abea054e84b8ee4fb3fd103, type: 3}
 --- !u!120 &4496861081532229719
 LineRenderer:
   m_ObjectHideFlags: 0

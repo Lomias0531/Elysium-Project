@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
 
 public class CompWeapon : BaseComponent
@@ -154,7 +153,7 @@ public class CompWeapon : BaseComponent
                 var proj = ObjectPool.Instance.CreateObject("Ballistic", projectile, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_Ballistic>();
 
                 var index = Random.Range(0, tsf_FirePos.Length);
-                proj.InitThis(tsf_FirePos[index].position, destination, thisObj, target, 2f, !curve, thisObj.curSelectedFunction.functionFloatVal[0]);
+                proj.InitThis(tsf_FirePos[index].position, destination, thisObj, 2f, !curve, thisObj.curSelectedFunction.functionFloatVal[0], thisObj.curSelectedFunction.functionIntVal[2]);
             }
             yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[1]);
         }
