@@ -12,6 +12,7 @@ public class CompAutoController : BaseComponent
 
     public int ScanRange;
     float actionTimeElapsed = 0;
+    float actionTimeInterval = 0.5f;
     public enum UnitActException
     {
         None,
@@ -182,12 +183,6 @@ public class CompAutoController : BaseComponent
     {
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
 
-        //if (Tools.GetDistance(thisObj.Pos, curAttackingTarget.Pos) > defaultMobileRange * 5 && mobile != null)
-        //{
-        //    curStatus = UnitActionStatus.Idle;
-        //    return;
-        //}
-
         if (mobile != null)
         {
             if (mobile.functionTimeElapsed > 0) return;
@@ -201,7 +196,7 @@ public class CompAutoController : BaseComponent
                 if(path1.Count <= 0)
                 {
                     curStatus = UnitActionStatus.Idle;
-                    actionTimeElapsed = 1f;
+                    actionTimeElapsed = actionTimeInterval;
                     return;
                 }
                 var maxRange = defaultMobileRange;
@@ -231,7 +226,7 @@ public class CompAutoController : BaseComponent
         if(curAttackingTarget == null)
         {
             curStatus = UnitActionStatus.Idle;
-            actionTimeElapsed = 1f;
+            actionTimeElapsed = actionTimeInterval;
             return;
         }
         var targetDistance = Tools.GetDistance(curAttackingTarget.Pos, thisObj.Pos);
@@ -240,7 +235,7 @@ public class CompAutoController : BaseComponent
         if(targetDistance > maxAttackRange)
         {
             curStatus = UnitActionStatus.Idle;
-            actionTimeElapsed = 1f;
+            actionTimeElapsed = actionTimeInterval;
             return;
         }
 
