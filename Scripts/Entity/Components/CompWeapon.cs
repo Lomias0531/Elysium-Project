@@ -100,6 +100,8 @@ public class CompWeapon : BaseComponent
             }
         }
 
+        if (thisObj.curSelectedComp != this) return;
+
         Debug.Log("Attack");
 
         FunctionTriggered(thisObj.curSelectedFunction);

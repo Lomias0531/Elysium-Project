@@ -55,6 +55,8 @@ public abstract class BaseComponent : MonoBehaviour
     public abstract void OnTriggerFunction(params object[] obj);
     public void FunctionTriggered(CompFunctionDetail function)
     {
+        thisObj.curSelectedComp = this;
+        thisObj.curSelectedFunction = function;
         functionTimeElapsed = function.functionApplyTimeInterval;
         EP -= function.functionConsume;
     }

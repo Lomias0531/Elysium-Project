@@ -21,6 +21,39 @@ public class CompAutoController : BaseComponent
         Moving,
         Attacking,
     }
+    float defaultMobileRange
+    {
+        get
+        {
+            var mobile = thisObj.GetDesiredComponent<CompMobile>();
+            if(mobile != null)
+            {
+                return mobile.functions[0].functionValue;
+            }else
+            {
+                return 0;
+            }
+        }
+    }
+    float maxAttackRange
+    {
+        get
+        {
+            var AttackRange = 0;
+            var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+            foreach (var weapon in weapons)
+            {
+                foreach (var range in weapon.functions)
+                {
+                    if (range.functionIntVal[1] > AttackRange)
+                    {
+                        AttackRange = range.functionIntVal[1];
+                    }
+                }
+            }
+            return AttackRange;
+        }
+    }
     public override void OnApply(int index)
     {
         
@@ -48,27 +81,35 @@ public class CompAutoController : BaseComponent
         base.Update();
         if (thisObj.isUniderConstruction) return;
 
-        if (curAttackingTarget == null)
+        switch(curStatus)
         {
-            ScanForTarget();
-            return;
+            default:
+                {
+                    break;
+                }
+            case UnitActionStatus.Idle:
+                {
+                    ScanForTarget();
+                    break;
+                }
+            case UnitActionStatus.Moving:
+                {
+                    var mobile = thisObj.GetDesiredComponent<CompMobile>();
+                    if(mobile != null)
+                    {
+                        WayFinding();
+                    }else
+                    {
+                        curStatus = UnitActionStatus.Attacking;
+                    }
+                    break;
+                }
+            case UnitActionStatus.Attacking:
+                {
+                    CommenceAttack();
+                    break;
+                }
         }
-
-        var mobile = thisObj.GetDesiredComponent<CompMobile>();
-        if(mobile != null && curMovingDestination == null)
-        {
-            WayFinding();
-            return;
-        }
-        if(mobile != null)
-        {
-            if (thisObj.Pos != curMovingDestination.Pos)
-            {
-                return;
-            }
-        }
-
-        CommenceAttack();
     }
     void ScanForTarget()
     {
@@ -87,60 +128,81 @@ public class CompAutoController : BaseComponent
                 }
             }
         }
+
+
         if(MapController.Instance.entityDic.ContainsKey(closestTarget))
         {
             curAttackingTarget = MapController.Instance.entityDic[closestTarget];
+
+            var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+
+            if (weapons != null)
+            {
+                if(Tools.GetDistance(thisObj.Pos,curAttackingTarget.Pos) <= maxAttackRange)
+                {
+                    curStatus = UnitActionStatus.Attacking;
+                }else
+                {
+                    curStatus = UnitActionStatus.Moving;
+                }
+            }else
+            {
+                curStatus = UnitActionStatus.Moving;
+            }
         }
     }
     void WayFinding()
     {
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
-        var weapons = thisObj.GetDesiredComponents<CompWeapon>();
-        var maxAttackRange = 0;
-        foreach (var weapon in weapons)
-        {
-            foreach (var range in weapon.functions)
-            {
-                if (range.functionIntVal[1] > maxAttackRange)
-                {
-                    maxAttackRange = range.functionIntVal[1];
-                }
-            }
-        }
+
         if(mobile != null)
         {
             if (mobile.functionTimeElapsed > 0) return;
             if (mobile.EP < mobile.functions[0].functionConsume) return;
             var defaultMoveType = (BaseObj.MoveType)mobile.functions[0].functionIntVal[0];
-            var defaultMoveRange = mobile.functions[0].functionValue;
-            var path = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType);
-            curMovingDestination = curAttackingTarget.GetTileWhereUnitIs();
-            if(defaultMoveRange + maxAttackRange > path.Count)
+
+            List<BaseTile> path = new List<BaseTile>();
+            if(curMovingDestination == null || thisObj.Pos == curMovingDestination.Pos)
             {
-                BaseTile destination = null;
-                for (int i = 0; i < path.Count - maxAttackRange; i++)
+                var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType);
+                var maxRange = defaultMobileRange;
+                if (path1.Count < maxRange) maxRange = path1.Count;
+                for(int i  = 0;i< maxRange; i++)
                 {
-                    destination = path.Dequeue();
+                    path.Add(path1.Dequeue());
                 }
-                mobile.FunctionTriggered(mobile.functions[0]);
-                StartCoroutine(mobile.MoveObject(destination));
+                curMovingDestination = path.Last();
             }
-            else
+            if(Tools.GetDistance(thisObj.Pos,curAttackingTarget.Pos) < maxAttackRange)
             {
-                BaseTile destination = null;
-                for(int i = 0;i<defaultMoveRange;i++)
-                {
-                    destination = path.Dequeue();
-                }
+                curStatus = UnitActionStatus.Attacking;
+                return;
+            }else
+            {
+                thisObj.curSelectedComp = mobile;
+                thisObj.curSelectedFunction = mobile.functions[0];
+
                 mobile.FunctionTriggered(mobile.functions[0]);
-                StartCoroutine(mobile.MoveObject(destination));
+                StartCoroutine(mobile.MoveObject(curMovingDestination));
             }
         }
     }
     void CommenceAttack()
     {
+        if(curAttackingTarget == null)
+        {
+            curStatus = UnitActionStatus.Idle;
+            return;
+        }
         var targetDistance = Tools.GetDistance(curAttackingTarget.Pos, thisObj.Pos);
         var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+
+        if(targetDistance > maxAttackRange)
+        {
+            curStatus = UnitActionStatus.Idle;
+            return;
+        }
+
         foreach (var weapon in weapons)
         {
             if (weapon.functionTimeElapsed > 0) continue;
@@ -156,11 +218,13 @@ public class CompAutoController : BaseComponent
                 if (weapon.EP < randomList[i].functionConsume) continue;
                 if (targetDistance > randomList[i].functionIntVal[1]) continue;
                 if (targetDistance < randomList[i].functionIntVal[0]) continue;
+
+                thisObj.curSelectedFunction = randomList[i];
+                thisObj.curSelectedComp = weapon;
+
                 weapon.FunctionTriggered(randomList[i]);
                 weapon.CommenceAttack(curAttackingTarget);
                 fired = true;
-                thisObj.curSelectedFunction = randomList[i];
-                thisObj.curSelectedComp = weapon;
                 break;
             }
             if (!fired)
