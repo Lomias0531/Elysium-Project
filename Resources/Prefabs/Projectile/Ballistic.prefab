@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 6021256981953756023}
   - component: {fileID: 6628264856530955699}
   - component: {fileID: -7421644983012645464}
-  - component: {fileID: 4496861081532229719}
+  - component: {fileID: 8048380053420682116}
   m_Layer: 0
   m_Name: Ballistic
   m_TagString: Untagged
@@ -279,11 +279,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 785cf7320fb251241a666fb109de6999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trail: {fileID: 4496861081532229719}
-  maxTrailCount: 20
   blast: {fileID: 4504952102586986591, guid: 7723c1b95abea054e84b8ee4fb3fd103, type: 3}
---- !u!120 &4496861081532229719
-LineRenderer:
+  trails: {fileID: 8048380053420682116}
+--- !u!96 &8048380053420682116
+TrailRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -302,7 +302,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c3d441892e814dd46ba787b3cb39079e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -323,12 +323,10 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  m_Time: 2
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.01
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -341,29 +339,38 @@ LineRenderer:
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.5823096
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.43867922, g: 0.81752616, b: 1, a: 1}
-      key1: {r: 1, g: 0.6795617, b: 0.0990566, a: 1}
-      key2: {r: 1, g: 0.26665556, b: 0.16509432, a: 1}
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 0, g: 0, b: 0, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 0
-      ctime1: 23130
-      ctime2: 65535
+      ctime1: 65535
+      ctime2: 0
       ctime3: 0
       ctime4: 0
       ctime5: 0
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 18119
+      atime1: 30455
       atime2: 65535
       atime3: 0
       atime4: 0
@@ -371,7 +378,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_NumColorKeys: 3
+      m_NumColorKeys: 2
       m_NumAlphaKeys: 3
     numCornerVertices: 0
     numCapVertices: 0
@@ -379,8 +386,9 @@ LineRenderer:
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 0
-  m_UseWorldSpace: 1
-  m_Loop: 0
+  m_MinVertexDistance: 0.1
+  m_Autodestruct: 1
+  m_Emitting: 1
 --- !u!1 &8086026026064916398
 GameObject:
   m_ObjectHideFlags: 0

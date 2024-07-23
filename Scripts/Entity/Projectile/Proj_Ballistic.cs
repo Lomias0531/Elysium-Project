@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Proj_Ballistic : MonoBehaviour
 {
-    public LineRenderer trail;
+    //public LineRenderer trail;
     float launchTimeElapsed;
     float damage;
     Vector3 StartPos;
@@ -12,12 +12,14 @@ public class Proj_Ballistic : MonoBehaviour
     float flightTime;
     bool straight;
 
-    List<Vector3> trails = new List<Vector3>();
-    public int maxTrailCount;
+    //List<Vector3> trails = new List<Vector3>();
+    //public int maxTrailCount;
 
     int blastRange;
 
     public GameObject blast;
+
+    public TrailRenderer trails;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,21 +44,20 @@ public class Proj_Ballistic : MonoBehaviour
     }
     IEnumerator FlightSequence()
     {
-        trails.Clear();
-        for(int i = 0;i< maxTrailCount; i++)
-        {
-            trails.Add(this.transform.position);
-        }
+        //var trail = ObjectPool.Instance.CreateObject("Trail", trails.gameObject, this.transform.position, this.transform.rotation);
+        //trail.transform.SetParent(this.transform);
+
+        trails.enabled = true;
         launchTimeElapsed = 0;
         do
         { 
             launchTimeElapsed += Time.deltaTime;
-            this.gameObject.transform.position = Tools.GetBezierCurve(StartPos, Destination, launchTimeElapsed / flightTime, straight ? 0 : 2f, true, this.gameObject.transform);
 
-            trails.RemoveAt(maxTrailCount - 1);
-            trails.Insert(0, this.gameObject.transform.position);
+            List<Vector3> midPoints = new List<Vector3>();
+            midPoints.Add(StartPos + new Vector3(0, 3f, 0));
+            midPoints.Add((StartPos + Destination) / 2 + new Vector3(0, 3f, 0));
 
-            trail.SetPositions(trails.ToArray());
+            this.gameObject.transform.position = Tools.GetBezierCurve(StartPos, Destination,midPoints.ToArray(), launchTimeElapsed / flightTime, true, this.gameObject.transform);
             yield return null;
         } while (launchTimeElapsed < flightTime);
 
@@ -78,6 +79,9 @@ public class Proj_Ballistic : MonoBehaviour
                 ObjectPool.Instance.CollectObject(spark, 2f);
             }
         }
+        //trails.transform.SetParent(null);
+        trails.enabled = false;
+        //ObjectPool.Instance.CollectObject(trails, 2f);
         ObjectPool.Instance.CollectObject(this.gameObject);
     }
 }

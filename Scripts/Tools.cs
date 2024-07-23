@@ -1,3 +1,4 @@
+using DG.Tweening.Plugins.Core.PathCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -178,6 +179,63 @@ public static class Tools
         }
 
         return curPos;
+    }
+    public static Vector3 GetBezierCurve(Vector3 startPoint, Vector3 destination, Vector3[] midPoints, float timeDiv, bool isAdjusting = false, Transform transform = null)
+    {
+        List<Vector3> controlPoints = new List<Vector3>();
+        controlPoints.Add(startPoint);
+        foreach (var item in midPoints)
+        {
+            controlPoints.Add(item);
+        }
+        controlPoints.Add(destination);
+
+        int count = controlPoints.Count;
+        Vector3 point = Vector3.zero;
+
+        for (int i = 0; i < count; i++)
+        {
+            double binomialCoeff = BinomialCoefficient(count - 1, i);
+            double weight = binomialCoeff * Math.Pow(timeDiv, i) * Math.Pow(1 - timeDiv, count - 1 - i);
+
+            point += controlPoints[i] * (float)weight;
+        }
+
+        var curPos = point;
+
+        if (isAdjusting)
+        {
+            Vector3 tangent = Vector3.zero;
+
+            for(int i = 0;i< count - 1;i++)
+            {
+                var deltaP = controlPoints[i+1] - controlPoints[i];
+                int binomialCoeff = BinomialCoefficient(count - 1, i);
+                double factor = (count - 1) * binomialCoeff * Math.Pow(timeDiv, i) * Math.Pow(1 - timeDiv, count - 2 - i);
+
+                // 乘以t的导数项 (i - (n-1-i)*t)  
+                factor *= (i - (count - 1 - i) * timeDiv);
+
+                tangent += deltaP * (float)factor;
+            }
+
+            transform.rotation = Quaternion.LookRotation(tangent, transform.up);
+        }
+
+        return curPos;
+    }
+    private static int BinomialCoefficient(int n, int k)
+    {
+        if (k > n) return 0;
+        if (k == 0 || k == n) return 1;
+
+        int result = 1;
+        for (int i = 1; i <= k; i++)
+        {
+            result *= (n - i + 1);
+            result /= i;
+        }
+        return result;
     }
     class MoveIndicator
     {
