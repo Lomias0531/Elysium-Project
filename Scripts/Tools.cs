@@ -217,6 +217,8 @@ public static class Tools
 
         return curPos;
     }
+
+
     private static int BinomialCoefficient(int n, int k)
     {
         if (k > n) return 0;

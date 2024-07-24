@@ -13,6 +13,8 @@ public class CompAutoController : BaseComponent
     public int ScanRange;
     float actionTimeElapsed = 0;
     float actionTimeInterval = 0.5f;
+
+    float statusTimeElapsed = 0;
     public enum UnitActException
     {
         None,
@@ -25,6 +27,7 @@ public class CompAutoController : BaseComponent
         Idle,
         Moving,
         Attacking,
+        Searching,
     }
     float defaultMobileRange
     {
@@ -93,6 +96,17 @@ public class CompAutoController : BaseComponent
             actionTimeElapsed -= Time.deltaTime;
             return;
         }
+
+        if(curStatus == UnitActionStatus.Searching)
+        {
+            statusTimeElapsed += Time.deltaTime;
+            if(statusTimeElapsed > 5f)
+            {
+                curStatus = UnitActionStatus.Idle;
+                statusTimeElapsed = 0;
+            }
+        }
+
         switch(curStatus)
         {
             default:
@@ -101,7 +115,7 @@ public class CompAutoController : BaseComponent
                 }
             case UnitActionStatus.Idle:
                 {
-                    ScanForTarget();
+                    StartCoroutine(ScanForTarget());
                     break;
                 }
             case UnitActionStatus.Moving:
@@ -121,14 +135,24 @@ public class CompAutoController : BaseComponent
                     CommenceAttack();
                     break;
                 }
+            case UnitActionStatus.Searching:
+                {
+                    break;
+                }
         }
     }
-    void ScanForTarget()
+    IEnumerator ScanForTarget()
     {
         var closestDistance = Mathf.Infinity;
         string closestTarget;
         List<BaseObj> targets = new List<BaseObj>();
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
+
+        curStatus = UnitActionStatus.Searching;
+        statusTimeElapsed = 0;
+
+        yield return new WaitForSeconds(0.2f);
+
         foreach (var entity in MapController.Instance.entityDic)
         {
             if(entity.Value.Faction != thisObj.Faction)
@@ -151,9 +175,15 @@ public class CompAutoController : BaseComponent
                     closestTarget = entity.Key;
                     targets.Insert(0, entity.Value);
                 }
+                yield return null;
             }
         }
 
+        if(targets.Count <= 0)
+        {
+            curStatus = UnitActionStatus.Idle;
+            yield break;
+        }
         var index = Random.Range(0, targets.Count > 5 ? 5 : targets.Count);
         closestTarget = targets[index].EntityID;
 
