@@ -128,12 +128,12 @@ public class CompWeapon : BaseComponent
                 }
             case WeaponProjectileType.CurveProjectile:
                 {
-                    StartCoroutine(CreateProjectile(attackTarget, attackTarget.transform.position, true));
+                    StartCoroutine(CreateProjectile(attackTarget, true));
                     break;
                 }
             case WeaponProjectileType.StraightProjectile:
                 {
-                    StartCoroutine(CreateProjectile(attackTarget, attackTarget.transform.position, false));
+                    StartCoroutine(CreateProjectile(attackTarget, false));
                     break;
                 }
             case WeaponProjectileType.Melee:
@@ -145,14 +145,14 @@ public class CompWeapon : BaseComponent
         attackTarget = null;
 
     }
-    IEnumerator CreateProjectile(BaseObj target, Vector3 destination, bool curve)
+    IEnumerator CreateProjectile(BaseObj target, bool curve)
     {
         var tile = target.GetTileWhereUnitIs();
         var tiles = Tools.GetTileWithinRange(tile, thisObj.curSelectedFunction.functionIntVal[2], Tools.IgnoreType.All);
         for(int i = 0;i< thisObj.curSelectedFunction.functionIntVal[4];i++)
         {
             var targetTile = Random.Range(0, tiles.Count);
-            destination = tiles[targetTile].transform.position;
+            Vector3 destination = tiles[targetTile].transform.position;
 
             var projectile = (GameObject)Resources.Load("Prefabs/Projectile/Ballistic");
             if (projectile != null)

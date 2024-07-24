@@ -46,6 +46,14 @@ public class CameraController : Singletion<CameraController>
     // Update is called once per frame
     void Update()
     {
+        if (obj_CameraFocusDummy == null)
+        {
+            obj_CameraFocusDummy = new GameObject("CamDummy");
+            obj_CameraFocusDummy.transform.position = lastDummyPos;
+            obj_CameraFocusDummy.transform.eulerAngles = lastDummyRot;
+        }
+        obj_CameraFocusDummy.transform.eulerAngles = new Vector3(0, camAngleX, 0);
+
         GetTileCurLookingAt();
         ApplyMidleMouseButtonMovementSpeed();
         GetKeyboardCamTranslate();
