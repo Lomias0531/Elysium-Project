@@ -97,16 +97,6 @@ public class CompAutoController : BaseComponent
             return;
         }
 
-        if(curStatus == UnitActionStatus.Searching)
-        {
-            statusTimeElapsed += Time.deltaTime;
-            if(statusTimeElapsed > 5f)
-            {
-                curStatus = UnitActionStatus.Idle;
-                statusTimeElapsed = 0;
-            }
-        }
-
         switch(curStatus)
         {
             default:
@@ -137,6 +127,13 @@ public class CompAutoController : BaseComponent
                 }
             case UnitActionStatus.Searching:
                 {
+                    statusTimeElapsed += Time.deltaTime;
+                    if (statusTimeElapsed > 5f)
+                    {
+                        curStatus = UnitActionStatus.Idle;
+                        statusTimeElapsed = 0;
+                    }
+
                     break;
                 }
         }
