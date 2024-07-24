@@ -44,10 +44,7 @@ public class Proj_Ballistic : MonoBehaviour
     }
     IEnumerator FlightSequence()
     {
-        //var trail = ObjectPool.Instance.CreateObject("Trail", trails.gameObject, this.transform.position, this.transform.rotation);
-        //trail.transform.SetParent(this.transform);
-
-        trails.enabled = true;
+        trails.emitting = true;
         launchTimeElapsed = 0;
         do
         { 
@@ -75,14 +72,13 @@ public class Proj_Ballistic : MonoBehaviour
                 }
 
                 var spark = ObjectPool.Instance.CreateObject("Blast", blast, tile.gameObject.transform.position, tile.gameObject.transform.rotation);
+                spark.transform.SetParent(MapController.Instance.tsf_ParticlesConatiner, true);
                 var particle = spark.GetComponent<ParticleSystem>();
                 if (particle != null) particle.Play();
                 ObjectPool.Instance.CollectObject(spark, 2f);
             }
         }
-        //trails.transform.SetParent(null);
-        trails.enabled = false;
-        //ObjectPool.Instance.CollectObject(trails, 2f);
+        trails.emitting = false;
         ObjectPool.Instance.CollectObject(this.gameObject);
     }
 }

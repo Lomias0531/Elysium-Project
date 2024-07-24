@@ -33,6 +33,9 @@ public class MapController : Singletion<MapController>
     public Transform tsf_ResContainer;
 
     public BaseObj[] unitsToGenerate;
+
+    public Transform tsf_ProjectileContainer;
+    public Transform tsf_ParticlesConatiner;
     // Start is called before the first frame update
     void Start()
     {

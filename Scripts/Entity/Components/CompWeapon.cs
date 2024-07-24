@@ -147,15 +147,21 @@ public class CompWeapon : BaseComponent
     }
     IEnumerator CreateProjectile(BaseObj target, Vector3 destination, bool curve)
     {
+        var tile = target.GetTileWhereUnitIs();
+        var tiles = Tools.GetTileWithinRange(tile, thisObj.curSelectedFunction.functionIntVal[2], Tools.IgnoreType.All);
         for(int i = 0;i< thisObj.curSelectedFunction.functionIntVal[4];i++)
         {
+            var targetTile = Random.Range(0, tiles.Count);
+            destination = tiles[targetTile].transform.position;
+
             var projectile = (GameObject)Resources.Load("Prefabs/Projectile/Ballistic");
             if (projectile != null)
             {
                 var proj = ObjectPool.Instance.CreateObject("Ballistic", projectile, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_Ballistic>();
 
+                proj.transform.SetParent(MapController.Instance.tsf_ProjectileContainer, true);
                 var index = Random.Range(0, tsf_FirePos.Length);
-                proj.InitThis(tsf_FirePos[index], destination, thisObj, 2f, !curve, thisObj.curSelectedFunction.functionFloatVal[0], thisObj.curSelectedFunction.functionIntVal[2]);
+                proj.InitThis(tsf_FirePos[index], destination, thisObj, 2f, !curve, thisObj.curSelectedFunction.functionFloatVal[0], 0);
             }
             yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[1]);
         }

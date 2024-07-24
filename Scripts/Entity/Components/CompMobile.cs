@@ -38,6 +38,10 @@ public class CompMobile : BaseComponent
         isMoving = true;
         var moveQueue = thisObj.UnitFindPath(tile, (MoveType)thisObj.curSelectedFunction.functionIntVal[0], (int)thisObj.curSelectedFunction.functionValue);
 
+        if(moveQueue.Count <= 0)
+        {
+            moveQueue.Enqueue(tile);
+        }
         StartCoroutine(MoveObject(moveQueue));
     }
 
