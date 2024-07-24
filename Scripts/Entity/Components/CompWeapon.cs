@@ -149,10 +149,20 @@ public class CompWeapon : BaseComponent
     {
         var tile = target.GetTileWhereUnitIs();
         var tiles = Tools.GetTileWithinRange(tile, thisObj.curSelectedFunction.functionIntVal[2], Tools.IgnoreType.All);
+
+        List<BaseTile> tilesWeight = new List<BaseTile>();
+        foreach (var item in tiles)
+        {
+            var weight = thisObj.curSelectedFunction.functionIntVal[2] - Tools.GetDistance(target.Pos, item.Pos) + 1;
+            for(int i = 0;i< weight;i++)
+            {
+                tilesWeight.Add(item);
+            }
+        }
         for(int i = 0;i< thisObj.curSelectedFunction.functionIntVal[4];i++)
         {
-            var targetTile = Random.Range(0, tiles.Count);
-            Vector3 destination = tiles[targetTile].transform.position;
+            var targetTile = Random.Range(0, tilesWeight.Count);
+            Vector3 destination = tilesWeight[targetTile].transform.position;
 
             var projectile = (GameObject)Resources.Load("Prefabs/Projectile/Ballistic");
             if (projectile != null)
