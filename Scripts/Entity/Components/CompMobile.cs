@@ -43,7 +43,7 @@ public class CompMobile : BaseComponent
 
     public IEnumerator MoveObject(Queue<BaseTile> moveQueue)
     {
-        if(moveQueue == null || moveQueue.Count == 0)
+        if((moveQueue == null || moveQueue.Count == 0) && (MoveStyle)thisObj.curSelectedFunction.functionIntVal[1] == MoveStyle.Ordinary)
         {
             var cpu = thisObj.GetDesiredComponent<CompAutoController>();
             if (cpu != null)

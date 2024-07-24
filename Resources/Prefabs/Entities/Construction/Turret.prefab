@@ -5269,21 +5269,6 @@ MonoBehaviour:
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 
-  - functionName: "\u5BFC\u5F39\u653B\u51FB"
-    function: 1
-    functionIcon: {fileID: 515103687, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
-    functionApplyTimeInterval: 0.7
-    functionValue: 2
-    functionConsume: 3
-    canBeAuto: 0
-    isAuto: 0
-    functionIntVal: 0200000008000000010000000200000004000000
-    functionFloatVal:
-    - 0.2
-    - 0.5
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: 
   thisObj: {fileID: 0}
   compResID: 
   isCritical: 0

@@ -7,7 +7,7 @@ public class Proj_Ballistic : MonoBehaviour
     //public LineRenderer trail;
     float launchTimeElapsed;
     float damage;
-    Vector3 StartPos;
+    Transform StartPos;
     Vector3 Destination;
     float flightTime;
     bool straight;
@@ -31,11 +31,11 @@ public class Proj_Ballistic : MonoBehaviour
     {
 
     }
-    public void InitThis(Vector3 From, Vector3 To, BaseObj origin, float flightTimeEstimated, bool isStraight, float _damage, int _range)
+    public void InitThis(Transform launcher, Vector3 To, BaseObj origin, float flightTimeEstimated, bool isStraight, float _damage, int _range)
     {
-        StartPos = From;
+        StartPos = launcher;
         Destination = To;
-        flightTime = Vector3.Distance(From, To) / flightTimeEstimated;
+        flightTime = Vector3.Distance(launcher.position, To) / flightTimeEstimated;
         straight = isStraight;
         damage = _damage;
         blastRange = _range;
@@ -54,11 +54,11 @@ public class Proj_Ballistic : MonoBehaviour
             launchTimeElapsed += Time.deltaTime;
 
             List<Vector3> midPoints = new List<Vector3>();
-            midPoints.Add(StartPos + new Vector3(0, 3f, 0));
-            midPoints.Add((StartPos + Destination) / 2 + new Vector3(0, 3f, 0));
+            midPoints.Add(StartPos.position + StartPos.forward * (1 + Random.Range(0.1f,0.5f)));
+            midPoints.Add((StartPos.position + Destination) / 2 + new Vector3(0, 3f, 0));
 
             if (launchTimeElapsed > flightTime) break;
-            this.gameObject.transform.position = Tools.GetBezierCurve(StartPos, Destination,midPoints.ToArray(), launchTimeElapsed / flightTime, true, this.gameObject.transform);
+            this.gameObject.transform.position = Tools.GetBezierCurve(StartPos.position, Destination,midPoints.ToArray(), launchTimeElapsed / flightTime, true, this.gameObject.transform);
             yield return null;
         } while (launchTimeElapsed < flightTime);
 

@@ -54,7 +54,6 @@ MonoBehaviour:
   EntityID: 
   animator: {fileID: 0}
   objName: Worker
-  components: []
   Faction: 
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
@@ -250,6 +249,21 @@ MonoBehaviour:
     functionBoolVal: 
     functionStringVal:
     - Fense
+    functionDescription: 
+  - functionName: "\u5EFA\u9020\u5BFC\u5F39\u70AE\u5854"
+    function: 2
+    functionIcon: {fileID: 193079915, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
+    functionApplyTimeInterval: 5
+    functionValue: 0
+    functionConsume: 3
+    canBeAuto: 0
+    isAuto: 0
+    functionIntVal: 
+    functionFloatVal:
+    - 8
+    functionBoolVal: 
+    functionStringVal:
+    - MissileTurret
     functionDescription: 
   thisObj: {fileID: 0}
   compResID: 

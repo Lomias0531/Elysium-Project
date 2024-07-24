@@ -18,6 +18,7 @@ public class UIController : Singletion<UIController>
     public Text txt_hoveredUnitName;
     public Image img_hoveredUnitHP;
     public Image img_hoveredUnitEP;
+    public Image img_hoveredUnitProgress;
     [Space(1)]
     public GameObject obj_HoveredSkill;
     public Text txt_hoveredSkillName;
@@ -75,6 +76,18 @@ public class UIController : Singletion<UIController>
 
             img_hoveredUnitHP.fillAmount = obj.HPMax == 0 ? 1 : obj.HP / obj.HPMax;
             img_hoveredUnitEP.fillAmount = obj.EPMax == 0 ? 1 : obj.EP / obj.EPMax;
+
+            img_hoveredUnitProgress.fillAmount = 0;
+            var build = obj.GetDesiredComponent<CompConstructTemp>();
+            if(build != null)
+            {
+                img_hoveredUnitProgress.fillAmount = build.buildProgress;
+            }
+            var construct = obj.GetDesiredComponent<CompConstructor>();
+            if(construct != null)
+            {
+                img_hoveredUnitProgress.fillAmount = construct.constructProgress;
+            }
         }else
         {
             obj_hoveredUnit.SetActive(false);

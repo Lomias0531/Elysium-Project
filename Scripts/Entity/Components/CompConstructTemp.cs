@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CompConstructTemp : BaseComponent
 {
-    float buildProgress = 0f;
+    public float buildProgress = 0f;
     public float buildTime;
     public Material buildMat;
     Dictionary<MeshRenderer, Material> matDic = new Dictionary<MeshRenderer, Material>();
