@@ -1,6 +1,9 @@
+using PimDeWitte.UnityMainThreadDispatcher;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 public class CompAutoController : BaseComponent
@@ -105,7 +108,9 @@ public class CompAutoController : BaseComponent
                 }
             case UnitActionStatus.Idle:
                 {
-                    StartCoroutine(ScanForTarget());
+                    Thread scanThread = new Thread(ScanForTarget);
+                    scanThread.Start();
+                    //ScanForTarget();
                     break;
                 }
             case UnitActionStatus.Moving:
@@ -128,8 +133,9 @@ public class CompAutoController : BaseComponent
             case UnitActionStatus.Searching:
                 {
                     statusTimeElapsed += Time.deltaTime;
-                    if (statusTimeElapsed > 5f)
+                    if (statusTimeElapsed > 2f)
                     {
+                        Debug.Log("Reset status");
                         curStatus = UnitActionStatus.Idle;
                         statusTimeElapsed = 0;
                     }
@@ -138,7 +144,7 @@ public class CompAutoController : BaseComponent
                 }
         }
     }
-    IEnumerator ScanForTarget()
+    void ScanForTarget()
     {
         var closestDistance = Mathf.Infinity;
         string closestTarget;
@@ -148,7 +154,7 @@ public class CompAutoController : BaseComponent
         curStatus = UnitActionStatus.Searching;
         statusTimeElapsed = 0;
 
-        yield return new WaitForSeconds(0.2f);
+        //yield return new WaitForSeconds(0.2f);
 
         foreach (var entity in MapController.Instance.entityDic)
         {
@@ -159,7 +165,7 @@ public class CompAutoController : BaseComponent
                 int distance = 0;
                 if(mobile != null)
                 {
-                    distance = thisObj.UnitFindPath(entity.Value.GetTileWhereUnitIs(), (BaseObj.MoveType)mobile.functions[0].functionIntVal[0], (int)defaultMobileRange * 5).Count;
+                    distance = thisObj.UnitFindPath(entity.Value.GetTileWhereUnitIs(), (BaseObj.MoveType)mobile.functions[0].functionIntVal[0], 100000).Count;
                     if (distance <= 0) distance = 100000;
                 }else
                 {
@@ -172,39 +178,44 @@ public class CompAutoController : BaseComponent
                     closestTarget = entity.Key;
                     targets.Insert(0, entity.Value);
                 }
-                yield return null;
             }
         }
 
-        if(targets.Count <= 0)
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            curStatus = UnitActionStatus.Idle;
-            yield break;
-        }
-        var index = Random.Range(0, targets.Count > 5 ? 5 : targets.Count);
-        closestTarget = targets[index].EntityID;
-
-
-        if(MapController.Instance.entityDic.ContainsKey(closestTarget))
-        {
-            curAttackingTarget = MapController.Instance.entityDic[closestTarget];
-
-            var weapons = thisObj.GetDesiredComponents<CompWeapon>();
-
-            if (weapons != null)
+            if (targets.Count <= 0)
             {
-                if(Tools.GetDistance(thisObj.Pos,curAttackingTarget.Pos) <= maxAttackRange)
+                curStatus = UnitActionStatus.Idle;
+                return;
+            }
+            var index = Random.Range(0, targets.Count > 5 ? 5 : targets.Count);
+            closestTarget = targets[index].EntityID;
+
+            if (MapController.Instance.entityDic.ContainsKey(closestTarget))
+            {
+                Debug.Log("Target set");
+
+                curAttackingTarget = MapController.Instance.entityDic[closestTarget];
+
+                var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+
+                if (weapons != null)
                 {
-                    curStatus = UnitActionStatus.Attacking;
-                }else
+                    if (Tools.GetDistance(thisObj.Pos, curAttackingTarget.Pos) <= maxAttackRange)
+                    {
+                        curStatus = UnitActionStatus.Attacking;
+                    }
+                    else
+                    {
+                        curStatus = UnitActionStatus.Moving;
+                    }
+                }
+                else
                 {
                     curStatus = UnitActionStatus.Moving;
                 }
-            }else
-            {
-                curStatus = UnitActionStatus.Moving;
             }
-        }
+        });
     }
     void WayFinding()
     {
@@ -219,7 +230,7 @@ public class CompAutoController : BaseComponent
             Queue<BaseTile> path = new Queue<BaseTile>();
             if(curMovingDestination == null || thisObj.Pos == curMovingDestination.Pos)
             {
-                var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType, (int)defaultMobileRange * 5);
+                var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType, 100000);
                 if(path1.Count <= 0)
                 {
                     curStatus = UnitActionStatus.Idle;

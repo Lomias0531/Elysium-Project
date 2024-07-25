@@ -375,5 +375,9 @@ public class MapController : Singletion<MapController>
             Destroy(obj.gameObject);
         }
     }
+    public void Test()
+    {
+        //Debug.Log("Test");
+    }
     #endregion
 }

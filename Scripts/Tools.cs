@@ -181,42 +181,70 @@ public static class Tools
 
         return curPos;
     }
+
     public static Vector3 GetBezierCurve(Vector3 startPoint, Vector3 destination, Vector3[] midPoints, float timeDiv, bool isAdjusting = false, Transform transform = null)
     {
-        List<Vector3> controlPoints = new List<Vector3>();
-        controlPoints.Add(startPoint);
-        foreach (var item in midPoints)
+        Vector3 result = Vector3.zero;
+        Vector3 tangent = Vector3.zero;
+        if (midPoints.Length == 0)
         {
-            controlPoints.Add(item);
+            result = startPoint * (1 - timeDiv) + destination * timeDiv;
+            //tangent = StartPoint * (1 - t) + EndPoint * t;
+            tangent = startPoint - destination;
         }
-        controlPoints.Add(destination);
-
-        int count = controlPoints.Count;
-        Vector3 point = Vector3.zero;
-
-        for (int i = 0; i < count; i++)
+        if (midPoints.Length == 1)
         {
-            double binomialCoeff = BinomialCoefficient(count - 1, i);
-            double weight = binomialCoeff * Math.Pow(timeDiv, i) * Math.Pow(1 - timeDiv, count - 1 - i);
-
-            point += controlPoints[i] * (float)weight;
+            result = Mathf.Pow((1 - timeDiv), 2) * startPoint + 2 * timeDiv * (1 - timeDiv) * midPoints[0] + Mathf.Pow(timeDiv, 2) * destination;
+            tangent = startPoint * 2 * (1 - timeDiv) * -1 + midPoints[0] * 2 * ((1 - timeDiv) + timeDiv * -1) + destination * 2 * timeDiv;
         }
-
-        var curPos = point;
-
-        if (isAdjusting)
+        if (midPoints.Length == 2)
         {
-            if(timeDiv > 0.05f)
-            {
-                var lastPos = GetBezierCurve(startPoint, destination, midPoints, timeDiv - 0.05f, false);
-                var tangent = curPos - lastPos;
-
-                transform.rotation = Quaternion.LookRotation(tangent, transform.up);
-            }
+            result = Mathf.Pow((1 - timeDiv), 3) * startPoint + 3 * Mathf.Pow((1 - timeDiv), 2) * timeDiv * midPoints[0] + 3 * (1 - timeDiv) * Mathf.Pow(timeDiv, 2) * midPoints[1] + Mathf.Pow(timeDiv, 3) * destination;
+            tangent = startPoint * 3 * Mathf.Pow((1 - timeDiv), 2) * -1 + midPoints[0] * 3 * (Mathf.Pow(1 - timeDiv, 2) - 2 * timeDiv * (1 - timeDiv)) + midPoints[1] * 3 * (2 * timeDiv * (1 - timeDiv) - Mathf.Pow(timeDiv, 2)) + destination * 3 * Mathf.Pow(timeDiv, 2);
         }
 
-        return curPos;
+        if(isAdjusting)
+        {
+            transform.rotation = Quaternion.LookRotation(tangent, transform.up);
+        }
+        return result;
     }
+    //public static Vector3 GetBezierCurve(Vector3 startPoint, Vector3 destination, Vector3[] midPoints, float timeDiv, bool isAdjusting = false, Transform transform = null)
+    //{
+    //    List<Vector3> controlPoints = new List<Vector3>();
+    //    controlPoints.Add(startPoint);
+    //    foreach (var item in midPoints)
+    //    {
+    //        controlPoints.Add(item);
+    //    }
+    //    controlPoints.Add(destination);
+
+    //    int count = controlPoints.Count;
+    //    Vector3 point = Vector3.zero;
+
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        double binomialCoeff = BinomialCoefficient(count - 1, i);
+    //        double weight = binomialCoeff * Math.Pow(timeDiv, i) * Math.Pow(1 - timeDiv, count - 1 - i);
+
+    //        point += controlPoints[i] * (float)weight;
+    //    }
+
+    //    var curPos = point;
+
+    //    if (isAdjusting)
+    //    {
+    //        if(timeDiv > 0.05f)
+    //        {
+    //            var lastPos = GetBezierCurve(startPoint, destination, midPoints, timeDiv - 0.05f, false);
+    //            var tangent = curPos - lastPos;
+
+    //            transform.rotation = Quaternion.LookRotation(tangent, transform.up);
+    //        }
+    //    }
+
+    //    return curPos;
+    //}
 
 
     private static int BinomialCoefficient(int n, int k)
@@ -552,7 +580,7 @@ public static class ToolsUtility
             result.Reverse();
         }
 
-        //Debug.Log(calculateCycle);
+        Debug.Log(calculateCycle);
 
         return result;
     }
