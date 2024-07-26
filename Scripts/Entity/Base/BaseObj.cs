@@ -14,6 +14,8 @@ public abstract class BaseObj : MonoBehaviour
     public Vector3Int Pos;
     public string EntityID;
     public Animator animator;
+
+    public BaseTile? curTile;
     [HideInInspector]
     public MoveType[] moveType
     {

@@ -147,61 +147,38 @@ public class CompAutoController : BaseComponent
     void ScanForTarget()
     {
         var closestDistance = Mathf.Infinity;
-        string closestTarget;
+        string closestTarget = "";
         List<BaseObj> targets = new List<BaseObj>();
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
 
         curStatus = UnitActionStatus.Searching;
         statusTimeElapsed = 0;
 
-        //yield return new WaitForSeconds(0.2f);
+        var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+        if (weapons.Length <= 0) return;
 
-        foreach (var entity in MapController.Instance.entityDic)
+        if (mobile != null)
         {
-            if(entity.Value.Faction != thisObj.Faction)
+            foreach (var entity in MapController.Instance.entityDic)
             {
-                if (entity.Value.HP <= 0) continue;
-
-                int distance = 0;
-                if(mobile != null)
+                if(entity.Value.Faction != thisObj.Faction)
                 {
-                    distance = thisObj.UnitFindPath(entity.Value.GetTileWhereUnitIs(), (BaseObj.MoveType)mobile.functions[0].functionIntVal[0], 100000).Count;
-                    if (distance <= 0) distance = 100000;
-                }else
-                {
-                    distance = Tools.GetDistance(entity.Value.Pos, thisObj.Pos);
-                }
-                if (distance > 1000) continue;
-                if(distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestTarget = entity.Key;
-                    targets.Insert(0, entity.Value);
+                    var distance = Tools.GetDistance(entity.Value.Pos, thisObj.Pos);
+                    if(distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestTarget = entity.Value.EntityID;
+                    }
                 }
             }
-        }
 
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
-        {
-            if (targets.Count <= 0)
+            if(!string.IsNullOrEmpty(closestTarget))
             {
-                curStatus = UnitActionStatus.Idle;
-                return;
-            }
-            var index = Random.Range(0, targets.Count > 5 ? 5 : targets.Count);
-            closestTarget = targets[index].EntityID;
-
-            if (MapController.Instance.entityDic.ContainsKey(closestTarget))
-            {
-                Debug.Log("Target set");
-
                 curAttackingTarget = MapController.Instance.entityDic[closestTarget];
-
-                var weapons = thisObj.GetDesiredComponents<CompWeapon>();
 
                 if (weapons != null)
                 {
-                    if (Tools.GetDistance(thisObj.Pos, curAttackingTarget.Pos) <= maxAttackRange)
+                    if (closestDistance <= maxAttackRange)
                     {
                         curStatus = UnitActionStatus.Attacking;
                     }
@@ -215,7 +192,52 @@ public class CompAutoController : BaseComponent
                     curStatus = UnitActionStatus.Moving;
                 }
             }
-        });
+        }
+        else
+        {
+            List<BaseTile> attackRange = new List<BaseTile>();
+
+            foreach( var weapon in weapons)
+            {
+                foreach (var function in weapon.functions)
+                {
+                    var maxRange = Tools.GetTileWithinRange(thisObj.GetTileWhereUnitIs(), function.functionIntVal[1], Tools.IgnoreType.All);
+                    var minRange = Tools.GetTileWithinRange(thisObj.GetTileWhereUnitIs(), function.functionIntVal[0], Tools.IgnoreType.All);
+                    foreach (var tile in maxRange)
+                    {
+                        if(!attackRange.Contains(tile) && !minRange.Contains(tile))
+                        {
+                            attackRange.Add(tile);
+                        }
+                    }
+                }
+            }
+
+            foreach (var tile in attackRange)
+            {
+                var entity = tile.GetEntitynThisTile();
+                if (entity != null)
+                {
+                    if (entity.Faction == thisObj.Faction) continue;
+                    var distance = Tools.GetDistance(thisObj.Pos,entity.Pos);
+                    if(distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestTarget = entity.EntityID;
+                    }
+                }
+            }
+
+            if(!string.IsNullOrEmpty(closestTarget))
+            {
+                curAttackingTarget = MapController.Instance.entityDic[closestTarget];
+                curStatus = UnitActionStatus.Attacking;
+            }else
+            {
+                curAttackingTarget = null;
+                curStatus = UnitActionStatus.Idle;
+            }
+        }
     }
     void WayFinding()
     {
@@ -228,7 +250,7 @@ public class CompAutoController : BaseComponent
             var defaultMoveType = (BaseObj.MoveType)mobile.functions[0].functionIntVal[0];
 
             Queue<BaseTile> path = new Queue<BaseTile>();
-            if(curMovingDestination == null || thisObj.Pos == curMovingDestination.Pos)
+            if ((curMovingDestination == null || thisObj.Pos == curMovingDestination.Pos) && curAttackingTarget.curTile != null)
             {
                 var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType, 100000);
                 if(path1.Count <= 0)

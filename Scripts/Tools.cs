@@ -586,25 +586,11 @@ public static class ToolsUtility
     }
     public static BaseTile GetTileWhereUnitIs(this BaseObj unit)
     {
-        foreach (var tile in MapController.Instance.mapTiles)
-        {
-            if (tile.Value.Pos.x == unit.Pos.x && tile.Value.Pos.y == unit.Pos.y)
-            {
-                return tile.Value;
-            }
-        }
-        return null;
+        return unit.curTile;
     }
     public static BaseObj GetEntitynThisTile(this BaseTile tile)
     {
-        foreach (var unit in MapController.Instance.entityDic)
-        {
-            if(unit.Value.Pos == tile.Pos)
-            {
-                return unit.Value;
-            }
-        }
-        return null;
+        return tile.curObj;
     }
     public static float GetMoveCost(this BaseTile tile, BaseObj.MoveType type)
     {
@@ -635,20 +621,7 @@ public static class ToolsUtility
     }
     public static bool isAvailable(this BaseTile tile)
     {
-        BaseObj unit = tile.GetEntitynThisTile();
-        return unit == null;
-    }
-    public static BaseObj GetObjInThisTile(this BaseTile tile)
-    {
-        if (tile == null) return null;
-        foreach (var ent in MapController.Instance.entityDic)
-        {
-            if(ent.Value.Pos == tile.Pos)
-            {
-                return ent.Value;
-            }
-        }
-        return null;
+        return tile.curObj == null;
     }
     public static bool CheckIsTileSuitableForUnit(this BaseObj unit, BaseTile tile)
     {

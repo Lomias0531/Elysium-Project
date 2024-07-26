@@ -288,6 +288,8 @@ public class MapController : Singletion<MapController>
                     BaseResource res1 = GameObject.Instantiate(resourceTemplate, tsf_ResContainer);
                     res1.transform.position = item.transform.position;
                     res1.InitResource(item.Pos, (BaseResource.ResourceType)i);
+                    res1.curTile = item;
+                    item.curObj = res1;
                     res1.Faction = "Resource";
 
                     entityDic.Add(res1.EntityID, res1);
@@ -338,6 +340,8 @@ public class MapController : Singletion<MapController>
             {
                 obj.gameObject.transform.localPosition = generateTile.gameObject.transform.localPosition;
                 obj.Pos = generateTile.Pos;
+                obj.curTile = generateTile;
+                generateTile.curObj = obj;
 
                 entityDic.Add(obj.EntityID, obj);
             }else
@@ -364,6 +368,12 @@ public class MapController : Singletion<MapController>
         if(entityDic.ContainsKey(obj.EntityID))
         {
             Debug.Log("Remove object");
+
+            if(obj.curTile != null)
+            {
+                obj.curTile.curObj = null;
+                obj.curTile = null;
+            }
 
             UIController.Instance.RemoveUnitIndicator(obj);
             if(CameraController.Instance.focusingTarget == obj)

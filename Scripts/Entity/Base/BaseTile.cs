@@ -15,7 +15,7 @@ public class BaseTile : MonoBehaviour
     List<int> triangles;
     public string tileName;
 
-    
+    public BaseObj? curObj;
 
     public Vector2Int originalPos;
     public Vector3Int Pos;

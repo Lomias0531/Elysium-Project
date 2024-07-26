@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static BaseObj;
+using static UnityEngine.GraphicsBuffer;
 
 public class CompMobile : BaseComponent
 {
@@ -90,6 +91,10 @@ public class CompMobile : BaseComponent
                         this.transform.position = target.transform.position;
                         //this.transform.DOMove(target.transform.position, 0.2f, false);
                         thisObj.Pos = target.Pos;
+
+                        thisObj.curTile.curObj = null;
+                        thisObj.curTile = target;
+                        target.curObj = thisObj;
                         //yield return new WaitForSeconds(0.2f);
                     } while (moveQueue.Count > 0);
 
@@ -113,6 +118,10 @@ public class CompMobile : BaseComponent
 
                     this.transform.position = tile.transform.position;
                     thisObj.Pos = tile.Pos;
+
+                    thisObj.curTile.curObj = null;
+                    thisObj.curTile = tile;
+                    tile.curObj = thisObj;
                     break;
                 }
             case MoveStyle.Jump:
@@ -139,6 +148,10 @@ public class CompMobile : BaseComponent
                     } while (jumpTileElapsed <= 1f);
                     this.transform.position = tile.transform.position;
                     thisObj.Pos = tile.Pos;
+
+                    thisObj.curTile.curObj = null;
+                    thisObj.curTile = tile;
+                    tile.curObj = thisObj;
 
                     break;
                 }

@@ -123,15 +123,17 @@ public class CompConstructor : BaseComponent
         objGenerated.InitThis();
         yield return null;
         bool check = false;
-        foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles)
+        foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles.Values)
         {
-            if (obj.CheckIsTileSuitableForUnit(adjTile.Value))
+            if (obj.CheckIsTileSuitableForUnit(adjTile))
             {
                 MapController.Instance.RegisterObject(objGenerated);
                 objGenerated.Faction = thisObj.Faction;
-                objGenerated.Pos = adjTile.Value.Pos;
-                objGenerated.gameObject.transform.position = adjTile.Value.gameObject.transform.position;
+                objGenerated.Pos = adjTile.Pos;
+                objGenerated.gameObject.transform.position = adjTile.gameObject.transform.position;
                 objGenerated.gameObject.SetActive(true);
+                objGenerated.curTile = adjTile;
+                adjTile.curObj = objGenerated;
                 check = true;
                 break;
             }

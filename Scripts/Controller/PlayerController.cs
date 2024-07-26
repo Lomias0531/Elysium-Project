@@ -173,7 +173,7 @@ public class PlayerController : Singletion<PlayerController>
     }
     void GetObjUnderMouse()
     {
-        hoveredObject = hoveredTile.GetObjInThisTile();
+        hoveredObject = hoveredTile.GetEntitynThisTile();
         UIController.Instance.DisplayHoveredUnitInfo(hoveredObject);
         if (hoveredObject != null)
         {
@@ -258,6 +258,8 @@ public class PlayerController : Singletion<PlayerController>
                         MapController.Instance.RegisterObject(newConstruct);
                         newConstruct.Pos = hoveredTile.Pos;
                         newConstruct.transform.position = hoveredTile.gameObject.transform.position;
+                        newConstruct.curTile = hoveredTile;
+                        hoveredTile.curObj = newConstruct;
 
                         var compBuild = newConstruct.GetDesiredComponent<CompConstructTemp>();
                         compBuild.InitConstruct();
@@ -600,23 +602,55 @@ public class PlayerController : Singletion<PlayerController>
     public void GetPowerGridRange()
     {
         powerGridIndicator.Clear();
+        List<BaseTile> tempGrid = new List<BaseTile>();
         foreach (var construct in PlayerDataManager.Instance.myConstructions)
         {
             var generator = construct.GetDesiredComponent<CompPowerDispathcer>();
             if(generator != null)
             {
-                var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange, Tools.IgnoreType.All);
-                foreach (var tile in gridList)
+                var constructTemp = construct.GetDesiredComponent<CompConstructTemp>();
+                if(constructTemp == null)
                 {
-                    if(!powerGridIndicator.Contains(tile))
+                    var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange, Tools.IgnoreType.All);
+                    foreach (var tile in gridList)
                     {
-                        powerGridIndicator.Add(tile);
+                        if (!powerGridIndicator.Contains(tile))
+                        {
+                            powerGridIndicator.Add(tile);
+                        }
+                    }
+                }else
+                {
+                    if(constructTemp.buildProgress > 0)
+                    {
+                        var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange, Tools.IgnoreType.All);
+                        foreach (var tile in gridList)
+                        {
+                            if (!tempGrid.Contains(tile))
+                            {
+                                tempGrid.Add(tile);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var gridList = Tools.GetTileWithinRange(hoveredTile,generator.powerRadiationRange,Tools.IgnoreType.All);
+                        foreach (var tile in gridList)
+                        {
+                            if (!tempGrid.Contains(tile))
+                            {
+                                tempGrid.Add(tile);
+                            }
+                        }
                     }
                 }
             }
         }
 
+        Color tempGridColor = col_PowerGrid;
+        tempGridColor.a /= 2;
         DrawRangeIndicator(powerGridIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "PowerGridIndicator", col_PowerGrid, 2f);
+        DrawRangeIndicator(tempGrid, MapController.Instance.mapTiles.FirstOrDefault().Value, "TempPowerGridIndicator", col_PowerGrid, 3f);
     }
     public void GetBuildRange()
     {
