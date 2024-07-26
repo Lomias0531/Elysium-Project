@@ -1945,6 +1945,7 @@ MonoBehaviour:
   Pos: {x: 0, y: 0, z: 0}
   EntityID: 
   animator: {fileID: 0}
+  curTile: {fileID: 0}
   objName: Hana
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -2036,7 +2037,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2919332615130540202}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69b2f8b91d781fb48ba75fe396af6e7e, type: 3}
   m_Name: 

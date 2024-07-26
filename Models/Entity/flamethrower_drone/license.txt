@@ -1,0 +1,11 @@
+Model Information:
+* title:	Flamethrower Drone
+* source:	https://sketchfab.com/3d-models/flamethrower-drone-6bc6e70b2c6b467d95f4d7e1756e116f
+* author:	Jonas Prunskus (https://sketchfab.com/JPrun)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Flamethrower Drone" (https://sketchfab.com/3d-models/flamethrower-drone-6bc6e70b2c6b467d95f4d7e1756e116f) by Jonas Prunskus (https://sketchfab.com/JPrun) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

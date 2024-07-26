@@ -33,6 +33,7 @@ public class MapController : Singletion<MapController>
     public Transform tsf_ResContainer;
 
     public BaseObj[] unitsToGenerate;
+    public BaseObj[] hostileToGenernate;
 
     public Transform tsf_ProjectileContainer;
     public Transform tsf_ParticlesConatiner;
@@ -301,54 +302,121 @@ public class MapController : Singletion<MapController>
 
     IEnumerator GenerateUnits()
     {
-        var keyTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
-
-
-        foreach (var unit in unitsToGenerate)
+        bool isGenerationSet;
+        do
         {
-            bool checkTerrainOK = false;
-            BaseTile generateTile;
-            int tryCount = 0;
+            var keyTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
+            isGenerationSet = true;
 
-            var obj = GameObject.Instantiate(unit, entityContainer);
-
-            obj.InitThis();
-            obj.Faction = "Elysium";
-            //obj.objName = obj.gameObject.name;
-
-            yield return new WaitForSeconds(0.1f);
-
-            do
+            foreach (var unit in unitsToGenerate)
             {
-                generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
+                bool checkTerrainOK = true;
+                BaseTile generateTile;
+                int tryCount = 0;
 
-                checkTerrainOK = obj.CheckIsTileSuitableForUnit(generateTile);
+                var obj = GameObject.Instantiate(unit, entityContainer);
 
-                if (Tools.GetDistance(keyTile.Pos, generateTile.Pos) > 4)
-                    checkTerrainOK = false;
+                obj.InitThis();
+                obj.Faction = "Elysium";
+                //obj.objName = obj.gameObject.name;
 
-                tryCount += 1;
-                if (tryCount >= 1000)
+                yield return new WaitForSeconds(0.1f);
+
+                do
                 {
-                    generateTile = null;
-                    Debug.Log("unit not in position");
-                    break;
+                    generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
+
+                    checkTerrainOK = obj.CheckIsTileSuitableForUnit(generateTile);
+
+                    if (Tools.GetDistance(keyTile.Pos, generateTile.Pos) > 4)
+                        checkTerrainOK = false;
+
+                    tryCount += 1;
+                    if (tryCount >= 1000)
+                    {
+                        generateTile = null;
+                        Debug.Log("unit not in position");
+                        isGenerationSet = false;
+                        break;
+                    }
+                } while (!checkTerrainOK);
+
+                if(!isGenerationSet)
+                {
+                    foreach (var item in entityDic)
+                    {
+                        if(item.Value.Faction == "Elysium")
+                            RemoveObject(item.Value);
+                    }
                 }
-            } while (!checkTerrainOK);
+                if (generateTile != null)
+                {
+                    obj.gameObject.transform.localPosition = generateTile.gameObject.transform.localPosition;
+                    obj.Pos = generateTile.Pos;
+                    obj.curTile = generateTile;
+                    generateTile.curObj = obj;
 
-            if (generateTile != null)
-            {
-                obj.gameObject.transform.localPosition = generateTile.gameObject.transform.localPosition;
-                obj.Pos = generateTile.Pos;
-                obj.curTile = generateTile;
-                generateTile.curObj = obj;
-
-                entityDic.Add(obj.EntityID, obj);
-            }else
-            {
-                Destroy(obj.gameObject);
+                    entityDic.Add(obj.EntityID, obj);
+                }
+                else
+                {
+                    Destroy(obj.gameObject);
+                }
             }
-        }
+        } while (!isGenerationSet);
+
+        do
+        {
+            var keyTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
+            isGenerationSet = true;
+
+            foreach (var unit in hostileToGenernate)
+            {
+                bool checkTerrainOK = false;
+                BaseTile generateTile;
+                int tryCount = 0;
+
+                var obj = GameObject.Instantiate(unit, entityContainer);
+
+                obj.InitThis();
+                obj.Faction = "Falcon";
+
+                yield return new WaitForSeconds(0.1f);
+
+                do
+                {
+                    generateTile = mapTiles.ElementAt(new System.Random().Next(mapTiles.Count)).Value;
+
+                    checkTerrainOK = obj.CheckIsTileSuitableForUnit(generateTile);
+
+                    if (Tools.GetDistance(keyTile.Pos, generateTile.Pos) > 4)
+                        checkTerrainOK = false;
+
+                    tryCount += 1;
+                    if (tryCount >= 1000)
+                    {
+                        generateTile = null;
+                        Debug.Log("unit not in position");
+                        isGenerationSet = false;
+                        break;
+                    }
+                } while (!checkTerrainOK);
+
+                if (generateTile != null)
+                {
+                    obj.gameObject.transform.localPosition = generateTile.gameObject.transform.localPosition;
+                    obj.Pos = generateTile.Pos;
+                    obj.curTile = generateTile;
+                    generateTile.curObj = obj;
+
+                    entityDic.Add(obj.EntityID, obj);
+                }
+                else
+                {
+                    Destroy(obj.gameObject);
+                }
+            }
+        } while (!isGenerationSet);
 
         UIController.Instance.CreateUnitIndicators();
     }

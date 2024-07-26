@@ -3,16 +3,18 @@ using System.Linq;
 using UnityEngine;
 using Unity.Jobs;
 using Unity.Burst;
+using System.Collections;
+using static UnityEngine.AudioSettings;
 
 [BurstCompile]
 public class CompAutoController : BaseComponent
 {
     BaseObj curAttackingTarget;
     BaseTile curMovingDestination;
-    UnitActionStatus curStatus;
+    UnitActionStatus curStatus = UnitActionStatus.Searching;
+    UnitActionMode curMode = UnitActionMode.Protective;
     bool inited = false;
 
-    public int ScanRange;
     float actionTimeElapsed = 0;
     float actionTimeInterval = 0.5f;
 
@@ -30,6 +32,13 @@ public class CompAutoController : BaseComponent
         Moving,
         Attacking,
         Searching,
+    }
+    public enum UnitActionMode
+    {
+        Standby,
+        Agresssive,
+        Protective,
+        Passive,
     }
     float defaultMobileRange
     {
@@ -115,7 +124,6 @@ public class CompAutoController : BaseComponent
                     var mobile = thisObj.GetDesiredComponent<CompMobile>();
                     if(mobile != null)
                     {
-                        
                         WayFinding();
                     }else
                     {
@@ -155,12 +163,15 @@ public class CompAutoController : BaseComponent
         var weapons = thisObj.GetDesiredComponents<CompWeapon>();
         if (weapons.Length <= 0) return;
 
-        if (mobile != null)
+        if (curMode == UnitActionMode.Passive) return;
+
+        if (mobile != null && curMode == UnitActionMode.Agresssive)
         {
             foreach (var entity in MapController.Instance.entityDic)
             {
                 if(entity.Value.Faction != thisObj.Faction)
                 {
+                    if (curMode != UnitActionMode.Standby && entity.Value.Faction == "Resource") continue;
                     var distance = Tools.GetDistance(entity.Value.Pos, thisObj.Pos);
                     if(distance < closestDistance)
                     {
@@ -233,14 +244,22 @@ public class CompAutoController : BaseComponent
             }else
             {
                 curAttackingTarget = null;
-                curStatus = UnitActionStatus.Idle;
+                if(curMode == UnitActionMode.Standby)
+                {
+                    curStatus = UnitActionStatus.Moving;
+                }
+                else
+                {
+                    curStatus = UnitActionStatus.Idle;
+                }
             }
         }
     }
     void WayFinding()
     {
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
-        if (curAttackingTarget == null)
+
+        if (curAttackingTarget == null && curMode != UnitActionMode.Standby)
         {
             curStatus = UnitActionStatus.Idle;
             return;
@@ -253,22 +272,51 @@ public class CompAutoController : BaseComponent
             var defaultMoveType = (BaseObj.MoveType)mobile.functions[0].functionIntVal[0];
 
             Queue<BaseTile> path = new Queue<BaseTile>();
-            if ((curMovingDestination == null || thisObj.Pos == curMovingDestination.Pos) && curAttackingTarget.curTile != null)
+            if (curMovingDestination == null || thisObj.Pos == curMovingDestination.Pos)
             {
-                var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType, 100000);
-                if(path1.Count <= 0)
+                if(curMode != UnitActionMode.Standby)
                 {
-                    curStatus = UnitActionStatus.Idle;
-                    actionTimeElapsed = actionTimeInterval;
-                    return;
-                }
-                var maxRange = defaultMobileRange;
-                if (path1.Count < maxRange) maxRange = path1.Count;
-                for(int i  = 0;i< maxRange; i++)
+                    var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType, 100000);
+                    if (path1.Count <= 0)
+                    {
+                        curStatus = UnitActionStatus.Idle;
+                        actionTimeElapsed = actionTimeInterval;
+                        return;
+                    }
+                    var maxRange = defaultMobileRange;
+                    if (path1.Count < maxRange) maxRange = path1.Count;
+                    for (int i = 0; i < maxRange; i++)
+                    {
+                        path.Enqueue(path1.Dequeue());
+                    }
+                    curMovingDestination = path.Last();
+                }else
                 {
-                    path.Enqueue(path1.Dequeue());
+                    var mobileTile = Tools.GetTileWithinRange(thisObj.curTile, 2, Tools.IgnoreType.None);
+                    int targetIndex;
+                    bool targetOK = false;
+                    do
+                    {
+                        targetIndex = Random.Range(0, mobileTile.Count);
+                        if (thisObj.CheckIsTileSuitableForUnit(mobileTile[targetIndex]))
+                        {
+                            targetOK = true;
+                        }
+                    } while (!targetOK);
+
+                    curMovingDestination = mobileTile[targetIndex];
                 }
-                curMovingDestination = path.Last();
+            }
+
+            if (curAttackingTarget == null && curMode == UnitActionMode.Standby)
+            {
+                thisObj.curSelectedComp = mobile;
+                thisObj.curSelectedFunction = mobile.functions[0];
+
+                mobile.FunctionTriggered(mobile.functions[0]);
+                StartCoroutine(mobile.MoveObject(path));
+
+                return;
             }
             if(Tools.GetDistance(thisObj.Pos,curAttackingTarget.Pos) < maxAttackRange)
             {
@@ -276,6 +324,12 @@ public class CompAutoController : BaseComponent
                 return;
             }else
             {
+
+                if (path.Count <= 0)
+                {
+                    curMovingDestination = null;
+                    return;
+                }
                 thisObj.curSelectedComp = mobile;
                 thisObj.curSelectedFunction = mobile.functions[0];
 
@@ -346,7 +400,7 @@ public class CompAutoController : BaseComponent
                 }
             case UnitActException.IllegalMove:
                 {
-                    curMovingDestination = null;
+                    MoveToAdjPos();
                     break;
                 }
             case UnitActException.IllegalAttack:
@@ -355,5 +409,33 @@ public class CompAutoController : BaseComponent
                     break;
                 }
         }
+    }
+    void MoveToAdjPos()
+    {
+        var mobileTile = Tools.GetTileWithinRange(thisObj.curTile, 2, Tools.IgnoreType.None);
+        int targetIndex;
+        bool targetOK = false;
+        do
+        {
+            targetIndex = Random.Range(0, mobileTile.Count);
+            if (thisObj.CheckIsTileSuitableForUnit(mobileTile[targetIndex]))
+            {
+                targetOK = true;
+            }
+        } while (!targetOK);
+
+        curMovingDestination = mobileTile[targetIndex];
+        var mobile = thisObj.GetDesiredComponent<CompMobile>();
+        var path = thisObj.UnitFindPath(curMovingDestination, (BaseObj.MoveType)mobile.functions[0].functionIntVal[0], 4);
+
+        thisObj.curSelectedComp = mobile;
+        thisObj.curSelectedFunction = mobile.functions[0];
+
+        mobile.FunctionTriggered(mobile.functions[0]);
+        StartCoroutine(mobile.MoveObject(path));
+    }
+    public void SetActionMode(UnitActionMode mode)
+    {
+        curMode = mode;
     }
 }

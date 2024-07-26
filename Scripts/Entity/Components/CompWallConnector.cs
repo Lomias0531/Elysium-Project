@@ -41,6 +41,7 @@ public class CompWallConnector : BaseComponent
     public override void Update()
     {
         base.Update();
+        if (thisObj.curTile == null) return;
         foreach (var tile in thisObj.GetTileWhereUnitIs().adjacentTiles)
         {
             var unit = tile.Value.GetEntitynThisTile();

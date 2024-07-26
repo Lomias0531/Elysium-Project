@@ -51,8 +51,11 @@ public class Proj_Ballistic : MonoBehaviour
             launchTimeElapsed += Time.deltaTime;
 
             List<Vector3> midPoints = new List<Vector3>();
-            midPoints.Add(StartPos.position + StartPos.forward * (1 + Random.Range(0.1f,0.5f)));
-            midPoints.Add((StartPos.position + Destination) / 2 + new Vector3(0, 3f, 0));
+            if (!straight)
+            {
+                midPoints.Add(StartPos.position + StartPos.forward * (1 + Random.Range(0.1f, 0.5f)));
+                midPoints.Add((StartPos.position + Destination) / 2 + new Vector3(0, 3f, 0));
+            }
 
             if (launchTimeElapsed > flightTime) break;
             this.gameObject.transform.position = Tools.GetBezierCurve(StartPos.position, Destination, midPoints.ToArray(), launchTimeElapsed / flightTime, true, this.gameObject.transform);
