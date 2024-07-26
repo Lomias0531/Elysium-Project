@@ -226,7 +226,9 @@ public abstract class BaseObj : MonoBehaviour
                     int compIndex = Random.Range(0, dic.Count);
                     var damagedComp = Components[dic[compIndex]];
 
-                    damagedComp.HP -= damageValue - damagedComp.Defense;
+                    var dam = damageValue - damagedComp.Defense;
+                    dam = dam <= 0 ? 1 : dam;
+                    damagedComp.HP -= dam;
                     if (damagedComp.HP <= 0)
                     {
                         damagedComp.HP = 0;
@@ -268,7 +270,9 @@ public abstract class BaseObj : MonoBehaviour
                         int compIndex = Random.Range(0, dic.Count);
                         var damagedComp = Components[dic[compIndex]];
 
-                        damagedComp.HP -= dam - damagedComp.Defense;
+                        var damage = dam - damagedComp.Defense;
+                        damage = damage < 0 ? 1 : damage;
+                        damagedComp.HP -= damage;
                         damageValue -= dam;
                         if (damagedComp.HP <= 0)
                         {

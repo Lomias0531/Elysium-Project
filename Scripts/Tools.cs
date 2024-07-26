@@ -473,6 +473,7 @@ public static class ToolsUtility
 
     public static Queue<BaseTile> UnitFindPath(this BaseObj unit, BaseTile destination, BaseObj.MoveType selectedMoveType,int moveRange, bool isPathingToTarget = false)
     {
+        if (destination == null) return new Queue<BaseTile>();
         int calculateCycle = 0;
 
         var startPoint = unit.GetTileWhereUnitIs();
