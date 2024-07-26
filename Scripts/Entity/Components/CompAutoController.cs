@@ -276,6 +276,12 @@ public class CompAutoController : BaseComponent
             {
                 if(curMode != UnitActionMode.Standby)
                 {
+                    if(curAttackingTarget == null)
+                    {
+                        curStatus = UnitActionStatus.Idle;
+                        actionTimeElapsed = actionTimeInterval;
+                        return;
+                    }
                     var path1 = thisObj.UnitFindPath(curAttackingTarget.GetTileWhereUnitIs(), defaultMoveType, 100000);
                     if (path1.Count <= 0)
                     {
