@@ -1,11 +1,10 @@
-using PimDeWitte.UnityMainThreadDispatcher;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using UnityEditor.UIElements;
 using UnityEngine;
+using Unity.Jobs;
+using Unity.Burst;
 
+[BurstCompile]
 public class CompAutoController : BaseComponent
 {
     BaseObj curAttackingTarget;
@@ -108,9 +107,7 @@ public class CompAutoController : BaseComponent
                 }
             case UnitActionStatus.Idle:
                 {
-                    Thread scanThread = new Thread(ScanForTarget);
-                    scanThread.Start();
-                    //ScanForTarget();
+                    ScanForTarget();
                     break;
                 }
             case UnitActionStatus.Moving:
@@ -118,6 +115,7 @@ public class CompAutoController : BaseComponent
                     var mobile = thisObj.GetDesiredComponent<CompMobile>();
                     if(mobile != null)
                     {
+                        
                         WayFinding();
                     }else
                     {
@@ -148,7 +146,7 @@ public class CompAutoController : BaseComponent
     {
         var closestDistance = Mathf.Infinity;
         string closestTarget = "";
-        List<BaseObj> targets = new List<BaseObj>();
+
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
 
         curStatus = UnitActionStatus.Searching;
@@ -242,6 +240,11 @@ public class CompAutoController : BaseComponent
     void WayFinding()
     {
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
+        if (curAttackingTarget == null)
+        {
+            curStatus = UnitActionStatus.Idle;
+            return;
+        }
 
         if (mobile != null)
         {

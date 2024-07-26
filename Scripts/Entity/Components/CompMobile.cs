@@ -82,20 +82,41 @@ public class CompMobile : BaseComponent
 
                         float moveTimeElapsed = 0;
                         var originPos = this.transform.position;
+
+                        bool moveRight = true;
                         do
                         {
                             this.transform.position = Vector3.Lerp(originPos, target.transform.position, moveTimeElapsed / 0.2f);
                             moveTimeElapsed += Time.deltaTime;
+                            if(target.curObj != null)
+                            {
+                                moveRight = false;
+                                moveTimeElapsed = 0f;
+                                break;
+                            }
                             yield return null;
                         } while (moveTimeElapsed < 0.2f);
-                        this.transform.position = target.transform.position;
-                        //this.transform.DOMove(target.transform.position, 0.2f, false);
-                        thisObj.Pos = target.Pos;
 
-                        thisObj.curTile.curObj = null;
-                        thisObj.curTile = target;
-                        target.curObj = thisObj;
-                        //yield return new WaitForSeconds(0.2f);
+                        if (target.curObj != null)
+                        {
+                            moveRight = false;
+                        }
+
+                        if (!moveRight)
+                        {
+                            this.transform.position = thisObj.curTile.transform.position;
+                            var auto = thisObj.GetDesiredComponent<CompAutoController>();
+                            auto.ReceiveActionException(CompAutoController.UnitActException.IllegalMove);
+                            break;
+                        }else
+                        {
+                            this.transform.position = target.transform.position;
+                            thisObj.Pos = target.Pos;
+
+                            thisObj.curTile.curObj = null;
+                            thisObj.curTile = target;
+                            target.curObj = thisObj;
+                        }
                     } while (moveQueue.Count > 0);
 
                     break;

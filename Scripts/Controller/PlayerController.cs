@@ -173,6 +173,7 @@ public class PlayerController : Singletion<PlayerController>
     }
     void GetObjUnderMouse()
     {
+        if (hoveredTile == null) return;
         hoveredObject = hoveredTile.GetEntitynThisTile();
         UIController.Instance.DisplayHoveredUnitInfo(hoveredObject);
         if (hoveredObject != null)
