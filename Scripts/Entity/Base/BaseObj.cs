@@ -1,13 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using DG.Tweening;
-using TMPro;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Random = UnityEngine.Random;
-using static UnityEditor.Progress;
 
 public abstract class BaseObj : MonoBehaviour
 {

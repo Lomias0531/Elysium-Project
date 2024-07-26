@@ -1,15 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
-using UnityEditor.PackageManager.Requests;
 using static BaseTile;
-using System;
 using System.Linq;
 using UnityEngine.EventSystems;
-using UnityEditor.Rendering.LookDev;
-using UnityEditor;
 using Unity.VisualScripting;
 
 public class PlayerController : Singletion<PlayerController>
