@@ -428,7 +428,7 @@ public class MapController : Singletion<MapController>
     }
     public void RegisterObject(BaseObj obj)
     {
-        GUID uid = GUID.Generate();
+        System.Guid uid = System.Guid.NewGuid();
         obj.EntityID = uid.ToString();
 
         obj.gameObject.transform.SetParent(entityContainer);
