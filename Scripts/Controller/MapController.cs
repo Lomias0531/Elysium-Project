@@ -419,6 +419,12 @@ public class MapController : Singletion<MapController>
         } while (!isGenerationSet);
 
         UIController.Instance.CreateUnitIndicators();
+
+        if(PlayerDataManager.Instance.myConstructions.Count > 0)
+        {
+            var myConstruct = PlayerDataManager.Instance.myConstructions.FirstOrDefault();
+            CameraController.Instance.MoveCamTo(myConstruct.Pos);
+        }
     }
     public void RegisterObject(BaseObj obj)
     {

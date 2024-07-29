@@ -45,6 +45,11 @@ public class CompPowerDispathcer : BaseComponent
                     if (unit == thisObj) continue;
                     if (unit.Faction == thisObj.Faction)
                     {
+                        var cons = unit.GetDesiredComponent<CompConstructTemp>();
+                        var power = unit.GetDesiredComponent<CompGenerator>();
+
+                        if (cons == null && power != null) continue;
+
                         float powerTranfered = 0;
                         for (int i = 0; i < unit.Components.Count; i++)
                         {
