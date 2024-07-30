@@ -20,10 +20,12 @@ public class Proj_Ballistic : MonoBehaviour
     public GameObject blast;
 
     public TrailRenderer trails;
+    public Material mat;
+    MeshRenderer[] meshRenderers;
     // Start is called before the first frame update
     void Start()
     {
-        
+        meshRenderers = GetComponentsInChildren<MeshRenderer>();
     }
 
     // Update is called once per frame
@@ -44,7 +46,24 @@ public class Proj_Ballistic : MonoBehaviour
     }
     IEnumerator FlightSequence()
     {
-        trails.emitting = true;
+        //trails.emitting = true;
+        trails = this.gameObject.AddComponent<TrailRenderer>();
+        trails.startWidth = 0.1f;
+        trails.endWidth = 0f;
+        trails.material = mat;
+        trails.time = 2f;
+        trails.startColor = Color.white;
+        trails.endColor = Color.black;
+
+        if(meshRenderers == null)
+        {
+            meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        }
+        foreach (var mesh in meshRenderers)
+        {
+            mesh.enabled = true;
+        }
+
         launchTimeElapsed = 0;
         do
         { 
@@ -81,7 +100,13 @@ public class Proj_Ballistic : MonoBehaviour
                 ObjectPool.Instance.CollectObject(spark, 2f);
             }
         }
-        trails.emitting = false;
-        ObjectPool.Instance.CollectObject(this.gameObject);
+        //trails.emitting = false;
+        foreach (var mesh in meshRenderers)
+        {
+            mesh.enabled = false;
+        }
+
+        Destroy(trails, 2f);
+        ObjectPool.Instance.CollectObject(this.gameObject, 2f);
     }
 }
