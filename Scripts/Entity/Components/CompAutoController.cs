@@ -152,9 +152,6 @@ public class CompAutoController : BaseComponent
     }
     void ScanForTarget()
     {
-        var closestDistance = Mathf.Infinity;
-        string closestTarget = "";
-
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
 
         curStatus = UnitActionStatus.Searching;
@@ -165,6 +162,8 @@ public class CompAutoController : BaseComponent
 
         if (curMode == UnitActionMode.Passive) return;
 
+        List<TargetAnalysis> targets = new List<TargetAnalysis>();
+
         if (mobile != null && curMode == UnitActionMode.Agresssive)
         {
             foreach (var entity in MapController.Instance.entityDic)
@@ -173,13 +172,19 @@ public class CompAutoController : BaseComponent
                 {
                     if (curMode != UnitActionMode.Standby && entity.Value.Faction == "Resource") continue;
                     var distance = Tools.GetDistance(entity.Value.Pos, thisObj.Pos);
-                    if(distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestTarget = entity.Value.EntityID;
-                    }
+
+                    TargetAnalysis target = new TargetAnalysis();
+                    target.ID = entity.Value.EntityID;
+                    target.distance = distance;
+                    target.threat = entity.Value.Faction == "Resource" ? 0 : 20;
+                    targets.Add(target);
                 }
             }
+
+            targets.OrderBy(x => (100 - x.distance) + x.threat);
+            var index = targets.Count > 5 ? Random.Range(0, 5) : Random.Range(0, targets.Count);
+            var closestTarget = targets[index].ID;
+            var closestDistance = targets[index].distance;
 
             if(!string.IsNullOrEmpty(closestTarget))
             {
@@ -229,15 +234,21 @@ public class CompAutoController : BaseComponent
                 {
                     if (entity.Faction == thisObj.Faction) continue;
                     var distance = Tools.GetDistance(thisObj.Pos,entity.Pos);
-                    if(distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestTarget = entity.EntityID;
-                    }
+
+                    TargetAnalysis target = new TargetAnalysis();
+                    target.ID = entity.EntityID;
+                    target.distance = distance;
+                    target.threat = entity.Faction == "Resource" ? 0 : 20;
+                    targets.Add(target);
                 }
             }
 
-            if(!string.IsNullOrEmpty(closestTarget))
+            targets.OrderBy(x => (100 - x.distance) + x.threat);
+            var index = targets.Count > 5 ? Random.Range(0, 5) : Random.Range(0, targets.Count);
+            var closestTarget = targets[index].ID;
+            var closestDistance = targets[index].distance;
+
+            if (!string.IsNullOrEmpty(closestTarget))
             {
                 curAttackingTarget = MapController.Instance.entityDic[closestTarget];
                 curStatus = UnitActionStatus.Attacking;
@@ -443,5 +454,11 @@ public class CompAutoController : BaseComponent
     public void SetActionMode(UnitActionMode mode)
     {
         curMode = mode;
+    }
+    struct TargetAnalysis
+    {
+        public string ID;
+        public float distance;
+        public float threat;
     }
 }
