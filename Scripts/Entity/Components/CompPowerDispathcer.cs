@@ -109,7 +109,7 @@ public class CompPowerDispathcer : BaseComponent
                 powerProject.enabled = true;
                 Vector3[] pos = new Vector3[2];
                 pos[0] = obj_TransferStart.transform.position;
-                pos[1] = target.transform.position;
+                pos[1] = target.transform.position + new Vector3(0, 0.5f, 0);
                 powerProject.SetPositions(pos);
                 var width = (0.25f - Mathf.Abs(time - 0.25f)) / 0.25f * 0.06f;
                 powerProject.startWidth = width;

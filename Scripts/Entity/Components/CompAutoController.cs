@@ -243,10 +243,17 @@ public class CompAutoController : BaseComponent
                 }
             }
 
-            targets.OrderBy(x => (100 - x.distance) + x.threat);
-            var index = targets.Count > 5 ? Random.Range(0, 5) : Random.Range(0, targets.Count);
-            var closestTarget = targets[index].ID;
-            var closestDistance = targets[index].distance;
+            string closestTarget;
+            if (targets.Count > 0)
+            {
+                targets.OrderBy(x => (100 - x.distance) + x.threat);
+                var index = targets.Count > 5 ? Random.Range(0, 5) : Random.Range(0, targets.Count);
+                closestTarget = targets[index].ID;
+                var closestDistance = targets[index].distance;
+            }else
+            {
+                closestTarget = "";
+            }
 
             if (!string.IsNullOrEmpty(closestTarget))
             {

@@ -596,6 +596,7 @@ MonoBehaviour:
   Pos: {x: 0, y: 0, z: 0}
   EntityID: 
   animator: {fileID: 0}
+  curTile: {fileID: 0}
   objName: "\u5BFC\u5F39\u70AE\u5854"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -645,7 +646,7 @@ MonoBehaviour:
     functionIntVal: 0200000008000000010000000200000004000000
     functionFloatVal:
     - 0.4
-    - 0.2
+    - 0.1
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 
@@ -683,7 +684,6 @@ MonoBehaviour:
   isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
-  ScanRange: 12
 --- !u!1 &3001971113940555313
 GameObject:
   m_ObjectHideFlags: 0
