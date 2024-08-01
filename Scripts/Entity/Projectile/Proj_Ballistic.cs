@@ -65,6 +65,7 @@ public class Proj_Ballistic : MonoBehaviour
         }
 
         launchTimeElapsed = 0;
+
         do
         { 
             launchTimeElapsed += Time.deltaTime;
