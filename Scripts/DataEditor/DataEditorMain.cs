@@ -20,9 +20,11 @@ public class DataEditorMain : MonoBehaviour
     public Button btn_New;
 
     public string curDic;
-    List<string> curEditNames = new List<string>();
+    Dictionary<string,string> curEditNames = new Dictionary<string, string>();
+    Dictionary<string,string> searchResults = new Dictionary<string, string>();
     [Space(5)]
     [Header("Components")]
+    public CanvasGroup canvas_Components;
     public InputField ipt_CompID;
     public InputField ipt_CompName;
     public InputField ipt_CompEndurance;
@@ -32,6 +34,27 @@ public class DataEditorMain : MonoBehaviour
     public CompFunctionsItem compFunctionsItem;
     public Button btn_AddFunction;
     public Button btn_RemoveFunction;
+    List<CompFunctionsItem> compFunctionsItems = new List<CompFunctionsItem>();
+    public Dictionary<string,CanvasGroup> functionPages = new Dictionary<string, CanvasGroup>();
+    SO_ComponentData curEditComponent;
+    CompFunctionsItem curSelectedFunction;
+    [Space(2)]
+    [Header("FunctionsCommon")]
+    public Button btn_ConfirmFunctionEdit;
+    public Button btn_CancelFunctinEdit;
+    public InputField ipt_FunctionName;
+    public Button btn_SelectIcon;
+    public Image img_Icon;
+    public InputField ipt_ApplyTimeInterval;
+    public InputField ipt_FunctionValue;
+    public InputField ipt_FunctionConsume;
+    public Toggle tog_Auto;
+    public Text txt_ValueDesc;
+    [Space(1)]
+    [Header("Mobile Components")]
+    public CanvasGroup canvas_CompMobile;
+    public Dropdown dpd_MoveType;
+    public Dropdown dpd_MoveStyle;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +73,14 @@ public class DataEditorMain : MonoBehaviour
         btn_LoadEntities.onClick.AddListener(LoadEntitiesData);
         btn_LoadItems.onClick.AddListener(LoadItemsData);
         ipt_Filter.onValueChanged.AddListener(InputSearchFilter);
+        btn_Save.onClick.AddListener(SaveEditContent);
+        btn_Delete.onClick.AddListener(DeleteCurContent);
+        btn_New.onClick.AddListener(AddNewContent);
         dpd_SelectItem.onValueChanged.AddListener(LoadSelectedIndex);
+        btn_AddFunction.onClick.AddListener(AddFunction);
+        btn_RemoveFunction.onClick.AddListener(RemoveFunction);
+        btn_ConfirmFunctionEdit.onClick.AddListener(ConfirmFunctionEdit);
+        btn_CancelFunctinEdit.onClick.AddListener(CancelFunctionEdit);
     }
     void LoadComponentsData()
     {
@@ -67,19 +97,41 @@ public class DataEditorMain : MonoBehaviour
     void LoadData(string type)
     {
         ipt_Filter.text = "";
+        curEditNames.Clear();
         var dicPath = Application.dataPath + "/Resources/ScriptableItems/" + type + "/";
-        var folderInfo = new DirectoryInfo(dicPath).GetFiles("*").ToList();
+        var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.asset").ToList();
         var files = folderInfo.Select(x => x.Name).ToList();
+        var names = files.Select(x => x.Split('.')[0]).ToList();
+        foreach (var name in names)
+        {
+            var data = DataController.Instance.GetComponentData(name);
+            if(data != null)
+            {
+                curEditNames.Add(name, data.ComponentName);
+            }
+        }
         curDic = type;
-        curEditNames = files;
         InputSearchFilter("");
         LoadSelectedIndex(0);
+
+        dpd_CompType.ClearOptions();
+        foreach (var types in System.Enum.GetNames(typeof(ComponentFunctionType)))
+        {
+            dpd_CompType.options.Add(new Dropdown.OptionData() { text = types });
+        }
     }
     void InputSearchFilter(string name)
     {
         dpd_SelectItem.ClearOptions();
-        List<string> result = curEditNames.FindAll(x=>x.Contains(name)).ToList();
-        dpd_SelectItem.AddOptions(result);
+        searchResults.Clear();
+        foreach (var item in curEditNames)
+        {
+            if(item.Value.Contains(name))
+            {
+                searchResults.Add(item.Key, item.Value);
+            }
+        }
+        dpd_SelectItem.AddOptions(searchResults.Values.ToList());
     }
     void LoadSelectedIndex(int index)
     {
@@ -92,7 +144,34 @@ public class DataEditorMain : MonoBehaviour
                 }
             case "Components":
                 {
-                    SO_ComponentData data = DataController.Instance.GetComponentData(dpd_SelectItem.options[index].text);
+                    foreach (var item in compFunctionsItems)
+                    {
+                        Destroy(item.gameObject);
+                    }
+                    compFunctionsItems.Clear();
+
+                    var selectedID = searchResults.Keys.ToList()[index];
+
+                    curEditComponent = DataController.Instance.GetComponentData(selectedID);
+
+                    ipt_CompID.text = curEditComponent.ComponentID;
+                    if (string.IsNullOrEmpty(curEditComponent.ComponentID))
+                    {
+                        ipt_CompID.text = "Comp" + Tools.GetTimeStamp();
+                    }
+                    ipt_CompName.text = curEditComponent.ComponentName;
+                    ipt_CompEndurance.text = curEditComponent.ComponentEndurance.ToString();
+                    ipt_CompEnergy.text = curEditComponent.ComponentInternalBattery.ToString();
+                    dpd_CompType.captionText.text = curEditComponent.componentType.ToString();
+                    foreach (var function in curEditComponent.functions)
+                    {
+                        var functionItem = Instantiate(compFunctionsItem);
+                        functionItem.transform.SetParent(tsf_FunctionsContainer.transform);
+                        functionItem.gameObject.SetActive(true);
+                        functionItem.InitThis(function);
+
+                        compFunctionsItems.Add(functionItem);
+                    }
                     break;
                 }
             case "Entities":
@@ -104,5 +183,81 @@ public class DataEditorMain : MonoBehaviour
                     break;
                 }
         }
+    }
+    void SaveEditContent()
+    {
+        SO_ComponentData newComponentData = new SO_ComponentData();
+        newComponentData.ComponentID = ipt_CompID.text;
+        newComponentData.ComponentName = ipt_CompName.text;
+        newComponentData.ComponentEndurance = float.Parse(ipt_CompEndurance.text);
+        newComponentData.ComponentInternalBattery = float.Parse(ipt_CompEnergy.text);
+        newComponentData.componentType = (ComponentFunctionType)dpd_CompType.value;
+        List<CompFunctionDetail> details = new List<CompFunctionDetail>();
+        foreach (var func in compFunctionsItems)
+        {
+            details.Add(func.GetThisFunction());
+        }
+        newComponentData.functions = details.ToArray();
+    }
+    void AddNewContent()
+    {
+
+    }
+    void DeleteCurContent()
+    {
+
+    }
+    public void LoadCompFunctionDetail(CompFunctionsItem function)
+    {
+        curSelectedFunction = function;
+        foreach (var funcItems in compFunctionsItems)
+        {
+            if(funcItems != function)
+            {
+                funcItems.TriggerSelection(false);
+            }else
+            {
+                funcItems.TriggerSelection(true);
+            }
+        }
+    }
+    void AddFunction()
+    {
+
+    }
+    void RemoveFunction()
+    {
+
+    }
+    void ConfirmFunctionEdit()
+    {
+        CompFunctionDetail newFunction = new CompFunctionDetail();
+        switch (curEditComponent.componentType)
+        {
+            default:
+                {
+                    break;
+                }
+            case ComponentFunctionType.Mobile:
+                {
+                    newFunction.functionName = ipt_FunctionName.text;
+                    newFunction.functionIcon = img_Icon.sprite;
+                    newFunction.functionApplyTimeInterval = float.Parse(ipt_ApplyTimeInterval.text);
+                    newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
+                    newFunction.functionConsume = float.Parse(ipt_FunctionConsume.text);
+                    newFunction.canBeAuto = tog_Auto.isOn;
+                    newFunction.functionIntVal = new int[2]
+                    {
+                        dpd_MoveType.value,
+                        dpd_MoveStyle.value,
+                    };
+                    break;
+                }
+        }
+        curSelectedFunction.InitThis(newFunction);
+    }
+    void CancelFunctionEdit()
+    {
+
     }
 }

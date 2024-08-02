@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 public abstract class BaseObj : MonoBehaviour
@@ -17,14 +18,12 @@ public abstract class BaseObj : MonoBehaviour
         get
         {
             List<MoveType> list = new List<MoveType>();
-            foreach (var comp in components)
+            var mobile = GetDesiredComponents<CompMobile>();
+            foreach (var comp in mobile)
             {
                 foreach (var item in comp.functions)
                 {
-                    if(item.function == BaseComponent.ComponentFunction.Mobile)
-                    {
-                        list.Add((MoveType)item.functionIntVal[0]);
-                    }
+                    list.Add((MoveType)item.functionIntVal[0]);
                 }
             }
             return list.ToArray();
@@ -36,14 +35,12 @@ public abstract class BaseObj : MonoBehaviour
         get
         {
             List<MoveStyle> list = new List<MoveStyle>();
-            foreach (var comp in components)
+            var mobile = GetDesiredComponents<CompMobile>();
+            foreach (var comp in mobile)
             {
                 foreach (var item in comp.functions)
                 {
-                    if (item.function == BaseComponent.ComponentFunction.Mobile)
-                    {
-                        list.Add((MoveStyle)item.functionIntVal[1]);
-                    }
+                    list.Add((MoveStyle)item.functionIntVal[1]);
                 }
             }
             return list.ToArray();

@@ -19,13 +19,6 @@ public abstract class BaseComponent : MonoBehaviour
     public float functionTimeElapsed = 0;
     public bool isAvailable = true;
 
-    public enum ComponentFunction
-    {
-        Mobile,
-        Damage,
-        Interact,
-        Protection,
-    }
     public enum InteractFunction
     {
         Harvest,

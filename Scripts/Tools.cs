@@ -426,6 +426,19 @@ public static class Tools
         }
         return null;
     }
+    public static string GetTimeStamp()
+    {
+        // Unix时间戳是从1970年1月1日开始计算
+        DateTime unixStartTime = new DateTime(1970, 1, 1);
+        // 当前时间
+        DateTime now = DateTime.UtcNow;
+        // 当前时间与Unix时间戳的时间间隔
+        TimeSpan timeSpan = now - unixStartTime;
+        // 将时间间隔转换为毫秒数
+        long timestamp = (long)timeSpan.TotalMilliseconds;
+
+        return timestamp.ToString();
+    }
 }
 public static class ToolsUtility
 {

@@ -56,7 +56,7 @@ public class CompResource : CompInteractable
              new CompFunctionDetail
              {
                  functionName = "采集",
-                 function = ComponentFunction.Interact,
+                 //function = ComponentFunctionType.Interact,
                  functionValue = ResourceAcquireAmount,
                  functionConsume = 0,
                  functionDescription = "可以采集",

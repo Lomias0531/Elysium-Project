@@ -12,6 +12,7 @@ public class SO_ComponentData : ScriptableObject
     public float ComponentEndurance;
     public float ComponentInternalBattery;
     public bool isFatalComponent;
+    public ComponentFunctionType componentType;
     public CompFunctionDetail[] functions;
 }
 [Serializable]
@@ -21,7 +22,6 @@ public struct CompFunctionDetail
     /// Ãû³Æ
     /// </summary>
     public string functionName;
-    public BaseComponent.ComponentFunction function;
     public Sprite functionIcon;
     public float functionApplyTimeInterval;
     public float functionValue;
@@ -33,4 +33,10 @@ public struct CompFunctionDetail
     public bool[] functionBoolVal;
     public string[] functionStringVal;
     public string functionDescription;
+}
+public enum ComponentFunctionType
+{
+    Mobile,
+    Weapon,
+    Interact,
 }
