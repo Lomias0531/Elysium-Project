@@ -15,28 +15,3 @@ public class SO_ComponentData : ScriptableObject
     public ComponentFunctionType componentType;
     public CompFunctionDetail[] functions;
 }
-[Serializable]
-public struct CompFunctionDetail
-{
-    /// <summary>
-    /// Ãû³Æ
-    /// </summary>
-    public string functionName;
-    public Sprite functionIcon;
-    public float functionApplyTimeInterval;
-    public float functionValue;
-    public float functionConsume;
-    public bool canBeAuto;
-    public bool isAuto;
-    public int[] functionIntVal;
-    public float[] functionFloatVal;
-    public bool[] functionBoolVal;
-    public string[] functionStringVal;
-    public string functionDescription;
-}
-public enum ComponentFunctionType
-{
-    Mobile,
-    Weapon,
-    Interact,
-}

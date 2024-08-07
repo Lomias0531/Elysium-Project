@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Newtonsoft.Json;
 
 public class DataEditorMain : MonoBehaviour
 {
@@ -99,15 +101,24 @@ public class DataEditorMain : MonoBehaviour
         ipt_Filter.text = "";
         curEditNames.Clear();
         var dicPath = Application.dataPath + "/Resources/ScriptableItems/" + type + "/";
-        var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.asset").ToList();
+        var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.json").ToList();
         var files = folderInfo.Select(x => x.Name).ToList();
         var names = files.Select(x => x.Split('.')[0]).ToList();
         foreach (var name in names)
         {
-            var data = DataController.Instance.GetComponentData(name);
-            if(data != null)
+            switch(type)
             {
-                curEditNames.Add(name, data.ComponentName);
+                default:
+                    {
+                        break;
+                    }
+                case "Components":
+                    {
+                        var json = File.ReadAllText(dicPath + name);
+                        var thisData = JsonConvert.DeserializeObject<ComponentData>(json);
+                        curEditNames.Add(name, thisData.ComponentName);
+                        break;
+                    }
             }
         }
         curDic = type;
@@ -186,7 +197,7 @@ public class DataEditorMain : MonoBehaviour
     }
     void SaveEditContent()
     {
-        SO_ComponentData newComponentData = new SO_ComponentData();
+        ComponentData newComponentData = new ComponentData();
         newComponentData.ComponentID = ipt_CompID.text;
         newComponentData.ComponentName = ipt_CompName.text;
         newComponentData.ComponentEndurance = float.Parse(ipt_CompEndurance.text);
@@ -198,6 +209,11 @@ public class DataEditorMain : MonoBehaviour
             details.Add(func.GetThisFunction());
         }
         newComponentData.functions = details.ToArray();
+
+        var json = JsonConvert.SerializeObject(newComponentData);
+        
+        var dic = Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/";
+        File.WriteAllText(dic + newComponentData.ComponentID + ".json", json);
     }
     void AddNewContent()
     {
@@ -260,4 +276,38 @@ public class DataEditorMain : MonoBehaviour
     {
 
     }
+}
+public struct ComponentData
+{
+    public string ComponentID;
+    public string ComponentName;
+    public float ComponentEndurance;
+    public float ComponentInternalBattery;
+    public bool isFatalComponent;
+    public ComponentFunctionType componentType;
+    public CompFunctionDetail[] functions;
+    public string ComponentDescription;
+}
+[Serializable]
+public struct CompFunctionDetail
+{
+    public string functionName;
+    public Sprite functionIcon;
+    public float functionApplyTimeInterval;
+    public float functionValue;
+    public float functionConsume;
+    public bool canBeAuto;
+    public bool isAuto;
+    public int[] functionIntVal;
+    public float[] functionFloatVal;
+    public bool[] functionBoolVal;
+    public string[] functionStringVal;
+    public string functionDescription;
+}
+public enum ComponentFunctionType
+{
+    Mobile,
+    Weapon,
+    Interact,
+    None,
 }
