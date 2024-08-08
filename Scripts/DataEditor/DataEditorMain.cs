@@ -32,13 +32,14 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_CompEndurance;
     public InputField ipt_CompEnergy;
     public Dropdown dpd_CompType;
+    public InputField ipt_ComponentDescription;
     public Transform tsf_FunctionsContainer;
     public CompFunctionsItem compFunctionsItem;
     public Button btn_AddFunction;
     public Button btn_RemoveFunction;
     List<CompFunctionsItem> compFunctionsItems = new List<CompFunctionsItem>();
-    public Dictionary<string,CanvasGroup> functionPages = new Dictionary<string, CanvasGroup>();
-    SO_ComponentData curEditComponent;
+    public Dictionary<ComponentFunctionType, CanvasGroup> functionPages = new Dictionary<ComponentFunctionType, CanvasGroup>();
+    ComponentData curEditComponent;
     CompFunctionsItem curSelectedFunction;
     [Space(2)]
     [Header("FunctionsCommon")]
@@ -51,7 +52,8 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_FunctionValue;
     public InputField ipt_FunctionConsume;
     public Toggle tog_Auto;
-    public Text txt_ValueDesc;
+    public Text txt_FunctionValueDesc;
+    public InputField ipt_FunctionDesc;
     [Space(1)]
     [Header("Mobile Components")]
     public CanvasGroup canvas_CompMobile;
@@ -79,6 +81,7 @@ public class DataEditorMain : MonoBehaviour
         btn_Delete.onClick.AddListener(DeleteCurContent);
         btn_New.onClick.AddListener(AddNewContent);
         dpd_SelectItem.onValueChanged.AddListener(LoadSelectedIndex);
+        dpd_CompType.onValueChanged.AddListener(OnComponentTypeChanged);
         btn_AddFunction.onClick.AddListener(AddFunction);
         btn_RemoveFunction.onClick.AddListener(RemoveFunction);
         btn_ConfirmFunctionEdit.onClick.AddListener(ConfirmFunctionEdit);
@@ -163,26 +166,45 @@ public class DataEditorMain : MonoBehaviour
 
                     var selectedID = searchResults.Keys.ToList()[index];
 
-                    curEditComponent = DataController.Instance.GetComponentData(selectedID);
+                    //curEditComponent = DataController.Instance.GetComponentData(selectedID);
+                    var json = File.ReadAllText(Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/" + selectedID + ".json");
+                    var data = JsonConvert.DeserializeObject<ComponentData>(json);
 
-                    ipt_CompID.text = curEditComponent.ComponentID;
-                    if (string.IsNullOrEmpty(curEditComponent.ComponentID))
-                    {
-                        ipt_CompID.text = "Comp" + Tools.GetTimeStamp();
-                    }
-                    ipt_CompName.text = curEditComponent.ComponentName;
-                    ipt_CompEndurance.text = curEditComponent.ComponentEndurance.ToString();
-                    ipt_CompEnergy.text = curEditComponent.ComponentInternalBattery.ToString();
-                    dpd_CompType.captionText.text = curEditComponent.componentType.ToString();
-                    foreach (var function in curEditComponent.functions)
-                    {
-                        var functionItem = Instantiate(compFunctionsItem);
-                        functionItem.transform.SetParent(tsf_FunctionsContainer.transform);
-                        functionItem.gameObject.SetActive(true);
-                        functionItem.InitThis(function);
+                    LoadComponentData(data);
+                    //curEditComponent = data;
 
-                        compFunctionsItems.Add(functionItem);
-                    }
+                    //ipt_CompID.text = curEditComponent.ComponentID;
+                    //if (string.IsNullOrEmpty(curEditComponent.ComponentID))
+                    //{
+                    //    ipt_CompID.text = "Comp" + Tools.GetTimeStamp();
+                    //}
+                    //ipt_CompName.text = curEditComponent.ComponentName;
+                    //ipt_CompEndurance.text = curEditComponent.ComponentEndurance.ToString();
+                    //ipt_CompEnergy.text = curEditComponent.ComponentInternalBattery.ToString();
+                    //dpd_CompType.captionText.text = curEditComponent.componentType.ToString();
+                    //foreach (var function in curEditComponent.functions)
+                    //{
+                    //    var functionItem = Instantiate(compFunctionsItem);
+                    //    functionItem.transform.SetParent(tsf_FunctionsContainer.transform);
+                    //    functionItem.gameObject.SetActive(true);
+                    //    functionItem.InitThis(function);
+
+                    //    compFunctionsItems.Add(functionItem);
+                    //}
+
+                    //if(curEditComponent.componentType == ComponentFunctionType.None)
+                    //{
+                    //    btn_AddFunction.interactable = false;
+                    //    btn_RemoveFunction.interactable = false;
+                    //    btn_ConfirmFunctionEdit.interactable = false;
+                    //    btn_CancelFunctinEdit.interactable = false;
+                    //}else
+                    //{
+                    //    btn_AddFunction.interactable = true;
+                    //    btn_RemoveFunction.interactable = true;
+                    //    btn_ConfirmFunctionEdit.interactable = true;
+                    //    btn_CancelFunctinEdit.interactable = true;
+                    //}
                     break;
                 }
             case "Entities":
@@ -195,6 +217,46 @@ public class DataEditorMain : MonoBehaviour
                 }
         }
     }
+    void LoadComponentData(ComponentData data)
+    {
+        curEditComponent = data;
+        ipt_CompID.text = curEditComponent.ComponentID;
+        if (string.IsNullOrEmpty(curEditComponent.ComponentID))
+        {
+            ipt_CompID.text = "Comp" + Tools.GetTimeStamp();
+        }
+        ipt_CompName.text = curEditComponent.ComponentName;
+        ipt_CompEndurance.text = curEditComponent.ComponentEndurance.ToString();
+        ipt_CompEnergy.text = curEditComponent.ComponentInternalBattery.ToString();
+        dpd_CompType.captionText.text = curEditComponent.componentType.ToString();
+        ipt_ComponentDescription.text = curEditComponent.ComponentDescription;
+        foreach (var function in curEditComponent.functions)
+        {
+            var functionItem = Instantiate(compFunctionsItem);
+            functionItem.transform.SetParent(tsf_FunctionsContainer.transform);
+            functionItem.gameObject.SetActive(true);
+            functionItem.InitThis(function);
+
+            compFunctionsItems.Add(functionItem);
+        }
+
+        if (curEditComponent.componentType == ComponentFunctionType.None)
+        {
+            btn_AddFunction.interactable = false;
+            btn_RemoveFunction.interactable = false;
+            btn_ConfirmFunctionEdit.interactable = false;
+            btn_CancelFunctinEdit.interactable = false;
+        }
+        else
+        {
+            btn_AddFunction.interactable = true;
+            btn_RemoveFunction.interactable = true;
+            btn_ConfirmFunctionEdit.interactable = false;
+            btn_CancelFunctinEdit.interactable = false;
+        }
+
+        CancelFunctionEdit();
+    }
     void SaveEditContent()
     {
         ComponentData newComponentData = new ComponentData();
@@ -203,6 +265,7 @@ public class DataEditorMain : MonoBehaviour
         newComponentData.ComponentEndurance = float.Parse(ipt_CompEndurance.text);
         newComponentData.ComponentInternalBattery = float.Parse(ipt_CompEnergy.text);
         newComponentData.componentType = (ComponentFunctionType)dpd_CompType.value;
+        newComponentData.ComponentDescription = ipt_ComponentDescription.text;
         List<CompFunctionDetail> details = new List<CompFunctionDetail>();
         foreach (var func in compFunctionsItems)
         {
@@ -215,13 +278,41 @@ public class DataEditorMain : MonoBehaviour
         var dic = Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/";
         File.WriteAllText(dic + newComponentData.ComponentID + ".json", json);
     }
+
+    void OnComponentTypeChanged(int index)
+    {
+        ComponentFunctionType type = (ComponentFunctionType)index;
+        if(type == ComponentFunctionType.None)
+        {
+            btn_AddFunction.interactable = false;
+            btn_RemoveFunction.interactable = false;
+            btn_ConfirmFunctionEdit.interactable = false;
+            btn_CancelFunctinEdit.interactable = false;
+        }
+        else
+        {
+            btn_AddFunction.interactable = true;
+            btn_RemoveFunction.interactable = true;
+            btn_ConfirmFunctionEdit.interactable = false;
+            btn_CancelFunctinEdit.interactable = false;
+        }
+    }
     void AddNewContent()
     {
+        ComponentData data = new ComponentData();
+        data.ComponentID = "Comp" + Tools.GetTimeStamp();
+        data.componentType = ComponentFunctionType.None;
 
+        LoadComponentData(data);
     }
     void DeleteCurContent()
     {
-
+        var path = Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/" + curEditComponent.ComponentID + ".json";
+        if(File.Exists(path))
+        {
+            File.Delete(path);
+        }
+        AddNewContent();
     }
     public void LoadCompFunctionDetail(CompFunctionsItem function)
     {
@@ -236,18 +327,82 @@ public class DataEditorMain : MonoBehaviour
                 funcItems.TriggerSelection(true);
             }
         }
+
+        switch(curEditComponent.componentType)
+        {
+            default:
+                {
+                    break;
+                }
+            case ComponentFunctionType.Mobile:
+                {
+                    dpd_MoveStyle.ClearOptions();
+                    foreach (var item in Enum.GetNames(typeof(BaseObj.MoveStyle)))
+                    {
+                        dpd_MoveStyle.options.Add(new Dropdown.OptionData() { text = item });
+                    }
+                    dpd_MoveType.ClearOptions();
+                    foreach (var item in Enum.GetNames(typeof(BaseObj.MoveType)))
+                    {
+                        dpd_MoveType.options.Add(new Dropdown.OptionData() { text = item });
+                    }
+
+                    var func = function.GetThisFunction();
+                    ipt_FunctionName.text = func.functionName;
+                    img_Icon.sprite = func.functionIcon;
+                    ipt_ApplyTimeInterval.text = func.functionApplyTimeInterval.ToString();
+                    txt_FunctionValueDesc.text = "ÒÆ¶¯Á¦";
+                    ipt_FunctionValue.text = func.functionValue.ToString();
+                    ipt_FunctionConsume.text = func.functionConsume.ToString();
+                    tog_Auto.isOn = func.canBeAuto;
+                    dpd_CompType.value = func.functionIntVal[0];
+                    dpd_MoveStyle.value = func.functionIntVal[1];
+                    ipt_FunctionDesc.text = func.functionDescription;
+                    break;
+                }
+        }
+
+        btn_ConfirmFunctionEdit.interactable = true;
+        btn_CancelFunctinEdit.interactable = true;
     }
     void AddFunction()
     {
+        CompFunctionDetail function = new CompFunctionDetail();
 
+        var functionItem = Instantiate(compFunctionsItem);
+        functionItem.transform.SetParent(tsf_FunctionsContainer.transform);
+        functionItem.gameObject.SetActive(true);
+        functionItem.InitThis(function);
+
+        compFunctionsItems.Add(functionItem);
+
+        LoadCompFunctionDetail(functionItem);
     }
     void RemoveFunction()
     {
-
+        if(compFunctionsItems.Contains(curSelectedFunction))
+        {
+            Destroy(curSelectedFunction.gameObject);
+            compFunctionsItems.Remove(curSelectedFunction);
+        }
+        CancelFunctionEdit();
     }
     void ConfirmFunctionEdit()
     {
         CompFunctionDetail newFunction = new CompFunctionDetail();
+        foreach (var page in functionPages)
+        {
+            page.Value.alpha = 0;
+            page.Value.interactable = false;
+            page.Value.blocksRaycasts = false;
+        }
+        if(functionPages.ContainsKey(curEditComponent.componentType))
+        {
+            functionPages[curEditComponent.componentType].alpha = 1;
+            functionPages[curEditComponent.componentType].interactable = true;
+            functionPages[curEditComponent.componentType].blocksRaycasts = true;
+        }
+
         switch (curEditComponent.componentType)
         {
             default:
@@ -267,6 +422,7 @@ public class DataEditorMain : MonoBehaviour
                         dpd_MoveType.value,
                         dpd_MoveStyle.value,
                     };
+                    newFunction.functionDescription = ipt_FunctionDesc.text;
                     break;
                 }
         }
@@ -274,7 +430,14 @@ public class DataEditorMain : MonoBehaviour
     }
     void CancelFunctionEdit()
     {
-
+        foreach (var page in functionPages)
+        {
+            page.Value.alpha = 0;
+            page.Value.interactable = false;
+            page.Value.blocksRaycasts = false;
+        }
+        btn_ConfirmFunctionEdit.interactable = false;
+        btn_CancelFunctinEdit.interactable = false;
     }
 }
 public struct ComponentData
