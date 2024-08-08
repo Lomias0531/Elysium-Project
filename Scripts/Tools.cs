@@ -4,10 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using UnityEditor;
 using UnityEngine;
-using static BaseObj;
-using static UnityEngine.GraphicsBuffer;
-using static UnityEngine.Rendering.DebugUI;
 
 public static class Tools
 {
@@ -438,6 +436,11 @@ public static class Tools
         long timestamp = (long)timeSpan.TotalMilliseconds;
 
         return timestamp.ToString();
+    }
+    public static Sprite GetIcon(string path, int index)
+    {
+        object[] sp = AssetDatabase.LoadAllAssetsAtPath(path);
+        return (Sprite)sp[index];
     }
 }
 public static class ToolsUtility

@@ -111,7 +111,7 @@ public class UIController : Singletion<UIController>
         txt_hoveredSkillName.text = info.functionName;
         txt_hoveredSkillCost.text = info.functionConsume.ToString();
         txt_hoveredSkillDesc.text = info.functionDescription;
-        img_hoveredSkillIcon.sprite = info.functionIcon;
+        img_hoveredSkillIcon.sprite = Tools.GetIcon(info.functionIconPath, info.functionIconIndex);
         switch(type)
         {
             default:

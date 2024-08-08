@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using UnityEditor;
 
 public class DataEditorMain : MonoBehaviour
 {
@@ -55,6 +56,8 @@ public class DataEditorMain : MonoBehaviour
     public Text txt_FunctionValueDesc;
     public InputField ipt_FunctionDesc;
     public Sprite defaultIcon;
+    public string curSelectedIconPath;
+    public int curSelectedIconIndex;
     [Space(1)]
     [Header("Mobile Components")]
     public CanvasGroup canvas_CompMobile;
@@ -389,7 +392,14 @@ public class DataEditorMain : MonoBehaviour
 
                     var func = function.GetThisFunction();
                     ipt_FunctionName.text = func.functionName;
-                    img_Icon.sprite = func.functionIcon;
+                    if(string.IsNullOrEmpty(func.functionIconPath))
+                    {
+                        img_Icon.sprite = defaultIcon;
+                    }else
+                    {
+                        object[] sp = AssetDatabase.LoadAllAssetsAtPath(func.functionIconPath);
+                        img_Icon.sprite = (Sprite)sp[func.functionIconIndex];
+                    }
                     ipt_ApplyTimeInterval.text = func.functionApplyTimeInterval.ToString();
                     txt_FunctionValueDesc.text = "ÒÆ¶¯Á¦";
                     ipt_FunctionValue.text = func.functionValue.ToString();
@@ -454,7 +464,8 @@ public class DataEditorMain : MonoBehaviour
             case ComponentFunctionType.Mobile:
                 {
                     newFunction.functionName = ipt_FunctionName.text;
-                    newFunction.functionIcon = img_Icon.sprite;
+                    newFunction.functionIconPath = curSelectedIconPath;
+                    newFunction.functionIconIndex = curSelectedIconIndex;
                     newFunction.functionApplyTimeInterval = float.Parse(ipt_ApplyTimeInterval.text);
                     newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
                     newFunction.functionConsume = float.Parse(ipt_FunctionConsume.text);
@@ -509,7 +520,8 @@ public struct ComponentData
 public struct CompFunctionDetail
 {
     public string functionName;
-    public Sprite functionIcon;
+    public string functionIconPath;
+    public int functionIconIndex;
     public float functionApplyTimeInterval;
     public float functionValue;
     public float functionConsume;

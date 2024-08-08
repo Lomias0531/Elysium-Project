@@ -32,8 +32,8 @@ public class CompSkillTrigger : BaseCompTrigger
         menu = _menu;
         
         skillIndex = _skillIndex;
-        if(thisComp.functions[skillIndex].functionIcon != null)
-            img_Icon.sprite = thisComp.functions[skillIndex].functionIcon;
+        if (thisComp.functions[skillIndex].functionIconPath != null)
+            img_Icon.sprite = Tools.GetIcon(thisComp.functions[skillIndex].functionIconPath, thisComp.functions[skillIndex].functionIconIndex);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
