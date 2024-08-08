@@ -58,6 +58,8 @@ public class CompSkillTrigger : BaseCompTrigger
             thisComp.thisObj.curSelectedComp = thisComp;
             thisComp.thisObj.curSelectedFunction = thisComp.functions[skillIndex];
             thisComp.OnApply(skillIndex);
+
+            //PlayerController.Instance.EntityFinishedAction();
         }
     }
     void UpdateAvailable()

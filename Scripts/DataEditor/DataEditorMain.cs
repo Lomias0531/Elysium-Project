@@ -305,6 +305,8 @@ public class DataEditorMain : MonoBehaviour
         
         var dic = Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/";
         File.WriteAllText(dic + newComponentData.ComponentID + ".json", json);
+
+        LoadData(curDic);
     }
 
     void OnComponentTypeChanged(int index)

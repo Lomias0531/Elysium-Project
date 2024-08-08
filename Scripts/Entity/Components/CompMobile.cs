@@ -178,7 +178,7 @@ public class CompMobile : BaseComponent
                 }
         }
 
-        PlayerController.Instance.EntityFinishedAction();
+        //PlayerController.Instance.EntityFinishedAction();
 
         if (thisObj.animator != null)
         {

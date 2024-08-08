@@ -439,8 +439,15 @@ public static class Tools
     }
     public static Sprite GetIcon(string path, int index)
     {
-        object[] sp = AssetDatabase.LoadAllAssetsAtPath(path);
-        return (Sprite)sp[index];
+        try
+        {
+            object[] sp = AssetDatabase.LoadAllAssetsAtPath(path);
+            return (Sprite)sp[index];
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
 public static class ToolsUtility

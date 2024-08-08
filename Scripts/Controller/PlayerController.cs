@@ -269,6 +269,8 @@ public class PlayerController : Singletion<PlayerController>
                             selectedObject.curSelectedComp.OnTriggerFunction(targetUnit);
                         }
                     }
+
+                    EntityFinishedAction();
                 }
             }
         }
