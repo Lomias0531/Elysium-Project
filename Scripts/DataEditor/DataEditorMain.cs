@@ -75,6 +75,9 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_BulletsCount;
     public InputField ipt_BulletsInterval;
     public InputField ipt_BulletSpeed;
+    [Space(1)]
+    [Header("Constructor Components")]
+    public CanvasGroup canvas_Constructor;
     // Start is called before the first frame update
     void Start()
     {
@@ -398,7 +401,7 @@ public class DataEditorMain : MonoBehaviour
         }
         else
         {
-            object[] sp = AssetDatabase.LoadAllAssetsAtPath(func.functionIconPath);
+            object[] sp = AssetDatabase.LoadAllAssetsAtPath(Application.dataPath + "/Images/Icons/" + func.functionIconPath);
             img_Icon.sprite = (Sprite)sp[func.functionIconIndex];
         }
         ipt_ApplyTimeInterval.text = func.functionApplyTimeInterval.ToString();
@@ -561,6 +564,8 @@ public class DataEditorMain : MonoBehaviour
         ipt_FunctionValue.text = "";
         ipt_FunctionConsume.text = "";
         ipt_FunctionDesc.text = "";
+        tog_Auto.isOn = false;
+        img_Icon.sprite = defaultIcon;
 
         btn_ConfirmFunctionEdit.interactable = false;
         btn_CancelFunctinEdit.interactable = false;

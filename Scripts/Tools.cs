@@ -441,7 +441,7 @@ public static class Tools
     {
         try
         {
-            object[] sp = AssetDatabase.LoadAllAssetsAtPath(path);
+            object[] sp = AssetDatabase.LoadAllAssetsAtPath(Application.dataPath + "/Images/Icons/" + path);
             return (Sprite)sp[index];
         }
         catch
