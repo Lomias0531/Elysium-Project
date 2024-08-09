@@ -171,11 +171,10 @@ public class CompWeapon : BaseComponent
 
                 proj.transform.SetParent(MapController.Instance.tsf_ProjectileContainer, true);
                 var index = Random.Range(0, tsf_FirePos.Length);
-                proj.InitThis(tsf_FirePos[index], destination, thisObj, curve ? 4f : 10f, !curve, thisObj.curSelectedFunction.functionFloatVal[0], 0);
+                proj.InitThis(tsf_FirePos[index], destination, thisObj, thisObj.curSelectedFunction.functionFloatVal[1], !curve, thisObj.curSelectedFunction.functionValue, 0);
             }
-            yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[1]);
+            yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[0]);
         }
-        yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[0]);
         //target.TakeDamage(thisObj.curSelectedFunction.functionFloatVal[0], WeaponAttackType.Blast);
     }
 }

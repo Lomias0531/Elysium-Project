@@ -32,7 +32,9 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_CompName;
     public InputField ipt_CompEndurance;
     public InputField ipt_CompEnergy;
+    public InputField ipt_CompDefense;
     public Dropdown dpd_CompType;
+    public Toggle tog_isCompFatal;
     public InputField ipt_ComponentDescription;
     public Transform tsf_FunctionsContainer;
     public CompFunctionsItem compFunctionsItem;
@@ -63,6 +65,16 @@ public class DataEditorMain : MonoBehaviour
     public CanvasGroup canvas_CompMobile;
     public Dropdown dpd_MoveType;
     public Dropdown dpd_MoveStyle;
+    [Space(1)]
+    [Header("Weapon Components")]
+    public CanvasGroup canvas_CompWeapon;
+    public InputField ipt_MaxRange;
+    public InputField ipt_MinRange;
+    public InputField ipt_BlastRange;
+    public Dropdown dpd_WeapenBallisticType;
+    public InputField ipt_BulletsCount;
+    public InputField ipt_BulletsInterval;
+    public InputField ipt_BulletSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -97,6 +109,7 @@ public class DataEditorMain : MonoBehaviour
     {
         editorPages.Add("Components", canvas_Components);
         functionPages.Add(ComponentFunctionType.Mobile, canvas_CompMobile);
+        functionPages.Add(ComponentFunctionType.Weapon, canvas_CompWeapon);
     }
     void LoadComponentsData()
     {
@@ -253,8 +266,10 @@ public class DataEditorMain : MonoBehaviour
         ipt_CompName.text = curEditComponent.ComponentName;
         ipt_CompEndurance.text = curEditComponent.ComponentEndurance.ToString();
         ipt_CompEnergy.text = curEditComponent.ComponentInternalBattery.ToString();
+        ipt_CompDefense.text = curEditComponent.ComponentDefense.ToString();
         dpd_CompType.captionText.text = curEditComponent.componentType.ToString();
         ipt_ComponentDescription.text = curEditComponent.ComponentDescription;
+        tog_isCompFatal.isOn = curEditComponent.isFatalComponent;
         if(curEditComponent.functions != null)
         {
             foreach (var function in curEditComponent.functions)
@@ -292,8 +307,10 @@ public class DataEditorMain : MonoBehaviour
         newComponentData.ComponentName = ipt_CompName.text;
         newComponentData.ComponentEndurance = float.Parse(ipt_CompEndurance.text);
         newComponentData.ComponentInternalBattery = float.Parse(ipt_CompEnergy.text);
+        newComponentData.ComponentDefense = float.Parse(ipt_CompDefense.text);
         newComponentData.componentType = (ComponentFunctionType)dpd_CompType.value;
         newComponentData.ComponentDescription = ipt_ComponentDescription.text;
+        newComponentData.isFatalComponent = tog_isCompFatal.isOn;
         List<CompFunctionDetail> details = new List<CompFunctionDetail>();
         foreach (var func in compFunctionsItems)
         {
@@ -373,7 +390,24 @@ public class DataEditorMain : MonoBehaviour
             }
         }
 
-        switch(curEditComponent.componentType)
+        var func = function.GetThisFunction();
+        ipt_FunctionName.text = func.functionName;
+        if (string.IsNullOrEmpty(func.functionIconPath))
+        {
+            img_Icon.sprite = defaultIcon;
+        }
+        else
+        {
+            object[] sp = AssetDatabase.LoadAllAssetsAtPath(func.functionIconPath);
+            img_Icon.sprite = (Sprite)sp[func.functionIconIndex];
+        }
+        ipt_ApplyTimeInterval.text = func.functionApplyTimeInterval.ToString();
+        ipt_FunctionValue.text = func.functionValue.ToString();
+        ipt_FunctionConsume.text = func.functionConsume.ToString();
+        tog_Auto.isOn = func.canBeAuto;
+        ipt_FunctionDesc.text = func.functionDescription;
+
+        switch (curEditComponent.componentType)
         {
             default:
                 {
@@ -392,24 +426,30 @@ public class DataEditorMain : MonoBehaviour
                         dpd_MoveType.options.Add(new Dropdown.OptionData() { text = item });
                     }
 
-                    var func = function.GetThisFunction();
-                    ipt_FunctionName.text = func.functionName;
-                    if(string.IsNullOrEmpty(func.functionIconPath))
-                    {
-                        img_Icon.sprite = defaultIcon;
-                    }else
-                    {
-                        object[] sp = AssetDatabase.LoadAllAssetsAtPath(func.functionIconPath);
-                        img_Icon.sprite = (Sprite)sp[func.functionIconIndex];
-                    }
-                    ipt_ApplyTimeInterval.text = func.functionApplyTimeInterval.ToString();
                     txt_FunctionValueDesc.text = "“∆∂Ø¡¶";
-                    ipt_FunctionValue.text = func.functionValue.ToString();
-                    ipt_FunctionConsume.text = func.functionConsume.ToString();
-                    tog_Auto.isOn = func.canBeAuto;
+
                     dpd_MoveType.value = func.functionIntVal[0];
                     dpd_MoveStyle.value = func.functionIntVal[1];
-                    ipt_FunctionDesc.text = func.functionDescription;
+                    break;
+                }
+            case ComponentFunctionType.Weapon:
+                {
+                    txt_FunctionValueDesc.text = "…À∫¶";
+
+                    dpd_WeapenBallisticType.ClearOptions();
+                    foreach (var item in Enum.GetNames(typeof(CompWeapon.WeaponAttackType)))
+                    {
+                        dpd_WeapenBallisticType.options.Add(new Dropdown.OptionData() { text = item });
+                    }
+
+                    ipt_MinRange.text = func.functionIntVal[0].ToString();
+                    ipt_MaxRange.text = func.functionIntVal[1].ToString();
+                    ipt_BlastRange.text = func.functionIntVal[2].ToString();
+                    dpd_WeapenBallisticType.value = func.functionIntVal[3];
+                    ipt_BulletsCount.text = func.functionIntVal[4].ToString();
+                    ipt_BulletsInterval.text = func.functionFloatVal[0].ToString();
+                    ipt_BulletSpeed.text = func.functionFloatVal[1].ToString();
+
                     break;
                 }
         }
@@ -456,6 +496,14 @@ public class DataEditorMain : MonoBehaviour
     void ConfirmFunctionEdit()
     {
         CompFunctionDetail newFunction = new CompFunctionDetail();
+        newFunction.functionName = ipt_FunctionName.text;
+        newFunction.functionIconPath = curSelectedIconPath;
+        newFunction.functionIconIndex = curSelectedIconIndex;
+        newFunction.functionApplyTimeInterval = float.Parse(ipt_ApplyTimeInterval.text);
+        newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
+        newFunction.functionConsume = float.Parse(ipt_FunctionConsume.text);
+        newFunction.canBeAuto = tog_Auto.isOn;
+        newFunction.functionDescription = ipt_FunctionDesc.text;
 
         switch (curEditComponent.componentType)
         {
@@ -465,19 +513,28 @@ public class DataEditorMain : MonoBehaviour
                 }
             case ComponentFunctionType.Mobile:
                 {
-                    newFunction.functionName = ipt_FunctionName.text;
-                    newFunction.functionIconPath = curSelectedIconPath;
-                    newFunction.functionIconIndex = curSelectedIconIndex;
-                    newFunction.functionApplyTimeInterval = float.Parse(ipt_ApplyTimeInterval.text);
-                    newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
-                    newFunction.functionConsume = float.Parse(ipt_FunctionConsume.text);
-                    newFunction.canBeAuto = tog_Auto.isOn;
                     newFunction.functionIntVal = new int[2]
                     {
                         dpd_MoveType.value,
                         dpd_MoveStyle.value,
                     };
-                    newFunction.functionDescription = ipt_FunctionDesc.text;
+                    break;
+                }
+            case ComponentFunctionType.Weapon:
+                {
+                    newFunction.functionIntVal = new int[5]
+                    {
+                        int.Parse(ipt_MinRange.text),
+                        int.Parse(ipt_MaxRange.text),
+                        int.Parse(ipt_BlastRange.text),
+                        dpd_WeapenBallisticType.value,
+                        int.Parse(ipt_BulletsCount.text),
+                    };
+                    newFunction.functionFloatVal = new float[2]
+                    {
+                        float.Parse(ipt_BulletsInterval.text),
+                        float.Parse(ipt_BulletSpeed.text),
+                    };
                     break;
                 }
         }
@@ -513,6 +570,7 @@ public struct ComponentData
     public string ComponentName;
     public float ComponentEndurance;
     public float ComponentInternalBattery;
+    public float ComponentDefense;
     public bool isFatalComponent;
     public ComponentFunctionType componentType;
     public CompFunctionDetail[] functions;
