@@ -472,6 +472,12 @@ public class DataEditorMain : MonoBehaviour
                     function.functionIntVal = new int[2];
                     break;
                 }
+            case ComponentFunctionType.Weapon:
+                {
+                    function.functionIntVal = new int[5];
+                    function.functionFloatVal = new float[2];
+                    break;
+                }
         }
 
         var functionItem = Instantiate(compFunctionsItem);
@@ -599,4 +605,9 @@ public enum ComponentFunctionType
     Weapon,
     Interact,
     None,
+    Build,
+    Construct,
+    Harvest,
+    Generator,
+    PowerDispatcher,
 }
