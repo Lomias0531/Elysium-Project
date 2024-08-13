@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 using UnityEditor;
+using DG.Tweening.Plugins.Core.PathCore;
 
 public class DataEditorMain : MonoBehaviour
 {
@@ -58,8 +59,15 @@ public class DataEditorMain : MonoBehaviour
     public Text txt_FunctionValueDesc;
     public InputField ipt_FunctionDesc;
     public Sprite defaultIcon;
-    public string curSelectedIconPath;
-    public int curSelectedIconIndex;
+    [Space(1)]
+    [Header("Icon Selector")]
+    public CanvasGroup canvas_IconSelector;
+    public Transform tsf_IconContainer;
+    public IconSelectorItem iconSelectorItem;
+    public Button btn_ConfirmIcon;
+    public Button btn_CancelIcon;
+    IconSelectorItem selectedIcon;
+    List<IconSelectorItem> iconSelectorItems = new List<IconSelectorItem>();
     [Space(1)]
     [Header("Mobile Components")]
     public CanvasGroup canvas_CompMobile;
@@ -107,6 +115,8 @@ public class DataEditorMain : MonoBehaviour
         btn_ConfirmFunctionEdit.onClick.AddListener(ConfirmFunctionEdit);
         btn_CancelFunctinEdit.onClick.AddListener(CancelFunctionEdit);
         btn_SelectIcon.onClick.AddListener(SelectComponentIcon);
+        btn_ConfirmIcon.onClick.AddListener(OnConfirmIcon);
+        btn_CancelIcon.onClick.AddListener(OnCancelIcon);
     }
     void AddPages()
     {
@@ -401,8 +411,7 @@ public class DataEditorMain : MonoBehaviour
         }
         else
         {
-            object[] sp = AssetDatabase.LoadAllAssetsAtPath(Application.dataPath + "/Images/Icons/" + func.functionIconPath);
-            img_Icon.sprite = (Sprite)sp[func.functionIconIndex];
+            img_Icon.sprite = Tools.GetIcon(func.functionIconPath, func.functionIconIndex);
         }
         ipt_ApplyTimeInterval.text = func.functionApplyTimeInterval.ToString();
         ipt_FunctionValue.text = func.functionValue.ToString();
@@ -506,8 +515,15 @@ public class DataEditorMain : MonoBehaviour
     {
         CompFunctionDetail newFunction = new CompFunctionDetail();
         newFunction.functionName = ipt_FunctionName.text;
-        newFunction.functionIconPath = curSelectedIconPath;
-        newFunction.functionIconIndex = curSelectedIconIndex;
+        if(selectedIcon != null)
+        {
+            newFunction.functionIconPath = selectedIcon.iconName;
+            newFunction.functionIconIndex = selectedIcon.iconIndex;
+        }else
+        {
+            newFunction.functionIconPath = "";
+            newFunction.functionIconIndex = -1;
+        }
         newFunction.functionApplyTimeInterval = float.Parse(ipt_ApplyTimeInterval.text);
         newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
         newFunction.functionConsume = float.Parse(ipt_FunctionConsume.text);
@@ -572,7 +588,70 @@ public class DataEditorMain : MonoBehaviour
     }
     void SelectComponentIcon()
     {
-        var dir = Application.dataPath + "/Images/Icons/";
+        TriggerSelectIcon();
+    }
+    void TriggerSelectIcon()
+    {
+        canvas_IconSelector.alpha = 1;
+        canvas_IconSelector.blocksRaycasts = true;
+        canvas_IconSelector.interactable = true;
+
+        foreach (var item in iconSelectorItems)
+        {
+            Destroy(item.gameObject);
+        }
+        iconSelectorItems.Clear();
+
+        var dir = Application.dataPath + "/Resources/Images/Icons/";
+
+        var folderInfo = new DirectoryInfo(dir).GetFiles("*.png").ToList();
+        var files = folderInfo.Select(x => x.Name).ToList();
+        var names = files.Select(x => x.Split('.')[0]).ToList();
+
+        foreach (var item in names)
+        {
+            //object[] sp = Resources.LoadAll<Sprite>("Images/Icons");
+            object[] sp = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/Resources/Images/Icons/" + item + ".png");
+            for(int i = 0;i<sp.Length;i++)
+            {
+                var iconItem = Instantiate(iconSelectorItem);
+                iconItem.IntThis(item, i, this);
+                iconItem.transform.SetParent(tsf_IconContainer);
+                iconItem.gameObject.SetActive(true);
+                iconSelectorItems.Add(iconItem);
+            }
+        }
+    }
+    void OnConfirmIcon()
+    {
+        canvas_IconSelector.alpha = 0;
+        canvas_IconSelector.blocksRaycasts = false;
+        canvas_IconSelector.interactable = false;
+
+        if(selectedIcon != null)
+            img_Icon.sprite = Tools.GetIcon(selectedIcon.iconName, selectedIcon.iconIndex);
+    }
+    void OnCancelIcon()
+    {
+        selectedIcon = null;
+
+        canvas_IconSelector.alpha = 0;
+        canvas_IconSelector.blocksRaycasts = false;
+        canvas_IconSelector.interactable = false;
+    }
+    public void OnConfirmSelectIconItem(IconSelectorItem item)
+    {
+        selectedIcon = item;
+        foreach (var iconItem in iconSelectorItems)
+        {
+            if(iconItem == item)
+            {
+                iconItem.TriggerSelected(true);
+            }else
+            {
+                iconItem.TriggerSelected(false);
+            }
+        }
     }
 }
 public struct ComponentData

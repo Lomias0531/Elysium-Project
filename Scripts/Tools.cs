@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public static class Tools
 {
@@ -441,7 +442,7 @@ public static class Tools
     {
         try
         {
-            object[] sp = AssetDatabase.LoadAllAssetsAtPath(Application.dataPath + "/Images/Icons/" + path);
+            object[] sp = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/Resources/Images/Icons/" + path + ".png");
             return (Sprite)sp[index];
         }
         catch
