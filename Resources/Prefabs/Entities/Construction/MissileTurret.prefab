@@ -602,8 +602,8 @@ MonoBehaviour:
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
     functionName: 
-    function: 0
-    functionIcon: {fileID: 0}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 0
     functionValue: 0
     functionConsume: 0
@@ -636,8 +636,8 @@ MonoBehaviour:
   Defense: 0
   functions:
   - functionName: "\u5BFC\u5F39\u653B\u51FB"
-    function: 1
-    functionIcon: {fileID: 515103687, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 1.5
     functionValue: 6
     functionConsume: 3
@@ -646,7 +646,7 @@ MonoBehaviour:
     functionIntVal: 0200000008000000010000000200000004000000
     functionFloatVal:
     - 0.4
-    - 0.1
+    - 2
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 

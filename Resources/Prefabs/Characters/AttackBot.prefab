@@ -172,8 +172,8 @@ MonoBehaviour:
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
     functionName: 
-    function: 0
-    functionIcon: {fileID: 0}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 0
     functionValue: 0
     functionConsume: 0
@@ -230,8 +230,8 @@ MonoBehaviour:
   Defense: 3
   functions:
   - functionName: "\u706B\u70AE\u653B\u51FB"
-    function: 1
-    functionIcon: {fileID: 515103687, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 1.5
     functionValue: 4
     functionConsume: 3
@@ -240,7 +240,7 @@ MonoBehaviour:
     functionIntVal: 0000000006000000000000000300000002000000
     functionFloatVal:
     - 0.4
-    - 0.2
+    - 2
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 
@@ -298,8 +298,8 @@ MonoBehaviour:
   Defense: 0
   functions:
   - functionName: "\u79FB\u52A8"
-    function: 0
-    functionIcon: {fileID: 614492535, guid: 9523d952ac24f514e9cb07e75fd16b10, type: 3}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 0.5
     functionValue: 4
     functionConsume: 5
