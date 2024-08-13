@@ -83,6 +83,8 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_BulletsCount;
     public InputField ipt_BulletsInterval;
     public InputField ipt_BulletSpeed;
+    public InputField ipt_TrailParticle;
+    public InputField ipt_BlastParticle;
     [Space(1)]
     [Header("Constructor Components")]
     public CanvasGroup canvas_Constructor;
