@@ -61,7 +61,7 @@ public class CompConstructor : BaseComponent
         {
             curSelectedIndex = index;
             isConstructing = true;
-            for (int i = 0; i < functions[index].functionStringVal.Length; i++)
+            for (int i = 1; i < functions[index].functionStringVal.Length; i++)
             {
                 ItemData item = new ItemData();
                 item.itemID = functions[index].functionStringVal[i];

@@ -59,6 +59,7 @@ public class DataEditorMain : MonoBehaviour
     public Text txt_FunctionValueDesc;
     public InputField ipt_FunctionDesc;
     public Sprite defaultIcon;
+    public DataEditorStringValuePair stringValuePairItem;
     [Space(1)]
     [Header("Icon Selector")]
     public CanvasGroup canvas_IconSelector;
@@ -88,6 +89,8 @@ public class DataEditorMain : MonoBehaviour
     [Space(1)]
     [Header("Constructor Components")]
     public CanvasGroup canvas_Constructor;
+    public InputField ipt_ConstructItemID;
+    public InputField ipt_ConstructTimeEstimated;
     // Start is called before the first frame update
     void Start()
     {
@@ -219,45 +222,10 @@ public class DataEditorMain : MonoBehaviour
 
                     var selectedID = searchResults.Keys.ToList()[index];
 
-                    //curEditComponent = DataController.Instance.GetComponentData(selectedID);
                     var json = File.ReadAllText(Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/" + selectedID + ".json");
                     var data = JsonConvert.DeserializeObject<ComponentData>(json);
 
                     LoadComponentData(data);
-                    //curEditComponent = data;
-
-                    //ipt_CompID.text = curEditComponent.ComponentID;
-                    //if (string.IsNullOrEmpty(curEditComponent.ComponentID))
-                    //{
-                    //    ipt_CompID.text = "Comp" + Tools.GetTimeStamp();
-                    //}
-                    //ipt_CompName.text = curEditComponent.ComponentName;
-                    //ipt_CompEndurance.text = curEditComponent.ComponentEndurance.ToString();
-                    //ipt_CompEnergy.text = curEditComponent.ComponentInternalBattery.ToString();
-                    //dpd_CompType.captionText.text = curEditComponent.componentType.ToString();
-                    //foreach (var function in curEditComponent.functions)
-                    //{
-                    //    var functionItem = Instantiate(compFunctionsItem);
-                    //    functionItem.transform.SetParent(tsf_FunctionsContainer.transform);
-                    //    functionItem.gameObject.SetActive(true);
-                    //    functionItem.InitThis(function);
-
-                    //    compFunctionsItems.Add(functionItem);
-                    //}
-
-                    //if(curEditComponent.componentType == ComponentFunctionType.None)
-                    //{
-                    //    btn_AddFunction.interactable = false;
-                    //    btn_RemoveFunction.interactable = false;
-                    //    btn_ConfirmFunctionEdit.interactable = false;
-                    //    btn_CancelFunctinEdit.interactable = false;
-                    //}else
-                    //{
-                    //    btn_AddFunction.interactable = true;
-                    //    btn_RemoveFunction.interactable = true;
-                    //    btn_ConfirmFunctionEdit.interactable = true;
-                    //    btn_CancelFunctinEdit.interactable = true;
-                    //}
                     break;
                 }
             case "Entities":
@@ -696,4 +664,10 @@ public enum ComponentFunctionType
     Harvest,
     Generator,
     PowerDispatcher,
+}
+public enum StringIndexType
+{
+    Item,
+    Entity,
+    Components,
 }
