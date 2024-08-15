@@ -244,6 +244,8 @@ public class DataEditorMain : MonoBehaviour
             }
         }
         dpd_SelectItem.AddOptions(searchResults.Values.ToList());
+
+        LoadSelectedIndex(0);
     }
     void LoadSelectedIndex(int index)
     {
