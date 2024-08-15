@@ -16,6 +16,7 @@ public class DataEditorStringValuePair : MonoBehaviour
     StringIndexType searchType;
     Dictionary<string, string> curSelectedNames = new Dictionary<string, string>();
     Dictionary<string, string> searchResult = new Dictionary<string, string>();
+    DataEditorMain editor;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,9 +29,10 @@ public class DataEditorStringValuePair : MonoBehaviour
     {
         
     }
-    public void InitThis(StringIndexType type)
+    public void InitThis(StringIndexType type, string str, float value, DataEditorMain _editor)
     {
         curSelectedNames.Clear();
+        editor = _editor;
 
         searchType = type;
 
@@ -74,6 +76,9 @@ public class DataEditorStringValuePair : MonoBehaviour
             }
         }
         GetSearchResult("");
+
+        dpd_String.captionText.text = str;
+        ipt_Value.text = value.ToString();
     }
     public void GetSearchResult(string str)
     {
@@ -90,7 +95,7 @@ public class DataEditorStringValuePair : MonoBehaviour
     }
     void RemoveThis()
     {
-
+        editor.RemoveStringValuePair(this);
     }
     public EditorStringValuePair GetThisValue()
     {
