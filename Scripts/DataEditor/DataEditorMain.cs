@@ -152,6 +152,8 @@ public class DataEditorMain : MonoBehaviour
         functionPages.Add(ComponentFunctionType.Construct, canvas_Constructor);
 
         editorPages.Add(EditorPage.Entities, canvas_Entities);
+
+        editorPages.Add(EditorPage.Items, canvas_Items);
     }
     void LoadComponentsData()
     {
