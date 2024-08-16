@@ -124,6 +124,7 @@ public class DataEditorMain : MonoBehaviour
     {
         
     }
+    #region Common
     void BindKeys()
     {
         btn_LoadComponents.onClick.AddListener(LoadComponentsData);
@@ -425,6 +426,7 @@ public class DataEditorMain : MonoBehaviour
                 }
         }
     }
+    #endregion
     #region Components
     void LoadComponentData(ComponentData data)
     {
