@@ -102,6 +102,15 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_EntityIndex;
     public Dropdown dpd_EntityType;
     EntityData curSelectedEntity;
+    [Space(1)]
+    [Header("Items")]
+    public CanvasGroup canvas_Items;
+    public InputField ipt_ItemID;
+    public InputField ipt_ItemName;
+    public InputField ipt_MaxStackCount;
+    public Toggle tog_Consumeable;
+    public Dropdown dpd_ItemType;
+    ItemDataEditor curSelectedItem;
     // Start is called before the first frame update
     void Start()
     {
@@ -200,6 +209,13 @@ public class DataEditorMain : MonoBehaviour
                         curEditNames.Add(name, thisData.EntityName);
                         break;
                     }
+                case EditorPage.Items:
+                    {
+                        var json = File.ReadAllText(dicPath + name + ".json");
+                        var thisData = JsonConvert.DeserializeObject<ItemDataEditor>(json);
+                        curEditNames.Add(name, thisData.ItemName);
+                        break;
+                    }
             }
         }
 
@@ -224,6 +240,15 @@ public class DataEditorMain : MonoBehaviour
                     foreach (var types in Enum.GetNames(typeof(EntityType)))
                     {
                         dpd_EntityType.options.Add(new Dropdown.OptionData() { text = types });
+                    }
+                    break;
+                }
+            case EditorPage.Items:
+                {
+                    dpd_ItemType.ClearOptions();
+                    foreach (var types in Enum.GetNames(typeof(ItemType)))
+                    {
+                        dpd_ItemType.options.Add(new Dropdown.OptionData() { text = types });
                     }
                     break;
                 }
@@ -284,6 +309,13 @@ public class DataEditorMain : MonoBehaviour
                 }
             case EditorPage.Items:
                 {
+                    var selectedID = searchResults.Keys.ToList()[index];
+
+                    var json = File.ReadAllText(Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/" + selectedID + ".json");
+                    var data = JsonConvert.DeserializeObject<ItemDataEditor>(json);
+
+                    LoadItemsData(data);
+
                     break;
                 }
         }
@@ -304,6 +336,11 @@ public class DataEditorMain : MonoBehaviour
             case EditorPage.Entities:
                 {
                     SaveEneitiesData(); 
+                    break;
+                }
+            case EditorPage.Items:
+                {
+                    SaveItemsData(); 
                     break;
                 }
         }
@@ -335,6 +372,14 @@ public class DataEditorMain : MonoBehaviour
                     LoadEntitiesData(data);
                     break;
                 }
+            case EditorPage.Items:
+                {
+                    ItemDataEditor data = new ItemDataEditor();
+                    data.ItemID = "Item" + Tools.GetTimeStamp();
+                    dpd_ItemType.value = -1;
+
+                    break;
+                }
         }
     }
     void DeleteCurContent()
@@ -359,6 +404,16 @@ public class DataEditorMain : MonoBehaviour
             case EditorPage.Entities:
                 {
                     var path = Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/" + curSelectedEntity.EntityID + ".json";
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                    AddNewContent();
+                    break;
+                }
+            case EditorPage.Items:
+                {
+                    var path = Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/" + curSelectedItem.ItemID + ".json";
                     if (File.Exists(path))
                     {
                         File.Delete(path);
@@ -748,6 +803,35 @@ public class DataEditorMain : MonoBehaviour
         LoadData(curDic);
     }
     #endregion
+    #region Items
+    void LoadItemsData(ItemDataEditor data)
+    {
+        curSelectedItem = data;
+
+        ipt_ItemID.text = data.ItemID;
+        ipt_ItemName.text = data.ItemName;
+        ipt_MaxStackCount.text = data.maxStackCount.ToString();
+        tog_Consumeable.isOn = data.consumeable;
+        dpd_ItemType.value = (int)data.itemType;
+        dpd_ItemType.captionText.text = data.itemType.ToString();
+    }
+    void SaveItemsData()
+    {
+        ItemDataEditor newItem = new ItemDataEditor();
+        newItem.ItemID = ipt_ItemID.text;
+        newItem.ItemName = ipt_ItemName.text;
+        newItem.maxStackCount = int.Parse(ipt_MaxStackCount.text);
+        newItem.consumeable = tog_Consumeable.isOn;
+        newItem.itemType = (ItemType)dpd_ItemType.value;
+
+        var json = JsonConvert.SerializeObject(newItem);
+
+        var dic = Application.dataPath + "/Resources/ScriptableItems/" + curDic + "/";
+        File.WriteAllText(dic + newItem.ItemID + ".json", json);
+
+        LoadData(curDic);
+    }
+    #endregion
     #region Utilities
     void SelectComponentIcon()
     {
@@ -899,4 +983,22 @@ public enum EntityType
     Unit,
     Construct,
     Resource,
+}
+public struct ItemDataEditor
+{
+    public string ItemID;
+    public string ItemName;
+    public int maxStackCount;
+    public bool consumeable;
+    public ItemType itemType;
+    public string[] itemStringVal;
+    public float[] itemFloatVal;
+    public int[] itemIntVal;
+    public bool[] itemBoolVal;
+}
+public enum ItemType
+{
+    Resource,
+    AttachableComponent,
+    Misc,
 }
