@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using UnityEditor;
 using DG.Tweening.Plugins.Core.PathCore;
+using Unity.VisualScripting;
 
 public class DataEditorMain : MonoBehaviour
 {
@@ -360,10 +361,10 @@ public class DataEditorMain : MonoBehaviour
                 {
                     ComponentData data = new ComponentData();
                     data.ComponentID = "Comp" + Tools.GetTimeStamp();
-                    data.componentType = ComponentFunctionType.None;
                     dpd_CompType.value = -1;
 
                     LoadComponentData(data);
+                    OnComponentTypeChanged(0);
                     break;
                 }
             case EditorPage.Entities:
@@ -446,8 +447,6 @@ public class DataEditorMain : MonoBehaviour
         ipt_CompEndurance.text = curEditComponent.ComponentEndurance.ToString();
         ipt_CompEnergy.text = curEditComponent.ComponentInternalBattery.ToString();
         ipt_CompDefense.text = curEditComponent.ComponentDefense.ToString();
-        dpd_CompType.captionText.text = curEditComponent.componentType.ToString();
-        dpd_CompType.value = (int)curEditComponent.componentType;
         ipt_ComponentDescription.text = curEditComponent.ComponentDescription;
         tog_isCompFatal.isOn = curEditComponent.isFatalComponent;
         if(curEditComponent.functions != null)
@@ -463,21 +462,6 @@ public class DataEditorMain : MonoBehaviour
             }
         }
 
-        if (curEditComponent.componentType == ComponentFunctionType.None)
-        {
-            btn_AddFunction.interactable = false;
-            btn_RemoveFunction.interactable = false;
-            btn_ConfirmFunctionEdit.interactable = false;
-            btn_CancelFunctinEdit.interactable = false;
-        }
-        else
-        {
-            btn_AddFunction.interactable = true;
-            btn_RemoveFunction.interactable = true;
-            btn_ConfirmFunctionEdit.interactable = false;
-            btn_CancelFunctinEdit.interactable = false;
-        }
-
         CancelFunctionEdit();
     }
     void SaveComponentsData()
@@ -488,7 +472,6 @@ public class DataEditorMain : MonoBehaviour
         newComponentData.ComponentEndurance = float.Parse(ipt_CompEndurance.text);
         newComponentData.ComponentInternalBattery = float.Parse(ipt_CompEnergy.text);
         newComponentData.ComponentDefense = float.Parse(ipt_CompDefense.text);
-        newComponentData.componentType = (ComponentFunctionType)dpd_CompType.value;
         newComponentData.ComponentDescription = ipt_ComponentDescription.text;
         newComponentData.isFatalComponent = tog_isCompFatal.isOn;
         List<CompFunctionDetail> details = new List<CompFunctionDetail>();
@@ -509,20 +492,59 @@ public class DataEditorMain : MonoBehaviour
     void OnComponentTypeChanged(int index)
     {
         ComponentFunctionType type = (ComponentFunctionType)index;
-        curEditComponent.componentType = type;
-        if(type == ComponentFunctionType.None)
+
+        foreach (var page in functionPages)
         {
-            btn_AddFunction.interactable = false;
-            btn_RemoveFunction.interactable = false;
-            btn_ConfirmFunctionEdit.interactable = false;
-            btn_CancelFunctinEdit.interactable = false;
+            page.Value.alpha = 0;
+            page.Value.blocksRaycasts = false;
+            page.Value.interactable = false;
         }
-        else
+        if(functionPages.ContainsKey(type))
         {
-            btn_AddFunction.interactable = true;
-            btn_RemoveFunction.interactable = true;
-            btn_ConfirmFunctionEdit.interactable = false;
-            btn_CancelFunctinEdit.interactable = false;
+            functionPages[type].alpha = 1;
+            functionPages[type].blocksRaycasts = true;
+            functionPages[type].interactable = true;
+        }
+
+        switch ((ComponentFunctionType)dpd_CompType.value)
+        {
+            default:
+                {
+                    break;
+                }
+            case ComponentFunctionType.Mobile:
+                {
+                    dpd_MoveStyle.ClearOptions();
+                    foreach (var item in Enum.GetNames(typeof(BaseObj.MoveStyle)))
+                    {
+                        dpd_MoveStyle.options.Add(new Dropdown.OptionData() { text = item });
+                    }
+                    dpd_MoveType.ClearOptions();
+                    foreach (var item in Enum.GetNames(typeof(BaseObj.MoveType)))
+                    {
+                        dpd_MoveType.options.Add(new Dropdown.OptionData() { text = item });
+                    }
+
+                    txt_FunctionValueDesc.text = "“∆∂Ø¡¶";
+
+                    break;
+                }
+            case ComponentFunctionType.Weapon:
+                {
+                    txt_FunctionValueDesc.text = "…À∫¶";
+
+                    dpd_WeapenBallisticType.ClearOptions();
+                    foreach (var item in Enum.GetNames(typeof(CompWeapon.WeaponAttackType)))
+                    {
+                        dpd_WeapenBallisticType.options.Add(new Dropdown.OptionData() { text = item });
+                    }
+
+                    break;
+                }
+            case ComponentFunctionType.Construct:
+                {
+                    break;
+                }
         }
     }
     public void LoadCompFunctionDetail(CompFunctionsItem function)
@@ -533,12 +555,10 @@ public class DataEditorMain : MonoBehaviour
             page.Value.interactable = false;
             page.Value.blocksRaycasts = false;
         }
-        if (functionPages.ContainsKey(curEditComponent.componentType))
-        {
-            functionPages[curEditComponent.componentType].alpha = 1;
-            functionPages[curEditComponent.componentType].interactable = true;
-            functionPages[curEditComponent.componentType].blocksRaycasts = true;
-        }
+
+        OnComponentTypeChanged((int)function.GetThisFunction().functionType);
+        dpd_CompType.value = (int)function.GetThisFunction().functionType;
+        dpd_CompType.captionText.text = function.GetThisFunction().functionType.ToString();
 
         curSelectedFunction = function;
         foreach (var funcItems in compFunctionsItems)
@@ -574,7 +594,7 @@ public class DataEditorMain : MonoBehaviour
         }
         KeyValuePairItems.Clear();
 
-        switch (curEditComponent.componentType)
+        switch ((ComponentFunctionType)dpd_CompType.value)
         {
             default:
                 {
@@ -641,31 +661,9 @@ public class DataEditorMain : MonoBehaviour
     void AddFunction()
     {
         CompFunctionDetail function = new CompFunctionDetail();
+        function.functionType = ComponentFunctionType.None;
 
-        switch(curEditComponent.componentType)
-        {
-            default:
-                {
-                    break;
-                }
-            case ComponentFunctionType.Mobile:
-                {
-                    function.functionIntVal = new int[2];
-                    break;
-                }
-            case ComponentFunctionType.Weapon:
-                {
-                    function.functionIntVal = new int[5];
-                    function.functionFloatVal = new float[2];
-                    break;
-                }
-            case ComponentFunctionType.Construct:
-                {
-                    function.functionStringVal = new string[1] { "" };
-                    function.functionFloatVal = new float[1];
-                    break;
-                }
-        }
+        OnComponentTypeChanged(0);
 
         var functionItem = Instantiate(compFunctionsItem);
         functionItem.transform.SetParent(tsf_FunctionsContainer.transform);
@@ -674,6 +672,8 @@ public class DataEditorMain : MonoBehaviour
         img_Icon.sprite = defaultIcon;
 
         compFunctionsItems.Add(functionItem);
+
+        curSelectedFunction = functionItem;
 
         LoadCompFunctionDetail(functionItem);
     }
@@ -704,8 +704,9 @@ public class DataEditorMain : MonoBehaviour
         newFunction.functionConsume = float.Parse(ipt_FunctionConsume.text);
         newFunction.canBeAuto = tog_Auto.isOn;
         newFunction.functionDescription = ipt_FunctionDesc.text;
+        newFunction.functionType = (ComponentFunctionType)dpd_CompType.value;
 
-        switch (curEditComponent.componentType)
+        switch ((ComponentFunctionType)dpd_CompType.value)
         {
             default:
                 {
@@ -760,12 +761,7 @@ public class DataEditorMain : MonoBehaviour
     }
     void CancelFunctionEdit()
     {
-        foreach (var page in functionPages)
-        {
-            page.Value.alpha = 0;
-            page.Value.interactable = false;
-            page.Value.blocksRaycasts = false;
-        }
+        OnComponentTypeChanged(0);
 
         ipt_FunctionName.text = "";
         img_Icon.sprite = defaultIcon;
@@ -936,13 +932,15 @@ public struct ComponentData
     public float ComponentInternalBattery;
     public float ComponentDefense;
     public bool isFatalComponent;
-    public ComponentFunctionType componentType;
     public CompFunctionDetail[] functions;
     public string ComponentDescription;
+    public string ComponentIconPath;
+    public int ComponentIconIndex;
 }
 [Serializable]
 public struct CompFunctionDetail
 {
+    public ComponentFunctionType functionType;
     public string functionName;
     public string functionIconPath;
     public int functionIconIndex;
@@ -981,6 +979,8 @@ public struct EntityData
     public string EntityName;
     public string EntityIndex;
     public EntityType entityType;
+    public string EntityIconPath;
+    public int EntityIconIndex;
 }
 public enum EntityType
 {
@@ -999,6 +999,8 @@ public struct ItemDataEditor
     public float[] itemFloatVal;
     public int[] itemIntVal;
     public bool[] itemBoolVal;
+    public string itemIconPath;
+    public int itemIconIndex;
 }
 public enum ItemType
 {
