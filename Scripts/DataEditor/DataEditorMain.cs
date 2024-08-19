@@ -107,6 +107,10 @@ public class DataEditorMain : MonoBehaviour
     public CanvasGroup canvas_PowerDispatcher;
     public InputField ipt_MaxPowerDispatchable;
     [Space(1)]
+    [Header("Resources Components")]
+    public CanvasGroup canvas_Resource;
+    public Dropdown dpd_RespurceType;
+    [Space(1)]
     [Header("Entities")]
     public CanvasGroup canvas_Entities;
     public InputField ipt_EneityID;
@@ -171,6 +175,7 @@ public class DataEditorMain : MonoBehaviour
         functionPages.Add(ComponentFunctionType.Construct, canvas_Constructor);
         functionPages.Add(ComponentFunctionType.Build, canvas_Builder);
         functionPages.Add(ComponentFunctionType.PowerDispatcher, canvas_PowerDispatcher);
+        functionPages.Add(ComponentFunctionType.Resource, canvas_Resource);
 
         editorPages.Add(EditorPage.Entities, canvas_Entities);
 
@@ -590,6 +595,22 @@ public class DataEditorMain : MonoBehaviour
                     txt_FunctionValueDesc.text = "供能范围";
                     break;
                 }
+            case ComponentFunctionType.Storage:
+                {
+                    txt_FunctionValueDesc.text = "存储上限";
+                    break;
+                }
+            case ComponentFunctionType.Resource:
+                {
+                    txt_FunctionValueDesc.text = "资源获取";
+
+                    dpd_RespurceType.ClearOptions();
+                    foreach (var item in Enum.GetNames(typeof(BaseResource.ResourceType)))
+                    {
+                        dpd_RespurceType.options.Add(new Dropdown.OptionData() { text = item });
+                    }
+                    break;
+                }
         }
     }
     public void LoadCompFunctionDetail(CompFunctionsItem function)
@@ -737,6 +758,19 @@ public class DataEditorMain : MonoBehaviour
                     ipt_MaxPowerDispatchable.text = func.functionFloatVal[0].ToString();
                     break;
                 }
+            case ComponentFunctionType.Storage:
+                {
+                    txt_FunctionValueDesc.text = "存储上限";
+                    break;
+                }
+            case ComponentFunctionType.Resource:
+                {
+                    txt_FunctionValueDesc.text = "资源获取";
+
+                    dpd_RespurceType.captionText.text = ((BaseResource.ResourceType)func.functionIntVal[0]).ToString();
+                    dpd_RespurceType.value = func.functionIntVal[0];
+                    break;
+                }
         }
 
         btn_ConfirmFunctionEdit.interactable = true;
@@ -874,6 +908,20 @@ public class DataEditorMain : MonoBehaviour
                         float.Parse(ipt_MaxPowerDispatchable.text)
                     };
                     newFunction.functionFloatVal = floatList.ToArray();
+                    break;
+                }
+            case ComponentFunctionType.Storage:
+                {
+                    break;
+                }
+            case ComponentFunctionType.Resource:
+                {
+                    List<int> intList = new List<int>()
+                    {
+                        dpd_RespurceType.value,
+                    };
+
+                    newFunction.functionIntVal = intList.ToArray();
                     break;
                 }
         }
@@ -1136,6 +1184,8 @@ public enum ComponentFunctionType
     Harvest,
     Generator,
     PowerDispatcher,
+    Storage,
+    Resource,
 }
 public enum StringIndexType
 {
