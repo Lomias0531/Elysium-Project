@@ -655,7 +655,7 @@ public class PlayerController : Singletion<PlayerController>
 
         var builder = selectedObject.GetDesiredComponent<CompBuilder>();
         if(builder != null)
-            buildIndicator = Tools.GetTileWithinRange(selectedObject.GetTileWhereUnitIs(), builder.buildRange, Tools.IgnoreType.All);
+            buildIndicator = Tools.GetTileWithinRange(selectedObject.GetTileWhereUnitIs(), (int)selectedObject.curSelectedFunction.functionValue, Tools.IgnoreType.All);
         List<BaseTile> tilesToRemove = new List<BaseTile>();    
         foreach (var tile in buildIndicator)
         {

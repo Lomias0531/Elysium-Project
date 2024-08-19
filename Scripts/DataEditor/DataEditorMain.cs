@@ -46,6 +46,7 @@ public class DataEditorMain : MonoBehaviour
     public Dictionary<ComponentFunctionType, CanvasGroup> functionPages = new Dictionary<ComponentFunctionType, CanvasGroup>();
     ComponentData curEditComponent;
     CompFunctionsItem curSelectedFunction;
+    public InputField ipt_ComponentProductor;
     [Space(2)]
     [Header("FunctionsCommon")]
     public Button btn_ConfirmFunctionEdit;
@@ -92,9 +93,19 @@ public class DataEditorMain : MonoBehaviour
     [Header("Constructor Components")]
     public CanvasGroup canvas_Constructor;
     public InputField ipt_ConstructItemID;
-    public InputField ipt_ConstructTimeEstimated;
     public Button btn_AddKeyValuePair;
     public Transform tsf_constructorKeyValuePairContainer;
+    [Space(1)]
+    [Header("Builder Components")]
+    public CanvasGroup canvas_Builder;
+    public InputField ipt_BuildRange;
+    public InputField ipt_BuildItemID;
+    public Button btn_AddBuilderKeyValuePair;
+    public Transform tsf_builderKeyValuePairContainer;
+    [Space(1)]
+    [Header("Power Dispatcher Components")]
+    public CanvasGroup canvas_PowerDispatcher;
+    public InputField ipt_MaxPowerDispatchable;
     [Space(1)]
     [Header("Entities")]
     public CanvasGroup canvas_Entities;
@@ -103,6 +114,9 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_EntityIndex;
     public Dropdown dpd_EntityType;
     EntityData curSelectedEntity;
+    public InputField ipt_EntityProductor;
+    public Button btn_AddPresetComponents;
+    public Transform tsf_PresetComponentItemContainer;
     [Space(1)]
     [Header("Items")]
     public CanvasGroup canvas_Items;
@@ -112,6 +126,7 @@ public class DataEditorMain : MonoBehaviour
     public Toggle tog_Consumeable;
     public Dropdown dpd_ItemType;
     ItemDataEditor curSelectedItem;
+    public InputField ipt_ItemProductor;
     // Start is called before the first frame update
     void Start()
     {
@@ -145,6 +160,8 @@ public class DataEditorMain : MonoBehaviour
         btn_ConfirmIcon.onClick.AddListener(OnConfirmIcon);
         btn_CancelIcon.onClick.AddListener(OnCancelIcon);
         btn_AddKeyValuePair.onClick.AddListener(AddConstructorStrValuePair);
+        btn_AddBuilderKeyValuePair.onClick.AddListener(AddBuilderStrValuePair);
+        btn_AddPresetComponents.onClick.AddListener(AddPresetComponentsStrValuePair);
     }
     void AddPages()
     {
@@ -152,6 +169,8 @@ public class DataEditorMain : MonoBehaviour
         functionPages.Add(ComponentFunctionType.Mobile, canvas_CompMobile);
         functionPages.Add(ComponentFunctionType.Weapon, canvas_CompWeapon);
         functionPages.Add(ComponentFunctionType.Construct, canvas_Constructor);
+        functionPages.Add(ComponentFunctionType.Build, canvas_Builder);
+        functionPages.Add(ComponentFunctionType.PowerDispatcher, canvas_PowerDispatcher);
 
         editorPages.Add(EditorPage.Entities, canvas_Entities);
 
@@ -371,6 +390,7 @@ public class DataEditorMain : MonoBehaviour
                 {
                     EntityData data = new EntityData();
                     data.EntityID = "Entity" + Tools.GetTimeStamp();
+                    data.InstalledComponents = new string[0];
                     dpd_EntityType.value = -1;
 
                     LoadEntitiesData(data);
@@ -449,6 +469,7 @@ public class DataEditorMain : MonoBehaviour
         ipt_CompDefense.text = curEditComponent.ComponentDefense.ToString();
         ipt_ComponentDescription.text = curEditComponent.ComponentDescription;
         tog_isCompFatal.isOn = curEditComponent.isFatalComponent;
+        ipt_ComponentProductor.text = curEditComponent.ComponentProductor;
         if(curEditComponent.functions != null)
         {
             foreach (var function in curEditComponent.functions)
@@ -474,6 +495,7 @@ public class DataEditorMain : MonoBehaviour
         newComponentData.ComponentDefense = float.Parse(ipt_CompDefense.text);
         newComponentData.ComponentDescription = ipt_ComponentDescription.text;
         newComponentData.isFatalComponent = tog_isCompFatal.isOn;
+        newComponentData.ComponentProductor = ipt_ComponentProductor.text;
         List<CompFunctionDetail> details = new List<CompFunctionDetail>();
         foreach (var func in compFunctionsItems)
         {
@@ -505,6 +527,8 @@ public class DataEditorMain : MonoBehaviour
             functionPages[type].blocksRaycasts = true;
             functionPages[type].interactable = true;
         }
+
+        ipt_FunctionValue.interactable = true;
 
         switch ((ComponentFunctionType)dpd_CompType.value)
         {
@@ -543,6 +567,27 @@ public class DataEditorMain : MonoBehaviour
                 }
             case ComponentFunctionType.Construct:
                 {
+                    txt_FunctionValueDesc.text = "建造时间";
+                    break;
+                }
+            case ComponentFunctionType.Build:
+                {
+                    txt_FunctionValueDesc.text = "建造时间";
+                    break;
+                }
+            case ComponentFunctionType.Harvest:
+                {
+                    txt_FunctionValueDesc.text = "采集范围";
+                    break;
+                }
+            case ComponentFunctionType.Generator:
+                {
+                    txt_FunctionValueDesc.text = "能量回复";
+                    break;
+                }
+            case ComponentFunctionType.PowerDispatcher:
+                {
+                    txt_FunctionValueDesc.text = "供能范围";
                     break;
                 }
         }
@@ -641,8 +686,10 @@ public class DataEditorMain : MonoBehaviour
                 }
             case ComponentFunctionType.Construct:
                 {
+                    txt_FunctionValueDesc.text = "建造时间";
+
                     ipt_ConstructItemID.text = func.functionStringVal[0].ToString();
-                    ipt_ConstructTimeEstimated.text = func.functionFloatVal[0].ToString();
+                    ipt_FunctionValue.text = func.functionFloatVal[0].ToString();
                     for(int i = 1;i<func.functionStringVal.Length;i++)
                     {
                         var pairItem = Instantiate(stringValuePairItem);
@@ -651,6 +698,43 @@ public class DataEditorMain : MonoBehaviour
                         pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionFloatVal[i], this);
                         KeyValuePairItems.Add(pairItem);
                     }
+
+                    StartCoroutine(RearrangePair(tsf_constructorKeyValuePairContainer));
+                    break;
+                }
+            case ComponentFunctionType.Build:
+                {
+                    txt_FunctionValueDesc.text = "建造时间";
+
+                    ipt_BuildItemID.text = func.functionStringVal[0].ToString();
+                    ipt_FunctionValue.text = func.functionFloatVal[0].ToString();
+                    ipt_BuildRange.text = func.functionValue.ToString();
+                    for (int i = 1; i < func.functionStringVal.Length; i++)
+                    {
+                        var pairItem = Instantiate(stringValuePairItem);
+                        pairItem.gameObject.SetActive(true);
+                        pairItem.transform.SetParent(tsf_builderKeyValuePairContainer);
+                        pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionFloatVal[i], this);
+                        KeyValuePairItems.Add(pairItem);
+                    }
+
+                    StartCoroutine(RearrangePair(tsf_builderKeyValuePairContainer));
+                    break;
+                }
+            case ComponentFunctionType.Harvest:
+                {
+                    txt_FunctionValueDesc.text = "采集范围";
+                    break;
+                }
+            case ComponentFunctionType.Generator:
+                {
+                    txt_FunctionValueDesc.text = "能量回复";
+                    break;
+                }
+            case ComponentFunctionType.PowerDispatcher:
+                {
+                    txt_FunctionValueDesc.text = "供能范围";
+                    ipt_MaxPowerDispatchable.text = func.functionFloatVal[0].ToString();
                     break;
                 }
         }
@@ -743,7 +827,7 @@ public class DataEditorMain : MonoBehaviour
                     List<string> strList = new List<string>();
                     List<float> floatList = new List<float>();
                     strList.Add(ipt_ConstructItemID.text);
-                    floatList.Add(float.Parse(ipt_ConstructTimeEstimated.text));
+                    floatList.Add(float.Parse(ipt_FunctionValue.text));
 
                     foreach (var item in KeyValuePairItems)
                     {
@@ -753,6 +837,42 @@ public class DataEditorMain : MonoBehaviour
                     }
 
                     newFunction.functionStringVal = strList.ToArray();
+                    newFunction.functionFloatVal = floatList.ToArray();
+                    break;
+                }
+            case ComponentFunctionType.Build:
+                {
+                    List<string> strList = new List<string>();
+                    List<float> floatList = new List<float>();
+                    strList.Add(ipt_BuildItemID.text);
+                    floatList.Add(float.Parse(ipt_FunctionValue.text));
+
+                    foreach (var item in KeyValuePairItems)
+                    {
+                        var result = item.GetThisValue();
+                        strList.Add(result.str);
+                        floatList.Add(result.val);
+                    }
+
+                    newFunction.functionStringVal = strList.ToArray();
+                    newFunction.functionFloatVal = floatList.ToArray();
+                    newFunction.functionValue = float.Parse(ipt_BuildRange.text);
+                    break;
+                }
+            case ComponentFunctionType.Harvest:
+                {
+                    break;
+                }
+            case ComponentFunctionType.Generator:
+                {
+                    break;
+                }
+            case ComponentFunctionType.PowerDispatcher:
+                {
+                    List<float> floatList = new List<float>()
+                    {
+                        float.Parse(ipt_MaxPowerDispatchable.text)
+                    };
                     newFunction.functionFloatVal = floatList.ToArray();
                     break;
                 }
@@ -786,6 +906,27 @@ public class DataEditorMain : MonoBehaviour
         ipt_EntityIndex.text = data.EntityIndex;
         dpd_EntityType.value = (int)data.entityType;
         dpd_EntityType.captionText.text = data.entityType.ToString();
+        ipt_EntityProductor.text = data.EntityProductor;
+
+        if(data.InstalledComponents.Length > 0)
+        {
+            foreach (var item in data.InstalledComponents)
+            {
+                var pairItem = Instantiate(stringValuePairItem);
+                pairItem.gameObject.SetActive(true);
+                pairItem.transform.SetParent(tsf_PresetComponentItemContainer);
+                pairItem.InitThis(StringIndexType.Components, item, 0, this);
+                KeyValuePairItems.Add(pairItem);
+            }
+
+            StartCoroutine(RearrangePair(tsf_PresetComponentItemContainer));
+
+            foreach (var item in KeyValuePairItems)
+            {
+                Destroy(item.gameObject);
+            }
+            KeyValuePairItems.Clear();
+        }
     }
     void SaveEneitiesData()
     {
@@ -794,6 +935,14 @@ public class DataEditorMain : MonoBehaviour
         newEntity.EntityName = ipt_EntityName.text;
         newEntity.EntityIndex = ipt_EntityIndex.text;
         newEntity.entityType = (EntityType)dpd_EntityType.value;
+        newEntity.EntityProductor = ipt_EntityProductor.text;
+
+        List<string> stringList = new List<string>();
+        foreach (var item in KeyValuePairItems)
+        {
+            stringList.Add(item.GetThisValue().str);
+        }
+        newEntity.InstalledComponents = stringList.ToArray();
 
         var json = JsonConvert.SerializeObject(newEntity);
 
@@ -814,6 +963,7 @@ public class DataEditorMain : MonoBehaviour
         tog_Consumeable.isOn = data.consumeable;
         dpd_ItemType.value = (int)data.itemType;
         dpd_ItemType.captionText.text = data.itemType.ToString();
+        ipt_ItemProductor.text = data.itemProductor;
     }
     void SaveItemsData()
     {
@@ -823,6 +973,7 @@ public class DataEditorMain : MonoBehaviour
         newItem.maxStackCount = int.Parse(ipt_MaxStackCount.text);
         newItem.consumeable = tog_Consumeable.isOn;
         newItem.itemType = (ItemType)dpd_ItemType.value;
+        newItem.itemProductor = ipt_ItemProductor.text;
 
         var json = JsonConvert.SerializeObject(newItem);
 
@@ -910,11 +1061,31 @@ public class DataEditorMain : MonoBehaviour
     }
     void AddConstructorStrValuePair()
     {
+        AddStrValuePair(tsf_constructorKeyValuePairContainer, StringIndexType.Entity);
+    }
+    void AddBuilderStrValuePair()
+    {
+        AddStrValuePair(tsf_builderKeyValuePairContainer, StringIndexType.Entity);
+    }
+    void AddPresetComponentsStrValuePair()
+    {
+        AddStrValuePair(tsf_PresetComponentItemContainer, StringIndexType.Components);
+    }
+    void AddStrValuePair(Transform tsf_Container, StringIndexType type)
+    {
         var pairItem = Instantiate(stringValuePairItem);
         pairItem.gameObject.SetActive(true);
-        pairItem.InitThis(StringIndexType.Entity, "", 0, this);
-        pairItem.transform.SetParent(tsf_constructorKeyValuePairContainer);
+        pairItem.InitThis(type, "", 0, this);
+        pairItem.transform.SetParent(tsf_Container);
         KeyValuePairItems.Add(pairItem);
+
+        StartCoroutine(RearrangePair(tsf_Container));
+    }
+    IEnumerator RearrangePair(Transform tsf_Container)
+    {
+        tsf_Container.gameObject.SetActive(false);
+        yield return null;
+        tsf_Container.gameObject.SetActive(true);
     }
     #endregion
 }
@@ -934,8 +1105,7 @@ public struct ComponentData
     public bool isFatalComponent;
     public CompFunctionDetail[] functions;
     public string ComponentDescription;
-    public string ComponentIconPath;
-    public int ComponentIconIndex;
+    public string ComponentProductor;
 }
 [Serializable]
 public struct CompFunctionDetail
@@ -979,8 +1149,8 @@ public struct EntityData
     public string EntityName;
     public string EntityIndex;
     public EntityType entityType;
-    public string EntityIconPath;
-    public int EntityIconIndex;
+    public string EntityProductor;
+    public string[] InstalledComponents;
 }
 public enum EntityType
 {
@@ -999,8 +1169,7 @@ public struct ItemDataEditor
     public float[] itemFloatVal;
     public int[] itemIntVal;
     public bool[] itemBoolVal;
-    public string itemIconPath;
-    public int itemIconIndex;
+    public string itemProductor;
 }
 public enum ItemType
 {

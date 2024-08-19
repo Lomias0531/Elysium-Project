@@ -32,7 +32,7 @@ public class CompConstructor : BaseComponent
         {
             for (int i = 1; i < functions[index].functionStringVal.Length; i++)
             {
-                if (storage.GetItemCount(functions[index].functionStringVal[i]) < functions[index].functionIntVal[i])
+                if (storage.GetItemCount(functions[index].functionStringVal[i]) < functions[index].functionFloatVal[i])
                 {
                     checkResources = false;
                 }
@@ -65,12 +65,12 @@ public class CompConstructor : BaseComponent
             {
                 ItemData item = new ItemData();
                 item.itemID = functions[index].functionStringVal[i];
-                item.stackCount = functions[index].functionIntVal[i];
+                item.stackCount = (int)functions[index].functionFloatVal[i];
 
                 storage.RemoveItem(item);
             }
             constructTimeElapsed = 0;
-            constructTimeRequired = functions[index].functionValue;
+            constructTimeRequired = functions[index].functionFloatVal[0];
         }
     }
 
