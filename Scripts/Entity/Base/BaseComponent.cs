@@ -57,17 +57,18 @@ public abstract class BaseComponent : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(compResID))
         {
-            SO_ComponentData compData = DataController.Instance.GetComponentData(compResID);
-            if (compData != null)
-            {
-                compName = compData.name;
-                HP = compData.ComponentEndurance;
-                MaxHP = compData.ComponentEndurance;
-                EP = compData.ComponentInternalBattery;
-                MaxEP = compData.ComponentInternalBattery;
-                isCritical = compData.isFatalComponent;
-                functions = compData.functions;
-            }
+            //SO_ComponentData compData = DataController.Instance.GetComponentData(compResID);
+            var compData = DataController.Instance.GetComponentData(compResID);
+
+            compName = compData.ComponentName;
+            HP = compData.ComponentEndurance;
+            MaxHP = compData.ComponentEndurance;
+            EP = compData.ComponentInternalBattery;
+            MaxEP = compData.ComponentInternalBattery;
+            isCritical = compData.isFatalComponent;
+            functions = compData.functions;
+            Defense = compData.ComponentDefense;
+            isCritical = compData.isFatalComponent;
         }
     }
 }

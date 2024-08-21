@@ -131,6 +131,8 @@ public class DataEditorMain : MonoBehaviour
     public Dropdown dpd_ItemType;
     ItemDataEditor curSelectedItem;
     public InputField ipt_ItemProductor;
+    public Button btn_SelectItemIcon;
+    public Image img_ItemIcon;
     // Start is called before the first frame update
     void Start()
     {
@@ -1220,6 +1222,8 @@ public struct ItemDataEditor
     public int[] itemIntVal;
     public bool[] itemBoolVal;
     public string itemProductor;
+    public string itemIconPath;
+    public int itemIconIndex;
 }
 public enum ItemType
 {

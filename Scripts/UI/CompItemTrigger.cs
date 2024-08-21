@@ -27,8 +27,9 @@ public class CompItemTrigger : BaseCompTrigger
     public override void OnPointerEnter(PointerEventData eventData)
     {
         CompFunctionDetail detail = new CompFunctionDetail();
-        var itemInfo = DataController.Instance.GetItemInfo(inv.inventory[index].itemID);
-        detail.functionName = itemInfo.itemName;
+        //var itemInfo = DataController.Instance.GetItemInfo(inv.inventory[index].itemID);
+        var itemData = DataController.Instance.GetItemData(inv.inventory[index].itemID);
+        detail.functionName = itemData.ItemName;
         //detail.functionIcon = itemInfo.itemIcon;
         detail.functionConsume = inv.inventory[index].stackCount;
 
@@ -57,8 +58,9 @@ public class CompItemTrigger : BaseCompTrigger
         index = _index;
         menu = _menu;
 
-        var itemInfo = DataController.Instance.GetItemInfo(inv.inventory[index].itemID);
-        img_Icon.sprite = itemInfo.itemIcon;
+        //var itemInfo = DataController.Instance.GetItemInfo(inv.inventory[index].itemID);
+        var itemData = DataController.Instance.GetItemData(inv.inventory[index].itemID);
+        img_Icon.sprite = Tools.GetIcon(itemData.itemIconPath, itemData.itemIconIndex);
         txt_itemCount.text = inv.inventory[index].stackCount.ToString();
     }
     private void UpdateItemInfo()

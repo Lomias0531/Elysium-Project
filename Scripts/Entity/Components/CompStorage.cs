@@ -31,7 +31,8 @@ public class CompStorage : BaseComponent
     }
     public ItemData ReceiveItem(ItemData receivedItem)
     {
-        SO_ItemData itemInfo = DataController.Instance.GetItemInfo(receivedItem.itemID);
+        //SO_ItemData itemInfo = DataController.Instance.GetItemInfo(receivedItem.itemID);
+        var itemData = DataController.Instance.GetItemData(receivedItem.itemID);
 
         int index = 0;
         do
@@ -48,15 +49,15 @@ public class CompStorage : BaseComponent
             {
                 if (inventory[index].itemID == receivedItem.itemID)
                 {
-                    if (inventory[index].stackCount + receivedItem.stackCount <= itemInfo.maxStackCount)
+                    if (inventory[index].stackCount + receivedItem.stackCount <= itemData.maxStackCount)
                     {
                         SetInvCount(index, inventory[index].stackCount + receivedItem.stackCount);
                         receivedItem.stackCount = 0;
                     }
                     else
                     {
-                        var stackDiv = itemInfo.maxStackCount - inventory[index].stackCount;
-                        SetInvCount(index, itemInfo.maxStackCount);
+                        var stackDiv = itemData.maxStackCount - inventory[index].stackCount;
+                        SetInvCount(index, itemData.maxStackCount);
                         receivedItem.stackCount -= stackDiv;
                     }
                 }
