@@ -70,7 +70,9 @@ public class DataEditorMain : MonoBehaviour
     public IconSelectorItem iconSelectorItem;
     public Button btn_ConfirmIcon;
     public Button btn_CancelIcon;
-    IconSelectorItem selectedIcon;
+    //IconSelectorItem selectedIcon;
+    string selectedIconPath = "";
+    int selectedIconIndex = -1;
     List<IconSelectorItem> iconSelectorItems = new List<IconSelectorItem>();
     [Space(1)]
     [Header("Mobile Components")]
@@ -168,6 +170,7 @@ public class DataEditorMain : MonoBehaviour
         btn_AddKeyValuePair.onClick.AddListener(AddConstructorStrValuePair);
         btn_AddBuilderKeyValuePair.onClick.AddListener(AddBuilderStrValuePair);
         btn_AddPresetComponents.onClick.AddListener(AddPresetComponentsStrValuePair);
+        btn_SelectItemIcon.onClick.AddListener(SelectComponentIcon);
     }
     void AddPages()
     {
@@ -345,7 +348,6 @@ public class DataEditorMain : MonoBehaviour
                     var data = JsonConvert.DeserializeObject<ItemDataEditor>(json);
 
                     LoadItemsData(data);
-
                     break;
                 }
         }
@@ -409,6 +411,7 @@ public class DataEditorMain : MonoBehaviour
                     data.ItemID = "Item" + Tools.GetTimeStamp();
                     dpd_ItemType.value = -1;
 
+                    LoadItemsData(data);
                     break;
                 }
         }
@@ -649,6 +652,9 @@ public class DataEditorMain : MonoBehaviour
         else
         {
             img_Icon.sprite = Tools.GetIcon(func.functionIconPath, func.functionIconIndex);
+
+            selectedIconPath = func.functionIconPath;
+            selectedIconIndex = func.functionIconIndex;
         }
         ipt_ApplyTimeInterval.text = func.functionApplyTimeInterval.ToString();
         ipt_FunctionValue.text = func.functionValue.ToString();
@@ -810,15 +816,10 @@ public class DataEditorMain : MonoBehaviour
     {
         CompFunctionDetail newFunction = new CompFunctionDetail();
         newFunction.functionName = ipt_FunctionName.text;
-        if(selectedIcon != null)
-        {
-            newFunction.functionIconPath = selectedIcon.iconName;
-            newFunction.functionIconIndex = selectedIcon.iconIndex;
-        }else
-        {
-            newFunction.functionIconPath = "";
-            newFunction.functionIconIndex = -1;
-        }
+
+        newFunction.functionIconPath = selectedIconPath;
+        newFunction.functionIconIndex = selectedIconIndex;
+
         newFunction.functionApplyTimeInterval = float.Parse(ipt_ApplyTimeInterval.text);
         newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
         newFunction.functionConsume = float.Parse(ipt_FunctionConsume.text);
@@ -951,6 +952,12 @@ public class DataEditorMain : MonoBehaviour
     {
         curSelectedEntity = data;
 
+        foreach (var item in KeyValuePairItems)
+        {
+            Destroy(item.gameObject);
+        }
+        KeyValuePairItems.Clear();
+
         ipt_EneityID.text = data.EntityID;
         ipt_EntityName.text = data.EntityName;
         ipt_EntityIndex.text = data.EntityIndex;
@@ -958,24 +965,21 @@ public class DataEditorMain : MonoBehaviour
         dpd_EntityType.captionText.text = data.entityType.ToString();
         ipt_EntityProductor.text = data.EntityProductor;
 
-        if(data.InstalledComponents.Length > 0)
+        if(data.InstalledComponents != null)
         {
-            foreach (var item in data.InstalledComponents)
+            if (data.InstalledComponents.Length > 0)
             {
-                var pairItem = Instantiate(stringValuePairItem);
-                pairItem.gameObject.SetActive(true);
-                pairItem.transform.SetParent(tsf_PresetComponentItemContainer);
-                pairItem.InitThis(StringIndexType.Components, item, 0, this);
-                KeyValuePairItems.Add(pairItem);
-            }
+                foreach (var item in data.InstalledComponents)
+                {
+                    var pairItem = Instantiate(stringValuePairItem);
+                    pairItem.gameObject.SetActive(true);
+                    pairItem.transform.SetParent(tsf_PresetComponentItemContainer);
+                    pairItem.InitThis(StringIndexType.Components, item, 0, this);
+                    KeyValuePairItems.Add(pairItem);
+                }
 
-            StartCoroutine(RearrangePair(tsf_PresetComponentItemContainer));
-
-            foreach (var item in KeyValuePairItems)
-            {
-                Destroy(item.gameObject);
+                StartCoroutine(RearrangePair(tsf_PresetComponentItemContainer));
             }
-            KeyValuePairItems.Clear();
         }
     }
     void SaveEneitiesData()
@@ -1014,6 +1018,10 @@ public class DataEditorMain : MonoBehaviour
         dpd_ItemType.value = (int)data.itemType;
         dpd_ItemType.captionText.text = data.itemType.ToString();
         ipt_ItemProductor.text = data.itemProductor;
+        img_ItemIcon.sprite = Tools.GetIcon(data.itemIconPath, data.itemIconIndex);
+
+        selectedIconPath = data.itemIconPath;
+        selectedIconIndex = data.itemIconIndex;
     }
     void SaveItemsData()
     {
@@ -1024,6 +1032,8 @@ public class DataEditorMain : MonoBehaviour
         newItem.consumeable = tog_Consumeable.isOn;
         newItem.itemType = (ItemType)dpd_ItemType.value;
         newItem.itemProductor = ipt_ItemProductor.text;
+        newItem.itemIconPath = selectedIconPath;
+        newItem.itemIconIndex = selectedIconIndex;
 
         var json = JsonConvert.SerializeObject(newItem);
 
@@ -1076,12 +1086,16 @@ public class DataEditorMain : MonoBehaviour
         canvas_IconSelector.blocksRaycasts = false;
         canvas_IconSelector.interactable = false;
 
-        if(selectedIcon != null)
-            img_Icon.sprite = Tools.GetIcon(selectedIcon.iconName, selectedIcon.iconIndex);
+        if(!string.IsNullOrEmpty(selectedIconPath))
+        {
+            img_Icon.sprite = Tools.GetIcon(selectedIconPath, selectedIconIndex);
+            img_ItemIcon.sprite = Tools.GetIcon(selectedIconPath, selectedIconIndex);
+        }
     }
     void OnCancelIcon()
     {
-        selectedIcon = null;
+        selectedIconPath = "";
+        selectedIconIndex = -1;
 
         canvas_IconSelector.alpha = 0;
         canvas_IconSelector.blocksRaycasts = false;
@@ -1089,7 +1103,9 @@ public class DataEditorMain : MonoBehaviour
     }
     public void OnConfirmSelectIconItem(IconSelectorItem item)
     {
-        selectedIcon = item;
+        selectedIconPath = item.iconName;
+        selectedIconIndex = item.iconIndex;
+
         foreach (var iconItem in iconSelectorItems)
         {
             if(iconItem == item)
