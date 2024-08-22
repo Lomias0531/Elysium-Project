@@ -12,6 +12,8 @@ public abstract class BaseObj : MonoBehaviour
     public Animator animator;
 
     public BaseTile? curTile;
+
+    public EntityData thisEntityData;
     [HideInInspector]
     public MoveType[] moveType
     {
@@ -21,7 +23,7 @@ public abstract class BaseObj : MonoBehaviour
             var mobile = GetDesiredComponents<CompMobile>();
             foreach (var comp in mobile)
             {
-                foreach (var item in comp.functions)
+                foreach (var item in comp.thisCompData.functions)
                 {
                     list.Add((MoveType)item.functionIntVal[0]);
                 }
@@ -38,7 +40,7 @@ public abstract class BaseObj : MonoBehaviour
             var mobile = GetDesiredComponents<CompMobile>();
             foreach (var comp in mobile)
             {
-                foreach (var item in comp.functions)
+                foreach (var item in comp.thisCompData.functions)
                 {
                     list.Add((MoveStyle)item.functionIntVal[1]);
                 }
@@ -148,14 +150,53 @@ public abstract class BaseObj : MonoBehaviour
     {
         Guid id = Guid.NewGuid();
         this.EntityID = id.ToString();
-
-        var _components = this.gameObject.GetComponents<BaseComponent>();
-        components = _components.ToList();
-        foreach (var item in components)
+        
+        components = new List<BaseComponent>();
+        foreach (var compID in thisEntityData.InstalledComponents)
         {
-            item.thisObj = this;
-            item.LoadCompDataViaID();
+            var compData = DataController.Instance.GetComponentData(compID);
+
+            switch(compData.thisCompType)
+            {
+                default:
+                    {
+                        break;
+                    }
+                case CompType.Function:
+                    {
+                        CompFunction comp = this.gameObject.AddComponent<CompFunction>();
+                        comp.thisCompData = compData;
+                        comp.InitThis();
+                        components.Add(comp);
+                        break;
+                    }
+                case CompType.Base:
+                    {
+                        CompBase comp = this.gameObject.AddComponent<CompBase>();
+                        comp.thisCompData = compData;
+                        comp.InitThis();
+                        components.Add(comp);
+                        break;
+                    }
+                case CompType.WallConnector:
+                    {
+                        CompWallConnector comp = this.gameObject.AddComponent<CompWallConnector>();
+                        comp.thisCompData = compData;
+                        comp.InitThis();
+                        components.Add(comp);
+                        break;
+                    }
+                case CompType.AutoController:
+                    {
+                        CompAutoController comp = this.gameObject.AddComponent<CompAutoController>();
+                        comp.thisCompData = compData;
+                        comp.InitThis();
+                        components.Add(comp);
+                        break;
+                    }
+            }
         }
+
         animator = this.gameObject.GetComponent<Animator>();
     }
     public abstract void OnInteracted();
@@ -218,7 +259,7 @@ public abstract class BaseObj : MonoBehaviour
                     int compIndex = Random.Range(0, dic.Count);
                     var damagedComp = Components[dic[compIndex]];
 
-                    var dam = damageValue - damagedComp.Defense;
+                    var dam = damageValue - damagedComp.thisCompData.ComponentDefense;
                     dam = dam <= 0 ? 1 : dam;
                     damagedComp.HP -= dam;
                     if (damagedComp.HP <= 0)
@@ -227,7 +268,7 @@ public abstract class BaseObj : MonoBehaviour
                         Debug.Log("Component destroyed");
                         Components.Remove(damagedComp);
 
-                        if(damagedComp.isCritical)
+                        if(damagedComp.thisCompData.isFatalComponent)
                         {
                             Debug.Log("Critical component lost, unit destroyed");
                             MapController.Instance.RemoveObject(this);
@@ -262,7 +303,7 @@ public abstract class BaseObj : MonoBehaviour
                         int compIndex = Random.Range(0, dic.Count);
                         var damagedComp = Components[dic[compIndex]];
 
-                        var damage = dam - damagedComp.Defense;
+                        var damage = dam - damagedComp.thisCompData.ComponentDefense;
                         damage = damage < 0 ? 1 : damage;
                         damagedComp.HP -= damage;
                         damageValue -= dam;
@@ -272,7 +313,7 @@ public abstract class BaseObj : MonoBehaviour
                             Debug.Log("Component destroyed");
                             Components.Remove(damagedComp);
 
-                            if (damagedComp.isCritical)
+                            if (damagedComp.thisCompData.isFatalComponent)
                             {
                                 Debug.Log("Critical component lost, unit destroyed");
                                 MapController.Instance.RemoveObject(this);

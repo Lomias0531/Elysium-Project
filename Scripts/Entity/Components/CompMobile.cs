@@ -10,9 +10,9 @@ public class CompMobile : BaseComponent
     public bool isMoving;
     public override void OnApply(int index)
     {
-        var moveType = (BaseObj.MoveType)functions[index].functionIntVal[0];
-        var moveStyle = (BaseObj.MoveStyle)functions[index].functionIntVal[1];
-        var mobility = (int)functions[index].functionValue;
+        var moveType = (BaseObj.MoveType)thisCompData.functions[index].functionIntVal[0];
+        var moveStyle = (BaseObj.MoveStyle)thisCompData.functions[index].functionIntVal[1];
+        var mobility = (int)thisCompData.functions[index].functionValue;
 
         PlayerController.Instance.GetMoveRange(Tools.GetMobileRange(thisObj, moveType, moveStyle, mobility));
     }

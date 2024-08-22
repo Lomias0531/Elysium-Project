@@ -4,21 +4,16 @@ using UnityEngine;
 
 public abstract class BaseComponent : MonoBehaviour
 {
-    public string compName;
     public float HP;
     public float MaxHP;
     public float EP;
     public float MaxEP;
-    public float Defense;
-    public CompFunctionDetail[] functions;
-    [HideInInspector]
-    public BaseObj thisObj;
-    public string compResID;
-    public bool isCritical;
 
     public float functionTimeElapsed = 0;
     public bool isAvailable = true;
 
+    public ComponentData thisCompData;
+    public BaseObj thisObj;
     public enum InteractFunction
     {
         Harvest,
@@ -29,7 +24,7 @@ public abstract class BaseComponent : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Start()
     {
-        LoadCompDataViaID();
+        
     }
 
     // Update is called once per frame
@@ -53,22 +48,11 @@ public abstract class BaseComponent : MonoBehaviour
         functionTimeElapsed = function.functionApplyTimeInterval;
         EP -= function.functionConsume;
     }
-    public void LoadCompDataViaID()
+    public void InitThis()
     {
-        if (!string.IsNullOrEmpty(compResID))
-        {
-            //SO_ComponentData compData = DataController.Instance.GetComponentData(compResID);
-            var compData = DataController.Instance.GetComponentData(compResID);
-
-            compName = compData.ComponentName;
-            HP = compData.ComponentEndurance;
-            MaxHP = compData.ComponentEndurance;
-            EP = compData.ComponentInternalBattery;
-            MaxEP = compData.ComponentInternalBattery;
-            isCritical = compData.isFatalComponent;
-            functions = compData.functions;
-            Defense = compData.ComponentDefense;
-            isCritical = compData.isFatalComponent;
-        }
+        MaxHP = thisCompData.ComponentEndurance;
+        HP = MaxHP;
+        MaxEP = thisCompData.ComponentInternalBattery;
+        EP = MaxEP;
     }
 }

@@ -30,9 +30,9 @@ public class CompConstructor : BaseComponent
         bool checkResources = true;
         if (storage != null)
         {
-            for (int i = 1; i < functions[index].functionStringVal.Length; i++)
+            for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
             {
-                if (storage.GetItemCount(functions[index].functionStringVal[i]) < functions[index].functionFloatVal[i])
+                if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
                 {
                     checkResources = false;
                 }
@@ -44,7 +44,8 @@ public class CompConstructor : BaseComponent
         }
 
         int availableTileCount = 0;
-        var obj = DataController.Instance.GetEntityViaID(functions[curSelectedIndex].functionStringVal[0]);
+        //var obj = DataController.Instance.GetEntityViaID(functions[curSelectedIndex].functionStringVal[0]);
+        var obj = DataController.Instance.GetEntityData(thisCompData.functions[curSelectedIndex].functionStringVal[0]);
         foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles)
         {
             if(obj.CheckIsTileSuitableForUnit(adjTile.Value))
@@ -61,16 +62,16 @@ public class CompConstructor : BaseComponent
         {
             curSelectedIndex = index;
             isConstructing = true;
-            for (int i = 1; i < functions[index].functionStringVal.Length; i++)
+            for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
             {
                 ItemData item = new ItemData();
-                item.itemID = functions[index].functionStringVal[i];
-                item.stackCount = (int)functions[index].functionFloatVal[i];
+                item.itemID = thisCompData.functions[index].functionStringVal[i];
+                item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
 
                 storage.RemoveItem(item);
             }
             constructTimeElapsed = 0;
-            constructTimeRequired = functions[index].functionFloatVal[0];
+            constructTimeRequired = thisCompData.functions[index].functionFloatVal[0];
         }
     }
 
@@ -93,7 +94,7 @@ public class CompConstructor : BaseComponent
 
         if(isConstructing)
         {
-            this.EP -= functions[curSelectedIndex].functionConsume * Time.deltaTime;
+            this.EP -= thisCompData.functions[curSelectedIndex].functionConsume * Time.deltaTime;
             if (this.EP < 0)
             {
                 this.EP = 0;
@@ -118,7 +119,8 @@ public class CompConstructor : BaseComponent
     {
         isConstructing = false;
         constructTimeElapsed = 0;
-        var obj = DataController.Instance.GetEntityViaID(functions[curSelectedIndex].functionStringVal[0]);
+        //var obj = DataController.Instance.GetEntityViaID(functions[curSelectedIndex].functionStringVal[0]);
+        var obj = DataController.Instance.GetEntityData(thisCompData.functions[curSelectedIndex].functionStringVal[0]);
         var objGenerated = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
         objGenerated.InitThis();
         yield return null;

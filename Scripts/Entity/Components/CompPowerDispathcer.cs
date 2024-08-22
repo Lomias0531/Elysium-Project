@@ -12,7 +12,7 @@ public class CompPowerDispathcer : BaseComponent
     public GameObject obj_TransferStart;
     public override void OnApply(int index)
     {
-        FunctionTriggered(functions[index]);
+        FunctionTriggered(thisCompData.functions[index]);
     }
 
     public override void OnDestroyThis()

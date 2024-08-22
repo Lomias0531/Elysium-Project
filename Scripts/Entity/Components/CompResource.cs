@@ -51,7 +51,7 @@ public class CompResource : CompInteractable
 
         thisUnit = GetComponent<BaseObj>();
 
-        this.functions = new CompFunctionDetail[1]
+        this.thisCompData.functions = new CompFunctionDetail[1]
         {
              new CompFunctionDetail
              {

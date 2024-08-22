@@ -675,7 +675,8 @@ public class PlayerController : Singletion<PlayerController>
 
         DrawRangeIndicator(buildIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "BuildIndicator", col_Build, 2f);
 
-        var obj = DataController.Instance.GetEntityViaID(selectedObject.curSelectedFunction.functionStringVal[0]);
+        //var obj = DataController.Instance.GetEntityViaID(selectedObject.curSelectedFunction.functionStringVal[0]);
+        var obj = DataController.Instance.GetEntityData(selectedObject.curSelectedFunction.functionStringVal[0]);
         if (obj != null)
         {
             obj_Build = GameObject.Instantiate(obj, MapController.Instance.entityContainer);

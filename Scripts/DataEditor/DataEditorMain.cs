@@ -47,6 +47,7 @@ public class DataEditorMain : MonoBehaviour
     ComponentData curEditComponent;
     CompFunctionsItem curSelectedFunction;
     public InputField ipt_ComponentProductor;
+    public Dropdown dpd_CompFuncType;
     [Space(2)]
     [Header("FunctionsCommon")]
     public Button btn_ConfirmFunctionEdit;
@@ -265,6 +266,12 @@ public class DataEditorMain : MonoBehaviour
                     {
                         dpd_CompType.options.Add(new Dropdown.OptionData() { text = types });
                     }
+
+                    dpd_CompFuncType.ClearOptions();
+                    foreach (var types in Enum.GetNames(typeof(CompType)))
+                    {
+                        dpd_CompFuncType.options.Add(new Dropdown.OptionData() { text = types });
+                    }
                     break;
                 }
             case EditorPage.Entities:
@@ -480,6 +487,10 @@ public class DataEditorMain : MonoBehaviour
         ipt_ComponentDescription.text = curEditComponent.ComponentDescription;
         tog_isCompFatal.isOn = curEditComponent.isFatalComponent;
         ipt_ComponentProductor.text = curEditComponent.ComponentProductor;
+
+        dpd_CompFuncType.value = (int)curEditComponent.thisCompType;
+        dpd_CompFuncType.captionText.text = curEditComponent.thisCompType.ToString();
+
         if(curEditComponent.functions != null)
         {
             foreach (var function in curEditComponent.functions)
@@ -506,6 +517,7 @@ public class DataEditorMain : MonoBehaviour
         newComponentData.ComponentDescription = ipt_ComponentDescription.text;
         newComponentData.isFatalComponent = tog_isCompFatal.isOn;
         newComponentData.ComponentProductor = ipt_ComponentProductor.text;
+        newComponentData.thisCompType = (CompType)dpd_CompFuncType.value;
         List<CompFunctionDetail> details = new List<CompFunctionDetail>();
         foreach (var func in compFunctionsItems)
         {
@@ -1172,6 +1184,7 @@ public struct ComponentData
     public CompFunctionDetail[] functions;
     public string ComponentDescription;
     public string ComponentProductor;
+    public CompType thisCompType;
 }
 [Serializable]
 public struct CompFunctionDetail
@@ -1202,6 +1215,15 @@ public enum ComponentFunctionType
     Harvest,
     Generator,
     PowerDispatcher,
+    Storage,
+    Resource,
+}
+public enum CompType
+{
+    Function,
+    Base,
+    AutoController,
+    WallConnector,
     Storage,
     Resource,
 }

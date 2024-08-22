@@ -30,11 +30,11 @@ public class HostileCommander : MonoBehaviour
                 {
                     if(construct.functionTimeElapsed <= 0)
                     {
-                        var index = Random.Range(0, construct.functions.Length);
-                        construct.FunctionTriggered(construct.functions[index]);
+                        var index = Random.Range(0, construct.thisCompData.functions.Length);
+                        construct.FunctionTriggered(construct.thisCompData.functions[index]);
                         construct.OnApply(index);
                         entity.Value.curSelectedComp = construct;
-                        entity.Value.curSelectedFunction = construct.functions[index];
+                        entity.Value.curSelectedFunction = construct.thisCompData.functions[index];
                     }
                 }
                 var autoComp = entity.Value.GetDesiredComponent<CompAutoController>();

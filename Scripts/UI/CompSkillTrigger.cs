@@ -32,13 +32,13 @@ public class CompSkillTrigger : BaseCompTrigger
         menu = _menu;
         
         skillIndex = _skillIndex;
-        if (thisComp.functions[skillIndex].functionIconPath != null)
-            img_Icon.sprite = Tools.GetIcon(thisComp.functions[skillIndex].functionIconPath, thisComp.functions[skillIndex].functionIconIndex);
+        if (thisComp.thisCompData.functions[skillIndex].functionIconPath != null)
+            img_Icon.sprite = Tools.GetIcon(thisComp.thisCompData.functions[skillIndex].functionIconPath, thisComp.thisCompData.functions[skillIndex].functionIconIndex);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        UIController.Instance.DisplayHoveredSkillInfo(thisComp.functions[skillIndex], UIController.DisplayInfoType.skill);
+        UIController.Instance.DisplayHoveredSkillInfo(thisComp.thisCompData.functions[skillIndex], UIController.DisplayInfoType.skill);
         menu.HoveringComponent(thisComp);
     }
 
@@ -56,7 +56,7 @@ public class CompSkillTrigger : BaseCompTrigger
         if (isAvailable)
         {
             thisComp.thisObj.curSelectedComp = thisComp;
-            thisComp.thisObj.curSelectedFunction = thisComp.functions[skillIndex];
+            thisComp.thisObj.curSelectedFunction = thisComp.thisCompData.functions[skillIndex];
             thisComp.OnApply(skillIndex);
 
             //PlayerController.Instance.EntityFinishedAction();
@@ -74,7 +74,7 @@ public class CompSkillTrigger : BaseCompTrigger
             isPowerSufficent = thisBase.isPowerSufficent;
         }
 
-        if (thisComp.EP < thisComp.functions[skillIndex].functionConsume || thisComp.HP <= 0 || !thisComp.isAvailable || !isPowerSufficent)
+        if (thisComp.EP < thisComp.thisCompData.functions[skillIndex].functionConsume || thisComp.HP <= 0 || !thisComp.isAvailable || !isPowerSufficent)
         {
             isAvailable = false;
             btn_Click.interactable = false;

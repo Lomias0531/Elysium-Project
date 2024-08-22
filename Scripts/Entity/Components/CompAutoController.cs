@@ -47,7 +47,7 @@ public class CompAutoController : BaseComponent
             var mobile = thisObj.GetDesiredComponent<CompMobile>();
             if(mobile != null)
             {
-                return mobile.functions[0].functionValue;
+                return mobile.thisCompData.functions[0].functionValue;
             }else
             {
                 return 0;
@@ -62,7 +62,7 @@ public class CompAutoController : BaseComponent
             var weapons = thisObj.GetDesiredComponents<CompWeapon>();
             foreach (var weapon in weapons)
             {
-                foreach (var range in weapon.functions)
+                foreach (var range in weapon.thisCompData.functions)
                 {
                     if (range.functionIntVal[1] > AttackRange)
                     {
@@ -213,7 +213,7 @@ public class CompAutoController : BaseComponent
 
             foreach( var weapon in weapons)
             {
-                foreach (var function in weapon.functions)
+                foreach (var function in weapon.thisCompData.functions)
                 {
                     var maxRange = Tools.GetTileWithinRange(thisObj.GetTileWhereUnitIs(), function.functionIntVal[1], Tools.IgnoreType.All);
                     var minRange = Tools.GetTileWithinRange(thisObj.GetTileWhereUnitIs(), function.functionIntVal[0], Tools.IgnoreType.All);
@@ -286,8 +286,8 @@ public class CompAutoController : BaseComponent
         if (mobile != null)
         {
             if (mobile.functionTimeElapsed > 0) return;
-            if (mobile.EP < mobile.functions[0].functionConsume) return;
-            var defaultMoveType = (BaseObj.MoveType)mobile.functions[0].functionIntVal[0];
+            if (mobile.EP < mobile.thisCompData.functions[0].functionConsume) return;
+            var defaultMoveType = (BaseObj.MoveType)mobile.thisCompData.functions[0].functionIntVal[0];
 
             Queue<BaseTile> path = new Queue<BaseTile>();
             if (curMovingDestination == null || thisObj.Pos == curMovingDestination.Pos)
@@ -335,9 +335,9 @@ public class CompAutoController : BaseComponent
             if (curAttackingTarget == null && curMode == UnitActionMode.Standby)
             {
                 thisObj.curSelectedComp = mobile;
-                thisObj.curSelectedFunction = mobile.functions[0];
+                thisObj.curSelectedFunction = mobile.thisCompData.functions[0];
 
-                mobile.FunctionTriggered(mobile.functions[0]);
+                mobile.FunctionTriggered(mobile.thisCompData.functions[0]);
                 StartCoroutine(mobile.MoveObject(path));
 
                 return;
@@ -355,9 +355,9 @@ public class CompAutoController : BaseComponent
                     return;
                 }
                 thisObj.curSelectedComp = mobile;
-                thisObj.curSelectedFunction = mobile.functions[0];
+                thisObj.curSelectedFunction = mobile.thisCompData.functions[0];
 
-                mobile.FunctionTriggered(mobile.functions[0]);
+                mobile.FunctionTriggered(mobile.thisCompData.functions[0]);
                 StartCoroutine(mobile.MoveObject(path));
             }
         }
@@ -385,7 +385,7 @@ public class CompAutoController : BaseComponent
             if (weapon.functionTimeElapsed > 0) continue;
             var randomList = new List<CompFunctionDetail>();
             var random = new System.Random();
-            foreach (var item in weapon.functions.ToList())
+            foreach (var item in weapon.thisCompData.functions.ToList())
             {
                 randomList.Insert(random.Next(randomList.Count), item);
             }
@@ -450,12 +450,12 @@ public class CompAutoController : BaseComponent
 
         curMovingDestination = mobileTile[targetIndex];
         var mobile = thisObj.GetDesiredComponent<CompMobile>();
-        var path = thisObj.UnitFindPath(curMovingDestination, (BaseObj.MoveType)mobile.functions[0].functionIntVal[0], 4);
+        var path = thisObj.UnitFindPath(curMovingDestination, (BaseObj.MoveType)mobile.thisCompData.functions[0].functionIntVal[0], 4);
 
         thisObj.curSelectedComp = mobile;
-        thisObj.curSelectedFunction = mobile.functions[0];
+        thisObj.curSelectedFunction = mobile.thisCompData.functions[0];
 
-        mobile.FunctionTriggered(mobile.functions[0]);
+        mobile.FunctionTriggered(mobile.thisCompData.functions[0]);
         StartCoroutine(mobile.MoveObject(path));
     }
     public void SetActionMode(UnitActionMode mode)
