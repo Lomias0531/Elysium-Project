@@ -198,7 +198,7 @@ public class PlayerController : Singletion<PlayerController>
                     if(moveIndicators.Contains(hoveredTile))
                     {
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
-                        selectedObject.curSelectedComp.OnTriggerFunction(hoveredTile);
+                        selectedObject.curSelectedComp.OnTriggerFunction(ComponentFunctionType.Mobile, hoveredTile);
 
                         CameraController.Instance.ResetViewPoint();
                     }
@@ -219,7 +219,7 @@ public class PlayerController : Singletion<PlayerController>
                                     {
                                         var resource = res.GetDesiredComponent<CompResource>();
 
-                                        resource.OnTriggerFunction(selectedObject);
+                                        resource.OnTriggerFunction( ComponentFunctionType.Resource, selectedObject);
                                     }
 
                                     break;
@@ -234,7 +234,7 @@ public class PlayerController : Singletion<PlayerController>
                                     var ees = selectedObject.GetDesiredComponent<CompStorage>();
                                     var item = ees.inventory[selectedObject.curSelectedFunction.functionIntVal[1]];
                                     //ees.TransferItem(storage, item);
-                                    ees.OnTriggerFunction(storage, item);
+                                    ees.OnTriggerFunction( ComponentFunctionType.Storage, storage, item);
                                     break;
                                 }
                         }
@@ -266,7 +266,7 @@ public class PlayerController : Singletion<PlayerController>
                         if(targetUnit != null)
                         {
                             selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
-                            selectedObject.curSelectedComp.OnTriggerFunction(targetUnit);
+                            selectedObject.curSelectedComp.OnTriggerFunction(ComponentFunctionType.Weapon, targetUnit);
                         }
                     }
 

@@ -40,7 +40,10 @@ public abstract class BaseComponent : MonoBehaviour
     }
     public abstract void OnApply(int index);
     public abstract void OnDestroyThis();
-    public abstract void OnTriggerFunction(params object[] obj);
+    public void OnTriggerFunction(ComponentFunctionType type, params object[] obj)
+    {
+
+    }
     public void FunctionTriggered(CompFunctionDetail function)
     {
         thisObj.curSelectedComp = this;

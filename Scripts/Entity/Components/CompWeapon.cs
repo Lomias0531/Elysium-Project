@@ -35,18 +35,18 @@ public class CompWeapon : BaseComponent
         
     }
 
-    public override void OnTriggerFunction(params object[] obj)
-    {
-        if(attactCoroutine != null)
-            StopCoroutine(attactCoroutine);
+    //public override void OnTriggerFunction(params object[] obj)
+    //{
+    //    if(attactCoroutine != null)
+    //        StopCoroutine(attactCoroutine);
 
-        if((BaseObj)obj[0] != null)
-        {
-            attackTarget = (BaseObj)obj[0];
-            //attactCoroutine = StartCoroutine(CommenceAttack());
-            CommenceAttack(attackTarget);
-        }
-    }
+    //    if((BaseObj)obj[0] != null)
+    //    {
+    //        attackTarget = (BaseObj)obj[0];
+    //        //attactCoroutine = StartCoroutine(CommenceAttack());
+    //        CommenceAttack(attackTarget);
+    //    }
+    //}
 
     // Start is called before the first frame update
     public override void Start()

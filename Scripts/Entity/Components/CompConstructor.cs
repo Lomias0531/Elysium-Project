@@ -146,8 +146,8 @@ public class CompConstructor : BaseComponent
         }
     }
 
-    public override void OnTriggerFunction(params object[] obj)
-    {
+    //public override void OnTriggerFunction(params object[] obj)
+    //{
         
-    }
+    //}
 }

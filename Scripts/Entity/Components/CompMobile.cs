@@ -190,11 +190,11 @@ public class CompMobile : BaseComponent
         isMoving = false;
     }
 
-    public override void OnTriggerFunction(params object[] obj)
-    {
-        if(obj[0] is BaseTile)
-        {
-            StartCoroutine(MoveObject((BaseTile)obj[0]));
-        }
-    }
+    //public override void OnTriggerFunction(params object[] obj)
+    //{
+    //    if(obj[0] is BaseTile)
+    //    {
+    //        StartCoroutine(MoveObject((BaseTile)obj[0]));
+    //    }
+    //}
 }

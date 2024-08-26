@@ -16,10 +16,10 @@ public class CompGenerator : BaseComponent
         
     }
 
-    public override void OnTriggerFunction(params object[] obj)
-    {
+    //public override void OnTriggerFunction(params object[] obj)
+    //{
         
-    }
+    //}
 
     // Start is called before the first frame update
     public override void Start()

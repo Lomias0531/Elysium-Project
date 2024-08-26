@@ -29,20 +29,20 @@ public class CompResource : CompInteractable
 
     }
 
-    public override void OnTriggerFunction(params object[] obj)
-    {
-        if(obj[0] is BaseObj)
-        {
-            var storage = ((BaseObj)obj[0]).GetDesiredComponent<CompStorage>();
-            if (storage != null)
-            {
-                ItemData data = new ItemData();
-                data.itemID = resourceCollectableOnce.itemID;
-                data.stackCount = resourceCollectableOnce.stackCount;
-                storage.ReceiveItem(data);
-            }
-        }
-    }
+    //public override void OnTriggerFunction(params object[] obj)
+    //{
+    //    if(obj[0] is BaseObj)
+    //    {
+    //        var storage = ((BaseObj)obj[0]).GetDesiredComponent<CompStorage>();
+    //        if (storage != null)
+    //        {
+    //            ItemData data = new ItemData();
+    //            data.itemID = resourceCollectableOnce.itemID;
+    //            data.stackCount = resourceCollectableOnce.stackCount;
+    //            storage.ReceiveItem(data);
+    //        }
+    //    }
+    //}
 
     // Start is called before the first frame update
     public override void Start()

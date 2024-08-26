@@ -14,6 +14,11 @@ public abstract class BaseObj : MonoBehaviour
     public BaseTile? curTile;
 
     public EntityData thisEntityData;
+
+    public Transform tsf_Turret;
+    public float turretTurnRate;
+    public Transform[] tsf_FirePos;
+
     [HideInInspector]
     public MoveType[] moveType
     {
