@@ -11,8 +11,6 @@ public class CompFunction : BaseComponent
     Coroutine attactCoroutine;
     BaseObj attackTarget;
 
-    public int maxStorageSlot;
-    public List<ItemData> inventory = new List<ItemData>();
     public override void OnApply(int index)
     {
         switch(thisCompData.functions[index].functionType)
@@ -102,18 +100,18 @@ public class CompFunction : BaseComponent
                         CompStorage targetStorage = (CompStorage)obj[0];
                         ItemData transferedItem = (ItemData)obj[1];
 
-                        for (int i = inventory.Count - 1; i >= 0; i--)
+                        for (int i = thisObj.inventory.Count - 1; i >= 0; i--)
                         {
-                            if (inventory[i].itemID == transferedItem.itemID)
+                            if (thisObj.inventory[i].itemID == transferedItem.itemID)
                             {
-                                if (inventory[i].stackCount <= transferedItem.stackCount)
+                                if (thisObj.inventory[i].stackCount <= transferedItem.stackCount)
                                 {
                                     ItemData dataTemp = new ItemData();
-                                    dataTemp.itemID = inventory[i].itemID;
-                                    dataTemp.stackCount = inventory[i].stackCount;
+                                    dataTemp.itemID = thisObj.inventory[i].itemID;
+                                    dataTemp.stackCount = thisObj.inventory[i].stackCount;
 
                                     var itemData = targetStorage.ReceiveItem(dataTemp);
-                                    transferedItem.stackCount -= inventory[i].stackCount;
+                                    transferedItem.stackCount -= thisObj.inventory[i].stackCount;
                                     if (itemData.stackCount <= 0)
                                     {
                                         SetInvCount(i, 0);
@@ -130,12 +128,12 @@ public class CompFunction : BaseComponent
                                     var itemTransfered = itemCount - itemData.stackCount;
 
                                     transferedItem.stackCount -= itemTransfered;
-                                    SetInvCount(i, inventory[i].stackCount - itemTransfered);
+                                    SetInvCount(i, thisObj.inventory[i].stackCount - itemTransfered);
                                 }
                             }
-                            if (inventory[i].stackCount <= 0)
+                            if (thisObj.inventory[i].stackCount <= 0)
                             {
-                                inventory.RemoveAt(i);
+                                thisObj.inventory.RemoveAt(i);
                             }
                             if (transferedItem.stackCount <= 0) break;
                         }
@@ -441,26 +439,26 @@ public class CompFunction : BaseComponent
         int index = 0;
         do
         {
-            if (index >= inventory.Count && index < maxStorageSlot)
+            if (index >= thisObj.inventory.Count && index < thisObj.maxStorageSlot)
             {
                 var rec = new ItemData();
                 rec.itemID = receivedItem.itemID;
                 rec.stackCount = 0;
-                inventory.Add(rec);
+                thisObj.inventory.Add(rec);
             }
 
-            if (index < inventory.Count)
+            if (index < thisObj.inventory.Count)
             {
-                if (inventory[index].itemID == receivedItem.itemID)
+                if (thisObj.inventory[index].itemID == receivedItem.itemID)
                 {
-                    if (inventory[index].stackCount + receivedItem.stackCount <= itemData.maxStackCount)
+                    if (thisObj.inventory[index].stackCount + receivedItem.stackCount <= itemData.maxStackCount)
                     {
-                        SetInvCount(index, inventory[index].stackCount + receivedItem.stackCount);
+                        SetInvCount(index, thisObj.inventory[index].stackCount + receivedItem.stackCount);
                         receivedItem.stackCount = 0;
                     }
                     else
                     {
-                        var stackDiv = itemData.maxStackCount - inventory[index].stackCount;
+                        var stackDiv = itemData.maxStackCount - thisObj.inventory[index].stackCount;
                         SetInvCount(index, itemData.maxStackCount);
                         receivedItem.stackCount -= stackDiv;
                     }
@@ -468,24 +466,24 @@ public class CompFunction : BaseComponent
             }
 
             index++;
-        } while (receivedItem.stackCount > 0 && index <= maxStorageSlot);
+        } while (receivedItem.stackCount > 0 && index <= thisObj.maxStorageSlot);
 
         return receivedItem;
     }
     public ItemData TransferItem(CompStorage targetStorage, ItemData transferedItem)
     {
-        for (int i = inventory.Count - 1; i >= 0; i--)
+        for (int i = thisObj.inventory.Count - 1; i >= 0; i--)
         {
-            if (inventory[i].itemID == transferedItem.itemID)
+            if (thisObj.inventory[i].itemID == transferedItem.itemID)
             {
-                if (inventory[i].stackCount <= transferedItem.stackCount)
+                if (thisObj.inventory[i].stackCount <= transferedItem.stackCount)
                 {
                     ItemData dataTemp = new ItemData();
-                    dataTemp.itemID = inventory[i].itemID;
-                    dataTemp.stackCount = inventory[i].stackCount;
+                    dataTemp.itemID = thisObj.inventory[i].itemID;
+                    dataTemp.stackCount = thisObj.inventory[i].stackCount;
 
                     var itemData = targetStorage.ReceiveItem(dataTemp);
-                    transferedItem.stackCount -= inventory[i].stackCount;
+                    transferedItem.stackCount -= thisObj.inventory[i].stackCount;
                     if (itemData.stackCount <= 0)
                     {
                         SetInvCount(i, 0);
@@ -502,12 +500,12 @@ public class CompFunction : BaseComponent
                     var itemTransfered = itemCount - itemData.stackCount;
 
                     transferedItem.stackCount -= itemTransfered;
-                    SetInvCount(i, inventory[i].stackCount - itemTransfered);
+                    SetInvCount(i, thisObj.inventory[i].stackCount - itemTransfered);
                 }
             }
-            if (inventory[i].stackCount <= 0)
+            if (thisObj.inventory[i].stackCount <= 0)
             {
-                inventory.RemoveAt(i);
+                thisObj.inventory.RemoveAt(i);
             }
             if (transferedItem.stackCount <= 0) break;
         }
@@ -516,7 +514,7 @@ public class CompFunction : BaseComponent
     public int GetItemCount(string itemID)
     {
         int result = 0;
-        foreach (var item in inventory)
+        foreach (var item in thisObj.inventory)
         {
             if (item.itemID == itemID)
             {
@@ -527,28 +525,28 @@ public class CompFunction : BaseComponent
     }
     public void RemoveItem(ItemData itemInfo)
     {
-        for (int i = inventory.Count - 1; i >= 0; i--)
+        for (int i = thisObj.inventory.Count - 1; i >= 0; i--)
         {
-            if (inventory[i].itemID == itemInfo.itemID)
+            if (thisObj.inventory[i].itemID == itemInfo.itemID)
             {
-                if (inventory[i].stackCount <= itemInfo.stackCount)
+                if (thisObj.inventory[i].stackCount <= itemInfo.stackCount)
                 {
                     ItemData dataTemp = new ItemData();
-                    dataTemp.itemID = inventory[i].itemID;
-                    dataTemp.stackCount = inventory[i].stackCount;
+                    dataTemp.itemID = thisObj.inventory[i].itemID;
+                    dataTemp.stackCount = thisObj.inventory[i].stackCount;
 
-                    itemInfo.stackCount -= inventory[i].stackCount;
+                    itemInfo.stackCount -= thisObj.inventory[i].stackCount;
                     SetInvCount(i, 0);
                 }
                 else
                 {
-                    SetInvCount(i, inventory[i].stackCount - itemInfo.stackCount);
+                    SetInvCount(i, thisObj.inventory[i].stackCount - itemInfo.stackCount);
                     itemInfo.stackCount = 0;
                 }
             }
-            if (inventory[i].stackCount <= 0)
+            if (thisObj.inventory[i].stackCount <= 0)
             {
-                inventory.RemoveAt(i);
+                thisObj.inventory.RemoveAt(i);
             }
             if (itemInfo.stackCount <= 0) break;
         }
@@ -556,9 +554,9 @@ public class CompFunction : BaseComponent
     void SetInvCount(int index, int count)
     {
         ItemData temp = new ItemData();
-        temp.itemID = inventory[index].itemID;
+        temp.itemID = thisObj.inventory[index].itemID;
         temp.stackCount = count;
-        inventory[index] = temp;
+        thisObj.inventory[index] = temp;
     }
     #endregion
     #endregion

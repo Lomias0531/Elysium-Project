@@ -19,6 +19,9 @@ public abstract class BaseObj : MonoBehaviour
     public float turretTurnRate;
     public Transform[] tsf_FirePos;
 
+    public int maxStorageSlot;
+    public List<ItemData> inventory = new List<ItemData>();
+
     [HideInInspector]
     public MoveType[] moveType
     {
@@ -238,6 +241,20 @@ public abstract class BaseObj : MonoBehaviour
             components.Remove(comp);
             Destroy(comp);
         }
+    }
+    public CompFunction GetFunctionComponent(ComponentFunctionType type)
+    {
+        foreach (var comp in components)
+        {
+            foreach (var func in comp.thisCompData.functions)
+            {
+                if(func.functionType == type)
+                {
+                    return (CompFunction)comp;
+                }
+            }
+        }
+        return null;
     }
 
     public void TakeDamage(float damageValue, CompWeapon.WeaponAttackType damageType)
