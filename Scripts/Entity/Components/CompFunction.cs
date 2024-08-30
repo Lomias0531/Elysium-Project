@@ -11,6 +11,24 @@ public class CompFunction : BaseComponent
     Coroutine attactCoroutine;
     BaseObj attackTarget;
 
+    float valueTimeRequired;
+    float valueTimeElapsed;
+    public bool isFunctionProgressing;
+    public float progressValue
+    {
+        get
+        {
+            if(valueTimeRequired != 0)
+            {
+                return valueTimeElapsed / valueTimeRequired;
+            }else
+            {
+                return 0;
+            }
+        }
+    }
+    int curSelectedIndex;
+
     public override void OnApply(int index)
     {
         switch(thisCompData.functions[index].functionType)
@@ -32,6 +50,62 @@ public class CompFunction : BaseComponent
             case ComponentFunctionType.Weapon:
                 {
                     PlayerController.Instance.GetAttackRange();
+                    break;
+                }
+            case ComponentFunctionType.Harvest:
+                {
+                    PlayerController.Instance.GetInteractRange(ComponentFunctionType.Harvest);
+                    break;
+                }
+            case ComponentFunctionType.Construct:
+                {
+                    if (isFunctionProgressing) return;
+                    var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
+                    bool checkResources = true;
+                    if (storage != null)
+                    {
+                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        {
+                            if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
+                            {
+                                checkResources = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        checkResources = false;
+                    }
+
+                    int availableTileCount = 0;
+                    var obj = DataController.Instance.GetEntityData(thisCompData.functions[index].functionStringVal[0]);
+                    foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles)
+                    {
+                        if (obj.CheckIsTileSuitableForUnit(adjTile.Value))
+                        {
+                            availableTileCount += 1;
+                        }
+                    }
+                    if (availableTileCount <= 0)
+                    {
+                        checkResources = false;
+                    }
+
+                    if (checkResources)
+                    {
+                        curSelectedIndex = index;
+                        isFunctionProgressing = true;
+                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        {
+                            ItemData item = new ItemData();
+                            item.itemID = thisCompData.functions[index].functionStringVal[i];
+                            item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
+
+                            storage.RemoveItem(item);
+                        }
+                        valueTimeElapsed = 0;
+                        valueTimeRequired = thisCompData.functions[index].functionFloatVal[0];
+                    }
                     break;
                 }
         }
@@ -75,20 +149,16 @@ public class CompFunction : BaseComponent
                 {
                     if (obj[0] is BaseObj)
                     {
-                        var storage = ((BaseObj)obj[0]).GetDesiredComponent<CompStorage>();
+                        var storage = ((BaseObj)obj[0]).GetFunctionComponent(ComponentFunctionType.Storage);
                         if (storage != null)
                         {
-                            for(int i = 0;i<thisObj.curSelectedFunction.functionStringVal.Length;i++)
+                            for (int i = 0; i < thisObj.curSelectedFunction.functionStringVal.Length; i++)
                             {
                                 ItemData data = new ItemData();
                                 data.itemID = thisObj.curSelectedFunction.functionStringVal[i];
                                 data.stackCount = thisObj.curSelectedFunction.functionIntVal[i];
                                 storage.ReceiveItem(data);
                             }
-                            //ItemData data = new ItemData();
-                            //data.itemID = resourceCollectableOnce.itemID;
-                            //data.stackCount = resourceCollectableOnce.stackCount;
-                            //storage.ReceiveItem(data);
                         }
                     }
                     break;
@@ -153,6 +223,38 @@ public class CompFunction : BaseComponent
     public override void Update()
     {
         base.Update();
+
+        if (!isFunctionProgressing) return;
+        this.EP -= thisCompData.functions[curSelectedIndex].functionConsume * Time.deltaTime;
+        if (this.EP < 0)
+        {
+            this.EP = 0;
+        }
+        else
+        {
+            if (valueTimeElapsed < valueTimeRequired)
+            {
+                valueTimeElapsed += Time.deltaTime;
+            }
+            else
+            {
+                switch (thisCompData.functions[curSelectedIndex].functionType)
+                {
+                    default:
+                        {
+                            break;
+                        }
+                    case ComponentFunctionType.Construct:
+                        {
+                            StartCoroutine(constructItem());
+                            break;
+                        }
+                }
+
+                isFunctionProgressing = false;
+                valueTimeElapsed = 0;
+            }
+        }
     }
     #region FuncDetail
     #region Mobile
@@ -557,6 +659,35 @@ public class CompFunction : BaseComponent
         temp.itemID = thisObj.inventory[index].itemID;
         temp.stackCount = count;
         thisObj.inventory[index] = temp;
+    }
+    #endregion
+    #region Construct
+    IEnumerator constructItem()
+    {
+        var obj = DataController.Instance.GetEntityData(thisCompData.functions[curSelectedIndex].functionStringVal[0]);
+        var objGenerated = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
+        objGenerated.InitThis();
+        yield return null;
+        bool check = false;
+        foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles.Values)
+        {
+            if (obj.CheckIsTileSuitableForUnit(adjTile))
+            {
+                MapController.Instance.RegisterObject(objGenerated);
+                objGenerated.Faction = thisObj.Faction;
+                objGenerated.Pos = adjTile.Pos;
+                objGenerated.gameObject.transform.position = adjTile.gameObject.transform.position;
+                objGenerated.gameObject.SetActive(true);
+                objGenerated.curTile = adjTile;
+                adjTile.curObj = objGenerated;
+                check = true;
+                break;
+            }
+        }
+        if (!check)
+        {
+            Destroy(objGenerated.gameObject);
+        }
     }
     #endregion
     #endregion

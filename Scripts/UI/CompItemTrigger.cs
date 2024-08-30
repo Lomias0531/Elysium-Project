@@ -50,7 +50,7 @@ public class CompItemTrigger : BaseCompTrigger
             PlayerController.Instance.selectedObject.curSelectedFunction.functionIntVal = list.ToArray();
         }
         PlayerController.Instance.selectedObject.curSelectedFunction.functionIntVal[1] = index;
-        PlayerController.Instance.GetInteractRange(BaseComponent.InteractFunction.Store);
+        PlayerController.Instance.GetInteractRange(ComponentFunctionType.Storage);
     }
     public void InitThis(CompStorage storage, int _index, UnitSelectMenu _menu)
     {

@@ -25,7 +25,7 @@ public class HostileCommander : MonoBehaviour
         {
             if(entity.Value.Faction == faction)
             {
-                var construct = entity.Value.GetDesiredComponent<CompConstructor>();
+                var construct = entity.Value.GetFunctionComponent(ComponentFunctionType.Construct);
                 if(construct != null)
                 {
                     if(construct.functionTimeElapsed <= 0)

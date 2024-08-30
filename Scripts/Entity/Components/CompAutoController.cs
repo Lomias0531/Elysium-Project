@@ -44,7 +44,7 @@ public class CompAutoController : BaseComponent
     {
         get
         {
-            var mobile = thisObj.GetDesiredComponent<CompMobile>();
+            var mobile = thisObj.GetFunctionComponent(ComponentFunctionType.Mobile);
             if(mobile != null)
             {
                 return mobile.thisCompData.functions[0].functionValue;
@@ -59,7 +59,7 @@ public class CompAutoController : BaseComponent
         get
         {
             var AttackRange = 0;
-            var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+            var weapons = thisObj.GetFunctionComponents(ComponentFunctionType.Weapon);
             foreach (var weapon in weapons)
             {
                 foreach (var range in weapon.thisCompData.functions)
@@ -121,7 +121,7 @@ public class CompAutoController : BaseComponent
                 }
             case UnitActionStatus.Moving:
                 {
-                    var mobile = thisObj.GetDesiredComponent<CompMobile>();
+                    var mobile = thisObj.GetFunctionComponent(ComponentFunctionType.Mobile);
                     if(mobile != null)
                     {
                         WayFinding();
@@ -152,13 +152,13 @@ public class CompAutoController : BaseComponent
     }
     void ScanForTarget()
     {
-        var mobile = thisObj.GetDesiredComponent<CompMobile>();
+        var mobile = thisObj.GetFunctionComponent(ComponentFunctionType.Mobile);
 
         curStatus = UnitActionStatus.Searching;
         statusTimeElapsed = 0;
 
-        var weapons = thisObj.GetDesiredComponents<CompWeapon>();
-        if (weapons.Length <= 0) return;
+        var weapons = thisObj.GetFunctionComponents(ComponentFunctionType.Weapon);
+        if (weapons.Count <= 0) return;
 
         if (curMode == UnitActionMode.Passive) return;
 
@@ -275,7 +275,7 @@ public class CompAutoController : BaseComponent
     }
     void WayFinding()
     {
-        var mobile = thisObj.GetDesiredComponent<CompMobile>();
+        var mobile = thisObj.GetFunctionComponent(ComponentFunctionType.Mobile);
 
         if (curAttackingTarget == null && curMode != UnitActionMode.Standby)
         {
@@ -371,7 +371,7 @@ public class CompAutoController : BaseComponent
             return;
         }
         var targetDistance = Tools.GetDistance(curAttackingTarget.Pos, thisObj.Pos);
-        var weapons = thisObj.GetDesiredComponents<CompWeapon>();
+        var weapons = thisObj.GetFunctionComponents(ComponentFunctionType.Weapon);
 
         if(targetDistance > maxAttackRange)
         {
@@ -449,7 +449,7 @@ public class CompAutoController : BaseComponent
         } while (!targetOK);
 
         curMovingDestination = mobileTile[targetIndex];
-        var mobile = thisObj.GetDesiredComponent<CompMobile>();
+        var mobile = thisObj.GetFunctionComponent(ComponentFunctionType.Mobile);
         var path = thisObj.UnitFindPath(curMovingDestination, (BaseObj.MoveType)mobile.thisCompData.functions[0].functionIntVal[0], 4);
 
         thisObj.curSelectedComp = mobile;

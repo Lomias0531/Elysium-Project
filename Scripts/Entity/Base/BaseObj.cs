@@ -28,7 +28,7 @@ public abstract class BaseObj : MonoBehaviour
         get
         {
             List<MoveType> list = new List<MoveType>();
-            var mobile = GetDesiredComponents<CompMobile>();
+            var mobile = GetFunctionComponents(ComponentFunctionType.Mobile);
             foreach (var comp in mobile)
             {
                 foreach (var item in comp.thisCompData.functions)
@@ -45,7 +45,7 @@ public abstract class BaseObj : MonoBehaviour
         get
         {
             List<MoveStyle> list = new List<MoveStyle>();
-            var mobile = GetDesiredComponents<CompMobile>();
+            var mobile = GetFunctionComponents(ComponentFunctionType.Mobile);
             foreach (var comp in mobile)
             {
                 foreach (var item in comp.thisCompData.functions)
@@ -255,6 +255,21 @@ public abstract class BaseObj : MonoBehaviour
             }
         }
         return null;
+    }
+    public List<CompFunction> GetFunctionComponents(ComponentFunctionType type)
+    {
+        List<CompFunction> result = new List<CompFunction>();
+        foreach (var comp in components)
+        {
+            foreach (var func in comp.thisCompData.functions)
+            {
+                if (func.functionType == type)
+                {
+                    result.Add((CompFunction)comp);
+                }
+            }
+        }
+        return result;
     }
 
     public void TakeDamage(float damageValue, CompWeapon.WeaponAttackType damageType)

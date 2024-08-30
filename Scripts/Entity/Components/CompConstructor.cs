@@ -26,7 +26,7 @@ public class CompConstructor : BaseComponent
     public override void OnApply(int index)
     {
         if (isConstructing) return;
-        CompStorage storage = thisObj.GetDesiredComponent<CompStorage>();
+        var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
         bool checkResources = true;
         if (storage != null)
         {

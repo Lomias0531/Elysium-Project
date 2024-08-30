@@ -81,10 +81,10 @@ public class UIController : Singletion<UIController>
             {
                 img_hoveredUnitProgress.fillAmount = build.buildProgress;
             }
-            var construct = obj.GetDesiredComponent<CompConstructor>();
+            var construct = obj.GetFunctionComponent(ComponentFunctionType.Construct);
             if(construct != null)
             {
-                img_hoveredUnitProgress.fillAmount = construct.constructProgress;
+                img_hoveredUnitProgress.fillAmount = construct.progressValue;
             }
         }else
         {

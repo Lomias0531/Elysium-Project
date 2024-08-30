@@ -14,13 +14,6 @@ public abstract class BaseComponent : MonoBehaviour
 
     public ComponentData thisCompData;
     public BaseObj thisObj;
-    public enum InteractFunction
-    {
-        Harvest,
-        Active,
-        Store,
-        Construct,
-    }
     // Start is called before the first frame update
     public virtual void Start()
     {

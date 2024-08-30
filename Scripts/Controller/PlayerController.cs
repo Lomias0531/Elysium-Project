@@ -217,7 +217,7 @@ public class PlayerController : Singletion<PlayerController>
                                 {
                                     if (res != null)
                                     {
-                                        var resource = res.GetDesiredComponent<CompResource>();
+                                        var resource = res.GetFunctionComponent(ComponentFunctionType.Resource);
 
                                         resource.OnTriggerFunction( ComponentFunctionType.Resource, selectedObject);
                                     }
@@ -230,11 +230,11 @@ public class PlayerController : Singletion<PlayerController>
                                 }
                             case 2:
                                 {
-                                    var storage = res.GetDesiredComponent<CompStorage>();
-                                    var ees = selectedObject.GetDesiredComponent<CompStorage>();
-                                    var item = ees.inventory[selectedObject.curSelectedFunction.functionIntVal[1]];
+                                    var storage = res.GetFunctionComponent(ComponentFunctionType.Storage);
+                                    var ees = selectedObject.GetFunctionComponent(ComponentFunctionType.Storage);
+                                    var item = ees.thisObj.inventory[selectedObject.curSelectedFunction.functionIntVal[1]];
                                     //ees.TransferItem(storage, item);
-                                    ees.OnTriggerFunction( ComponentFunctionType.Storage, storage, item);
+                                    ees.OnTriggerFunction(ComponentFunctionType.Storage, storage, item);
                                     break;
                                 }
                         }
@@ -547,7 +547,7 @@ public class PlayerController : Singletion<PlayerController>
         moveIndicators = tiles;
         DrawRangeIndicator(moveIndicators, selectedObject.GetTileWhereUnitIs(), "MoveIndicator", col_Move, 2f);
     }
-    public void GetInteractRange(BaseComponent.InteractFunction interactType)
+    public void GetInteractRange(ComponentFunctionType interactType)
     {
         switch (interactType)
         {
@@ -555,7 +555,7 @@ public class PlayerController : Singletion<PlayerController>
                 {
                     break;
                 }
-            case BaseComponent.InteractFunction.Harvest:
+            case ComponentFunctionType.Harvest:
                 {
                     interactIndicators.Clear();
                     var curTile = selectedObject.GetTileWhereUnitIs();
@@ -572,7 +572,7 @@ public class PlayerController : Singletion<PlayerController>
                     }
                     break;
                 }
-            case BaseComponent.InteractFunction.Store:
+            case ComponentFunctionType.Storage:
                 {
                     interactIndicators.Clear();
                     var curTile = selectedObject.GetTileWhereUnitIs();
@@ -601,13 +601,22 @@ public class PlayerController : Singletion<PlayerController>
         List<BaseTile> tempGrid = new List<BaseTile>();
         foreach (var construct in PlayerDataManager.Instance.myConstructions)
         {
-            var generator = construct.GetDesiredComponent<CompPowerDispathcer>();
+            var generator = construct.GetFunctionComponent(ComponentFunctionType.PowerDispatcher);
             if(generator != null)
             {
-                var constructTemp = construct.GetDesiredComponent<CompConstructTemp>();
-                if(constructTemp == null)
+                var radRange = 0f;
+                foreach (var func in generator.thisCompData.functions)
                 {
-                    var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange, Tools.IgnoreType.All);
+                    if(func.functionType == ComponentFunctionType.PowerDispatcher)
+                    {
+                        radRange = func.functionFloatVal[0];
+                    }
+                }
+                if (radRange <= 0f) return;
+                var constructTemp = construct.GetDesiredComponent<CompConstructTemp>();
+                if(!construct.isUniderConstruction)
+                {
+                    var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), (int)radRange, Tools.IgnoreType.All);
                     foreach (var tile in gridList)
                     {
                         if (!powerGridIndicator.Contains(tile))
@@ -619,7 +628,7 @@ public class PlayerController : Singletion<PlayerController>
                 {
                     if(constructTemp.buildProgress > 0)
                     {
-                        var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), generator.powerRadiationRange, Tools.IgnoreType.All);
+                        var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), (int)radRange, Tools.IgnoreType.All);
                         foreach (var tile in gridList)
                         {
                             if (!tempGrid.Contains(tile))
@@ -630,7 +639,7 @@ public class PlayerController : Singletion<PlayerController>
                     }
                     else
                     {
-                        var gridList = Tools.GetTileWithinRange(hoveredTile,generator.powerRadiationRange,Tools.IgnoreType.All);
+                        var gridList = Tools.GetTileWithinRange(hoveredTile, (int)radRange, Tools.IgnoreType.All);
                         foreach (var tile in gridList)
                         {
                             if (!tempGrid.Contains(tile))
@@ -653,7 +662,7 @@ public class PlayerController : Singletion<PlayerController>
         buildIndicator.Clear();
         obj_Build = null;
 
-        var builder = selectedObject.GetDesiredComponent<CompBuilder>();
+        var builder = selectedObject.GetFunctionComponent(ComponentFunctionType.Build);
         if(builder != null)
             buildIndicator = Tools.GetTileWithinRange(selectedObject.GetTileWhereUnitIs(), (int)selectedObject.curSelectedFunction.functionValue, Tools.IgnoreType.All);
         List<BaseTile> tilesToRemove = new List<BaseTile>();    
