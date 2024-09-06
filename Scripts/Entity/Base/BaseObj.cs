@@ -160,48 +160,51 @@ public abstract class BaseObj : MonoBehaviour
         this.EntityID = id.ToString();
         
         components = new List<BaseComponent>();
-        foreach (var compID in thisEntityData.InstalledComponents)
+        if(thisEntityData.InstalledComponents != null)
         {
-            var compData = DataController.Instance.GetComponentData(compID);
-
-            switch(compData.thisCompType)
+            foreach (var compID in thisEntityData.InstalledComponents)
             {
-                default:
-                    {
-                        break;
-                    }
-                case CompType.Function:
-                    {
-                        CompFunction comp = this.gameObject.AddComponent<CompFunction>();
-                        comp.thisCompData = compData;
-                        comp.InitThis();
-                        components.Add(comp);
-                        break;
-                    }
-                case CompType.Base:
-                    {
-                        CompBase comp = this.gameObject.AddComponent<CompBase>();
-                        comp.thisCompData = compData;
-                        comp.InitThis();
-                        components.Add(comp);
-                        break;
-                    }
-                case CompType.WallConnector:
-                    {
-                        CompWallConnector comp = this.gameObject.AddComponent<CompWallConnector>();
-                        comp.thisCompData = compData;
-                        comp.InitThis();
-                        components.Add(comp);
-                        break;
-                    }
-                case CompType.AutoController:
-                    {
-                        CompAutoController comp = this.gameObject.AddComponent<CompAutoController>();
-                        comp.thisCompData = compData;
-                        comp.InitThis();
-                        components.Add(comp);
-                        break;
-                    }
+                var compData = DataController.Instance.GetComponentData(compID);
+
+                switch (compData.thisCompType)
+                {
+                    default:
+                        {
+                            break;
+                        }
+                    case CompType.Function:
+                        {
+                            CompFunction comp = this.gameObject.AddComponent<CompFunction>();
+                            comp.thisCompData = compData;
+                            comp.InitThis();
+                            components.Add(comp);
+                            break;
+                        }
+                    case CompType.Base:
+                        {
+                            CompBase comp = this.gameObject.AddComponent<CompBase>();
+                            comp.thisCompData = compData;
+                            comp.InitThis();
+                            components.Add(comp);
+                            break;
+                        }
+                    case CompType.WallConnector:
+                        {
+                            CompWallConnector comp = this.gameObject.AddComponent<CompWallConnector>();
+                            comp.thisCompData = compData;
+                            comp.InitThis();
+                            components.Add(comp);
+                            break;
+                        }
+                    case CompType.AutoController:
+                        {
+                            CompAutoController comp = this.gameObject.AddComponent<CompAutoController>();
+                            comp.thisCompData = compData;
+                            comp.InitThis();
+                            components.Add(comp);
+                            break;
+                        }
+                }
             }
         }
 

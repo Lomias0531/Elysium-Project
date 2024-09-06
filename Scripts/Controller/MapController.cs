@@ -32,8 +32,8 @@ public class MapController : Singletion<MapController>
     public BaseResource resourceTemplate;
     public Transform tsf_ResContainer;
 
-    public BaseObj[] unitsToGenerate;
-    public BaseObj[] hostileToGenernate;
+    public string[] unitsToGenerate;
+    public string[] hostileToGenernate;
 
     public Transform tsf_ProjectileContainer;
     public Transform tsf_ParticlesConatiner;
@@ -314,7 +314,7 @@ public class MapController : Singletion<MapController>
                 BaseTile generateTile;
                 int tryCount = 0;
 
-                var obj = GameObject.Instantiate(unit, entityContainer);
+                var obj = GameObject.Instantiate(DataController.Instance.GetEntityData(unit), entityContainer);
 
                 obj.InitThis();
                 obj.Faction = "Elysium";
@@ -376,7 +376,7 @@ public class MapController : Singletion<MapController>
                 BaseTile generateTile;
                 int tryCount = 0;
 
-                var obj = GameObject.Instantiate(unit, entityContainer);
+                var obj = GameObject.Instantiate(DataController.Instance.GetEntityData(unit), entityContainer);
 
                 obj.InitThis();
                 obj.Faction = "Falcon";

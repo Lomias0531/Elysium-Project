@@ -51,7 +51,7 @@ public class DataController : Singletion<DataController>
         {
             var json = File.ReadAllText(path);
             var data = JsonConvert.DeserializeObject<EntityData>(json);
-            var obj = Resources.Load<GameObject>("Prefabs/Characters/" + entityID);
+            var obj = Resources.Load<GameObject>("Prefabs/Characters/" + data.EntityIndex);
             var target = obj.gameObject.GetComponent<BaseUnit>();
             target.thisEntityData = data;
             return target;
