@@ -122,6 +122,7 @@ public class CompConstructor : BaseComponent
         //var obj = DataController.Instance.GetEntityViaID(functions[curSelectedIndex].functionStringVal[0]);
         var obj = DataController.Instance.GetEntityData(thisCompData.functions[curSelectedIndex].functionStringVal[0]);
         var objGenerated = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
+        objGenerated.thisEntityData = obj.thisEntityData;
         objGenerated.InitThis();
         yield return null;
         bool check = false;

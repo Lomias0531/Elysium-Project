@@ -314,7 +314,9 @@ public class MapController : Singletion<MapController>
                 BaseTile generateTile;
                 int tryCount = 0;
 
-                var obj = GameObject.Instantiate(DataController.Instance.GetEntityData(unit), entityContainer);
+                var temp = DataController.Instance.GetEntityData(unit);
+                var obj = GameObject.Instantiate(temp, entityContainer);
+                obj.thisEntityData = temp.thisEntityData;
 
                 obj.InitThis();
                 obj.Faction = "Elysium";
@@ -376,7 +378,9 @@ public class MapController : Singletion<MapController>
                 BaseTile generateTile;
                 int tryCount = 0;
 
-                var obj = GameObject.Instantiate(DataController.Instance.GetEntityData(unit), entityContainer);
+                var temp = DataController.Instance.GetEntityData(unit);
+                var obj = GameObject.Instantiate(temp, entityContainer);
+                obj.thisEntityData = temp.thisEntityData;
 
                 obj.InitThis();
                 obj.Faction = "Falcon";

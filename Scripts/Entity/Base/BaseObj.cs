@@ -33,6 +33,7 @@ public abstract class BaseObj : MonoBehaviour
             {
                 foreach (var item in comp.thisCompData.functions)
                 {
+                    if(item.functionIntVal == null) continue;
                     list.Add((MoveType)item.functionIntVal[0]);
                 }
             }
@@ -50,6 +51,7 @@ public abstract class BaseObj : MonoBehaviour
             {
                 foreach (var item in comp.thisCompData.functions)
                 {
+                    if (item.functionIntVal == null) continue;
                     list.Add((MoveStyle)item.functionIntVal[1]);
                 }
             }
@@ -178,6 +180,7 @@ public abstract class BaseObj : MonoBehaviour
                             comp.thisCompData = compData;
                             comp.InitThis();
                             components.Add(comp);
+                            comp.thisObj = this;
                             break;
                         }
                     case CompType.Base:
@@ -186,6 +189,7 @@ public abstract class BaseObj : MonoBehaviour
                             comp.thisCompData = compData;
                             comp.InitThis();
                             components.Add(comp);
+                            comp.thisObj = this;
                             break;
                         }
                     case CompType.WallConnector:
@@ -194,6 +198,7 @@ public abstract class BaseObj : MonoBehaviour
                             comp.thisCompData = compData;
                             comp.InitThis();
                             components.Add(comp);
+                            comp.thisObj = this;
                             break;
                         }
                     case CompType.AutoController:
@@ -202,6 +207,7 @@ public abstract class BaseObj : MonoBehaviour
                             comp.thisCompData = compData;
                             comp.InitThis();
                             components.Add(comp);
+                            comp.thisObj = this;
                             break;
                         }
                 }

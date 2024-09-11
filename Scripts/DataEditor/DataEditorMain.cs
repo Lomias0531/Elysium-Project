@@ -668,6 +668,7 @@ public class DataEditorMain : MonoBehaviour
             selectedIconPath = func.functionIconPath;
             selectedIconIndex = func.functionIconIndex;
         }
+
         ipt_ApplyTimeInterval.text = func.functionApplyTimeInterval.ToString();
         ipt_FunctionValue.text = func.functionValue.ToString();
         ipt_FunctionConsume.text = func.functionConsume.ToString();

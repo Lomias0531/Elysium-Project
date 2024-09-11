@@ -116,7 +116,7 @@ public class CompFunction : BaseComponent
         
     }
 
-    public void OnTriggerFunction(ComponentFunctionType type, params object[] obj)
+    public override void OnTriggerFunction(ComponentFunctionType type, params object[] obj)
     {
         switch (type)
         {
@@ -223,6 +223,19 @@ public class CompFunction : BaseComponent
     public override void Update()
     {
         base.Update();
+        if (thisObj.isUniderConstruction) return;
+
+        foreach (var func in thisCompData.functions)
+        {
+            if(func.functionType == ComponentFunctionType.Generator)
+            {
+                this.EP += func.functionValue * Time.deltaTime;
+            }
+            if(func.functionType == ComponentFunctionType.PowerDispatcher)
+            {
+
+            }
+        }
 
         if (!isFunctionProgressing) return;
         this.EP -= thisCompData.functions[curSelectedIndex].functionConsume * Time.deltaTime;

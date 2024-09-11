@@ -64,6 +64,7 @@ public class CompSkillTrigger : BaseCompTrigger
     }
     void UpdateAvailable()
     {
+        if (thisComp.thisObj.curSelectedComp == null) return;
         img_FunctionMask.fillAmount = thisComp.functionTimeElapsed / thisComp.thisObj.curSelectedFunction.functionApplyTimeInterval;
         if (thisComp.thisObj.curSelectedFunction.functionApplyTimeInterval == 0) img_FunctionMask.fillAmount = 0;
 

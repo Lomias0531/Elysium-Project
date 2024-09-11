@@ -33,7 +33,7 @@ public abstract class BaseComponent : MonoBehaviour
     }
     public abstract void OnApply(int index);
     public abstract void OnDestroyThis();
-    public void OnTriggerFunction(ComponentFunctionType type, params object[] obj)
+    public virtual void OnTriggerFunction(ComponentFunctionType type, params object[] obj)
     {
 
     }

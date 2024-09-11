@@ -689,6 +689,7 @@ public class PlayerController : Singletion<PlayerController>
         if (obj != null)
         {
             obj_Build = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
+            obj_Build.thisEntityData = obj.thisEntityData;
             obj_Build.Faction = "Elysium";
             obj_Build.InitThis();
             var temp = obj_Build.AddComponent<CompConstructTemp>();
