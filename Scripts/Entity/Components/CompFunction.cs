@@ -487,9 +487,7 @@ public class CompFunction : BaseComponent
                     {
                         var laserBeam = ObjectPool.Instance.CreateObject("LaserBeam", laserInstance, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_LaerBeam>();
 
-                        var index = Random.Range(0, thisObj.tsf_FirePos.Length);
-
-                        laserBeam.TriggerThis(thisObj.tsf_FirePos[index].position, attackTarget.gameObject.transform.position, new Color(1, 0, 0, 0.75f));
+                        laserBeam.TriggerThis(tsf_InstalledSlot.position, attackTarget.gameObject.transform.position, new Color(1, 0, 0, 0.75f));
                     }
                     attackTarget.TakeDamage(thisObj.curSelectedFunction.functionValue, WeaponAttackType.Pierce);
                     break;
@@ -538,8 +536,7 @@ public class CompFunction : BaseComponent
                 var proj = ObjectPool.Instance.CreateObject("Ballistic", projectile, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_Ballistic>();
 
                 proj.transform.SetParent(MapController.Instance.tsf_ProjectileContainer, true);
-                var index = Random.Range(0, thisObj.tsf_FirePos.Length);
-                proj.InitThis(thisObj.tsf_FirePos[index], destination, thisObj, thisObj.curSelectedFunction.functionFloatVal[1], !curve, thisObj.curSelectedFunction.functionValue, 0);
+                proj.InitThis(tsf_InstalledSlot, destination, thisObj, thisObj.curSelectedFunction.functionFloatVal[1], !curve, thisObj.curSelectedFunction.functionValue, 0);
             }
             yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[0]);
         }

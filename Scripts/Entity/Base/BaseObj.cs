@@ -17,10 +17,11 @@ public abstract class BaseObj : MonoBehaviour
 
     public Transform tsf_Turret;
     public float turretTurnRate;
-    public Transform[] tsf_FirePos;
 
     public int maxStorageSlot;
     public List<ItemData> inventory = new List<ItemData>();
+
+    public List<BaseUnitSpot> componentBasements = new List<BaseUnitSpot>();
 
     [HideInInspector]
     public MoveType[] moveType
@@ -160,13 +161,34 @@ public abstract class BaseObj : MonoBehaviour
     {
         Guid id = Guid.NewGuid();
         this.EntityID = id.ToString();
-        
+
+        var attachments = this.gameObject.GetComponentsInChildren<BaseUnitSpot>();
+        componentBasements = attachments.ToList();
+
         components = new List<BaseComponent>();
         if(thisEntityData.InstalledComponents != null)
         {
-            foreach (var compID in thisEntityData.InstalledComponents)
+            for(int i = 0;i<thisEntityData.InstalledComponents.Length;i++)
             {
-                var compData = DataController.Instance.GetComponentData(compID);
+                Transform tsf_Target = null;
+                bool isAvailable = true;
+                foreach (var basement in componentBasements)
+                {
+                    if (basement.spotKey == thisEntityData.InstalledComponentsKey[i])
+                    {
+                        if(!basement.isOccupied)
+                        {
+                            basement.isOccupied = true;
+                            tsf_Target = basement.gameObject.transform;
+                        }else
+                        {
+                            isAvailable = false;
+                        }
+                    }
+                }
+                if (!isAvailable) continue;
+
+                var compData = DataController.Instance.GetComponentData(thisEntityData.InstalledComponents[i]);
 
                 switch (compData.thisCompType)
                 {
@@ -181,6 +203,7 @@ public abstract class BaseObj : MonoBehaviour
                             comp.InitThis();
                             components.Add(comp);
                             comp.thisObj = this;
+                            comp.tsf_InstalledSlot = tsf_Target;
                             break;
                         }
                     case CompType.Base:
@@ -190,6 +213,7 @@ public abstract class BaseObj : MonoBehaviour
                             comp.InitThis();
                             components.Add(comp);
                             comp.thisObj = this;
+                            comp.tsf_InstalledSlot = tsf_Target;
                             break;
                         }
                     case CompType.WallConnector:
@@ -199,6 +223,7 @@ public abstract class BaseObj : MonoBehaviour
                             comp.InitThis();
                             components.Add(comp);
                             comp.thisObj = this;
+                            comp.tsf_InstalledSlot = tsf_Target;
                             break;
                         }
                     case CompType.AutoController:
@@ -208,6 +233,7 @@ public abstract class BaseObj : MonoBehaviour
                             comp.InitThis();
                             components.Add(comp);
                             comp.thisObj = this;
+                            comp.tsf_InstalledSlot = tsf_Target;
                             break;
                         }
                 }

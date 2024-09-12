@@ -14,6 +14,7 @@ public abstract class BaseComponent : MonoBehaviour
 
     public ComponentData thisCompData;
     public BaseObj thisObj;
+    public Transform tsf_InstalledSlot;
     // Start is called before the first frame update
     public virtual void Start()
     {

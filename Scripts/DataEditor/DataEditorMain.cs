@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using DG.Tweening.Plugins.Core.PathCore;
 using Unity.VisualScripting;
+using static UnityEditor.Progress;
 
 public class DataEditorMain : MonoBehaviour
 {
@@ -48,6 +49,7 @@ public class DataEditorMain : MonoBehaviour
     CompFunctionsItem curSelectedFunction;
     public InputField ipt_ComponentProductor;
     public Dropdown dpd_CompFuncType;
+    public Dropdown dpd_CompAttachType;
     [Space(2)]
     [Header("FunctionsCommon")]
     public Button btn_ConfirmFunctionEdit;
@@ -490,6 +492,8 @@ public class DataEditorMain : MonoBehaviour
 
         dpd_CompFuncType.value = (int)curEditComponent.thisCompType;
         dpd_CompFuncType.captionText.text = curEditComponent.thisCompType.ToString();
+        dpd_CompAttachType.value = (int)curEditComponent.attachType;
+        dpd_CompAttachType.captionText.text = curEditComponent.attachType.ToString();
 
         if(curEditComponent.functions != null)
         {
@@ -518,6 +522,7 @@ public class DataEditorMain : MonoBehaviour
         newComponentData.isFatalComponent = tog_isCompFatal.isOn;
         newComponentData.ComponentProductor = ipt_ComponentProductor.text;
         newComponentData.thisCompType = (CompType)dpd_CompFuncType.value;
+        newComponentData.attachType = (ComponentAttachType)dpd_CompAttachType.value;
         List<CompFunctionDetail> details = new List<CompFunctionDetail>();
         foreach (var func in compFunctionsItems)
         {
@@ -978,16 +983,16 @@ public class DataEditorMain : MonoBehaviour
         dpd_EntityType.captionText.text = data.entityType.ToString();
         ipt_EntityProductor.text = data.EntityProductor;
 
-        if(data.InstalledComponents != null)
+        if (data.InstalledComponents != null)
         {
             if (data.InstalledComponents.Length > 0)
             {
-                foreach (var item in data.InstalledComponents)
+                for (int i = 0; i < data.InstalledComponents.Length; i++)
                 {
                     var pairItem = Instantiate(stringValuePairItem);
                     pairItem.gameObject.SetActive(true);
                     pairItem.transform.SetParent(tsf_PresetComponentItemContainer);
-                    pairItem.InitThis(StringIndexType.Components, item, 0, this);
+                    pairItem.InitThis(StringIndexType.Components, data.InstalledComponents[i], data.InstalledComponentsKey == null ? -1 : data.InstalledComponentsKey[i], this);
                     KeyValuePairItems.Add(pairItem);
                 }
 
@@ -1005,11 +1010,14 @@ public class DataEditorMain : MonoBehaviour
         newEntity.EntityProductor = ipt_EntityProductor.text;
 
         List<string> stringList = new List<string>();
+        List<int> intList = new List<int>();
         foreach (var item in KeyValuePairItems)
         {
             stringList.Add(item.GetThisValue().str);
+            intList.Add((int)item.GetThisValue().val);
         }
         newEntity.InstalledComponents = stringList.ToArray();
+        newEntity.InstalledComponentsKey = intList.ToArray();
 
         var json = JsonConvert.SerializeObject(newEntity);
 
@@ -1186,6 +1194,7 @@ public struct ComponentData
     public string ComponentDescription;
     public string ComponentProductor;
     public CompType thisCompType;
+    public ComponentAttachType attachType;
 }
 [Serializable]
 public struct CompFunctionDetail
@@ -1242,6 +1251,7 @@ public struct EntityData
     public EntityType entityType;
     public string EntityProductor;
     public string[] InstalledComponents;
+    public int[] InstalledComponentsKey;
 }
 public enum EntityType
 {
