@@ -6,7 +6,8 @@ public class BaseUnitSpot : MonoBehaviour
 {
     public ComponentBaseType attachType;
     public int spotKey;
-    public bool isOccupied = false;
+    public int MaxInstalledComp;
+    public int InstalledCompCount = 0;
 }
 public enum ComponentAttachType
 {

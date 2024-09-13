@@ -176,10 +176,10 @@ public abstract class BaseObj : MonoBehaviour
                 {
                     if (basement.spotKey == thisEntityData.InstalledComponentsKey[i])
                     {
-                        if(!basement.isOccupied)
+                        if(basement.InstalledCompCount < basement.MaxInstalledComp)
                         {
-                            basement.isOccupied = true;
                             tsf_Target = basement.gameObject.transform;
+                            basement.InstalledCompCount += 1;
                         }else
                         {
                             isAvailable = false;
