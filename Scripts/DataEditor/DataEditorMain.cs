@@ -274,6 +274,12 @@ public class DataEditorMain : MonoBehaviour
                     {
                         dpd_CompFuncType.options.Add(new Dropdown.OptionData() { text = types });
                     }
+
+                    dpd_CompAttachType.ClearOptions();
+                    foreach (var types in Enum.GetNames(typeof(ComponentAttachType)))
+                    {
+                        dpd_CompAttachType.options.Add(new Dropdown.OptionData() { text = types });
+                    }
                     break;
                 }
             case EditorPage.Entities:

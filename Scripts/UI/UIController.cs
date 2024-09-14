@@ -25,6 +25,7 @@ public class UIController : Singletion<UIController>
     public Image img_hoveredSkillIcon;
     public Text txt_countType;
     [Space(1)]
+    public GameObject obj_MaterialsMenu;
     public Text txt_organicAmount;
     public Text txt_constructAmount;
     public Text txt_metalAmount;
@@ -35,6 +36,11 @@ public class UIController : Singletion<UIController>
     public UnitIndicatorItem unitIndicatorItem;
     public Transform tsf_UnitIndicatorContainer;
     public Dictionary<BaseObj,UnitIndicatorItem> unitIndicatorItems = new Dictionary<BaseObj, UnitIndicatorItem>();
+    [Space(1)]
+    public GameObject obj_MaintenanceMenu;
+    public Transform tsf_ComponentsSlotItemContainer;
+    public MaintenanceSlotItem maintenanceSlotItem;
+    public List<MaintenanceSlotItem> maintenanceSlotItems = new List<MaintenanceSlotItem>();
     // Start is called before the first frame update
     void Start()
     {
@@ -160,6 +166,22 @@ public class UIController : Singletion<UIController>
         {
             Destroy(unitIndicatorItems[obj].gameObject);
             unitIndicatorItems.Remove(obj);
+        }
+    }
+    public void InitMaintenanceScene()
+    {
+        foreach (var item in maintenanceSlotItems)
+        {
+            Destroy(item.gameObject);
+        }
+        maintenanceSlotItems.Clear();
+
+        if (PlayerController.Instance.FocusedUnit == null) return;
+        foreach (var basement in PlayerController.Instance.FocusedUnit.componentBasements)
+        {
+            var item = GameObject.Instantiate(maintenanceSlotItem,tsf_ComponentsSlotItemContainer);
+            item.gameObject.SetActive(true);
+            item.InitThis(basement);
         }
     }
 }

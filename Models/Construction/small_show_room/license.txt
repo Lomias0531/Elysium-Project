@@ -1,0 +1,11 @@
+Model Information:
+* title:	Small Show Room
+* source:	https://sketchfab.com/3d-models/small-show-room-4d78ad2c044d417fa34e41a179134edc
+* author:	MRowa (https://sketchfab.com/MRowa)
+
+Model License:
+* license type:	CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+* requirements:	Author must be credited. Modified versions must have the same license. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Small Show Room" (https://sketchfab.com/3d-models/small-show-room-4d78ad2c044d417fa34e41a179134edc) by MRowa (https://sketchfab.com/MRowa) licensed under CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)

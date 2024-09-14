@@ -4,6 +4,7 @@ using static BaseTile;
 using System.Linq;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
+using System.Collections;
 
 public class PlayerController : Singletion<PlayerController>
 {
@@ -40,6 +41,8 @@ public class PlayerController : Singletion<PlayerController>
 
     bool RMBPressed = false;
     float RMBPressedTime;
+
+    public BaseObj FocusedUnit;
     // Start is called before the first frame update
     void Start()
     {
@@ -77,6 +80,11 @@ public class PlayerController : Singletion<PlayerController>
         {
             RMBPressed = false;
             RMBPressedTime = 0;
+        }
+
+        if(Input.GetKeyUp(KeyCode.F))
+        {
+            StartCoroutine(SetUnitToMaintenance());
         }
     }
     void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, List<Vector3> vertices, List<int> triangles)
@@ -189,6 +197,8 @@ public class PlayerController : Singletion<PlayerController>
                     selectedObject.OnSelected();
 
                 StartCoroutine(CameraController.Instance.CamFocusOnTarget(selectedObject));
+
+                FocusedUnit = selectedObject;
             }else
             {
                 if (selectedObject.curSelectedComp == null) return;
@@ -730,5 +740,14 @@ public class PlayerController : Singletion<PlayerController>
     private void OnApplicationFocus(bool focus)
     {
         isFocus = focus;
+    }
+
+    IEnumerator SetUnitToMaintenance()
+    {
+        if(selectedObject == null) yield break;
+        if (FocusedUnit != null) Destroy(FocusedUnit);
+        FocusedUnit = GameObject.Instantiate(selectedObject);
+        FocusedUnit.gameObject.transform.position = new Vector3(1000, 1000, 1000);
+        UIController.Instance.InitMaintenanceScene();
     }
 }

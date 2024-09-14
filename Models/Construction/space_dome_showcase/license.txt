@@ -1,0 +1,11 @@
+Model Information:
+* title:	Space Dome Showcase
+* source:	https://sketchfab.com/3d-models/space-dome-showcase-5fda4e11a13e4b72bfe230edbd5bdbf9
+* author:	dylanheyes (https://sketchfab.com/dylanheyes)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Space Dome Showcase" (https://sketchfab.com/3d-models/space-dome-showcase-5fda4e11a13e4b72bfe230edbd5bdbf9) by dylanheyes (https://sketchfab.com/dylanheyes) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
