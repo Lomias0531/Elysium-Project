@@ -176,6 +176,10 @@ public class UIController : Singletion<UIController>
         }
         maintenanceSlotItems.Clear();
 
+        img_BG.gameObject.SetActive(false);
+        obj_MaterialsMenu.gameObject.SetActive(false);
+        obj_MaintenanceMenu.gameObject.SetActive(true);
+
         if (PlayerController.Instance.FocusedUnit == null) return;
         foreach (var basement in PlayerController.Instance.FocusedUnit.componentBasements)
         {
@@ -183,5 +187,11 @@ public class UIController : Singletion<UIController>
             item.gameObject.SetActive(true);
             item.InitThis(basement);
         }
+    }
+    public void CloseMaintenanceMenu()
+    {
+        img_BG.gameObject.SetActive(true);
+        obj_MaterialsMenu.gameObject.SetActive(true);
+        obj_MaintenanceMenu.gameObject.SetActive(false);
     }
 }
