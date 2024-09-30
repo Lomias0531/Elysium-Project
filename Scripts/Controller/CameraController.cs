@@ -244,8 +244,11 @@ public class CameraController : Singletion<CameraController>
         //endDirection = (FocusTarget.transform.position - sphereCenter).normalized * sphereRadius;
         var meshes = PlayerController.Instance.FocusedUnit.GetComponentInChildren<SkinnedMeshRenderer>();
         var center = meshes.bounds.center;
-        var dir = (center - FocusTarget.transform.position).normalized;
-        endDirection = dir * sphereRadius;
+        var pos = center - FocusTarget.transform.position;
+        pos.x *= 10;
+        pos.z *= 10;
+        var dir = pos.normalized;
+        endDirection = -dir * sphereRadius;
 
         // 将摄像机初始位置设置为A点对应的球面位置  
         cam_Focus.gameObject.transform.position = sphereCenter + startDirection;
