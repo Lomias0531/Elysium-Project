@@ -754,6 +754,7 @@ public class PlayerController : Singletion<PlayerController>
     {
         if(selectedObject == null) yield break;
         if(selectedObject.componentBasements.Count <= 0) yield break;
+        if(selectedObject.Faction != "Elysium") yield break;
 
         curScene = PlayerScene.Maintenance;
         if (FocusedUnit != null) Destroy(FocusedUnit);
