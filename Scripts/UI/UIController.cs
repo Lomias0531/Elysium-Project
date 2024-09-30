@@ -178,6 +178,7 @@ public class UIController : Singletion<UIController>
 
         img_BG.gameObject.SetActive(false);
         obj_MaterialsMenu.gameObject.SetActive(false);
+        tsf_UnitIndicatorContainer.gameObject.SetActive(false);
         obj_MaintenanceMenu.gameObject.SetActive(true);
 
         if (PlayerController.Instance.FocusedUnit == null) return;

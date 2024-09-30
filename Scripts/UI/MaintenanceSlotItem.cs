@@ -14,9 +14,10 @@ public class MaintenanceSlotItem : MonoBehaviour
     public void InitThis(BaseUnitSpot spot)
     {
         thisSpot = spot;
+        Debug.Log(thisSpot.gameObject.transform.position);
     }
     void TriggerFocusToThisSpot()
     {
-
+        CameraController.Instance.FocusCamToTarget(thisSpot.gameObject);
     }
 }

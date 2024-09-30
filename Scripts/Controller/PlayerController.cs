@@ -43,6 +43,13 @@ public class PlayerController : Singletion<PlayerController>
     float RMBPressedTime;
 
     public BaseObj FocusedUnit;
+
+    public enum PlayerScene
+    {
+        Ordinary,
+        Maintenance,
+    }
+    public PlayerScene curScene = PlayerScene.Ordinary;
     // Start is called before the first frame update
     void Start()
     {
@@ -127,6 +134,7 @@ public class PlayerController : Singletion<PlayerController>
     {
         if (MapController.Instance.mapTiles == null) return;
         if (isMouseOverUI) return;
+        if (curScene != PlayerScene.Ordinary) return;
 
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hit = Physics.RaycastAll(camRay, Mathf.Infinity);
@@ -745,9 +753,16 @@ public class PlayerController : Singletion<PlayerController>
     IEnumerator SetUnitToMaintenance()
     {
         if(selectedObject == null) yield break;
+        curScene = PlayerScene.Maintenance;
         if (FocusedUnit != null) Destroy(FocusedUnit);
         FocusedUnit = GameObject.Instantiate(selectedObject);
         FocusedUnit.gameObject.transform.position = new Vector3(1000, 1000, 1000);
+
+        var meshes = PlayerController.Instance.FocusedUnit.GetComponentInChildren<SkinnedMeshRenderer>();
+        var center = meshes.bounds.center;
+        FocusedUnit.gameObject.transform.position = new Vector3(1000,1000,1000) - (center - FocusedUnit.transform.position);
+
         UIController.Instance.InitMaintenanceScene();
+        CameraController.Instance.InitFocus();
     }
 }
