@@ -8,6 +8,7 @@ public class BaseUnitSpot : MonoBehaviour
     public int spotKey;
     public int MaxInstalledComp;
     public int InstalledCompCount = 0;
+    public string thisSpotName;
 }
 public enum ComponentAttachType
 {

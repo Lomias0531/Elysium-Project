@@ -7,6 +7,7 @@ public class MaintenanceSlotItem : MonoBehaviour
 {
     public BaseUnitSpot thisSpot;
     public Button btn_TriggerFocus;
+    public Text txt_SpotName;
     private void Start()
     {
         btn_TriggerFocus.onClick.AddListener(TriggerFocusToThisSpot);
@@ -14,7 +15,8 @@ public class MaintenanceSlotItem : MonoBehaviour
     public void InitThis(BaseUnitSpot spot)
     {
         thisSpot = spot;
-        Debug.Log(thisSpot.gameObject.transform.position);
+        txt_SpotName.text = spot.thisSpotName;
+        //Debug.Log(thisSpot.gameObject.transform.position);
     }
     void TriggerFocusToThisSpot()
     {

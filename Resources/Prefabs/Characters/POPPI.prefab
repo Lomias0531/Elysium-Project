@@ -923,7 +923,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361084232062155843}
   m_LocalRotation: {x: -1, y: -0.0000037749064, z: -0.0000018636375, w: 0.0000068704203}
-  m_LocalPosition: {x: -0.000014872691, y: 0.036909394, z: 0.0010552736}
+  m_LocalPosition: {x: -0, y: 0.0369, z: -0.005}
   m_LocalScale: {x: 0.2, y: 0.20000002, z: 0.20000002}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -944,7 +944,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachType: 0
   spotKey: 6
-  isOccupied: 0
+  MaxInstalledComp: 0
+  InstalledCompCount: 0
+  thisSpotName: "\u5DE6\u817F"
 --- !u!1 &1364867168856647511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1158,7 +1160,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577011957127331748}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.005}
   m_LocalScale: {x: 0.2, y: 0.20000002, z: 0.20000002}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1179,7 +1181,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachType: 0
   spotKey: 4
-  isOccupied: 0
+  MaxInstalledComp: 0
+  InstalledCompCount: 0
+  thisSpotName: "\u8EAF\u4F53"
 --- !u!1 &1623756035162100779
 GameObject:
   m_ObjectHideFlags: 0
@@ -3729,7 +3733,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5450125372471597963}
   m_LocalRotation: {x: 0.0878376, y: -0.0005007338, z: -0.00050073373, w: 0.9961346}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: -0.0007, z: 0.005}
   m_LocalScale: {x: 0.2, y: 0.20000006, z: 0.20000008}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3750,7 +3754,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachType: 0
   spotKey: 3
-  isOccupied: 0
+  MaxInstalledComp: 0
+  InstalledCompCount: 0
+  thisSpotName: "\u8EAF\u4F53"
 --- !u!1 &5457283765297896439
 GameObject:
   m_ObjectHideFlags: 0
@@ -4765,7 +4771,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6989405412454014993}
   m_LocalRotation: {x: -1, y: -0.0000039748948, z: -0.0000019828465, w: 0.00000007549002}
-  m_LocalPosition: {x: -0.0010619467, y: 0.03460929, z: 0.0005210611}
+  m_LocalPosition: {x: -0.0011, y: 0.0346, z: -0.005}
   m_LocalScale: {x: 0.2, y: 0.20000002, z: 0.20000002}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4786,7 +4792,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachType: 0
   spotKey: 5
-  isOccupied: 0
+  MaxInstalledComp: 0
+  InstalledCompCount: 0
+  thisSpotName: "\u53F3\u817F"
 --- !u!1 &7046034098176200915
 GameObject:
   m_ObjectHideFlags: 0
@@ -5097,7 +5105,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7434195810334892874}
   m_LocalRotation: {x: 0.000000011175871, y: -1.7462298e-10, z: -1.2369128e-10, w: 1}
-  m_LocalPosition: {x: -0.00006494931, y: 0.00732959, z: -0.00054979}
+  m_LocalPosition: {x: -0.0001, y: 0.0073, z: 0.005}
   m_LocalScale: {x: 0.2, y: 0.20000006, z: 0.20000005}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5118,7 +5126,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachType: 0
   spotKey: 0
-  isOccupied: 0
+  MaxInstalledComp: 0
+  InstalledCompCount: 0
+  thisSpotName: "\u5934\u90E8"
 --- !u!1 &7521591044742046794
 GameObject:
   m_ObjectHideFlags: 0
@@ -5914,7 +5924,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8962908409216351039}
   m_LocalRotation: {x: -0.81781435, y: 0.38648888, z: 0.38648903, w: -0.18008947}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.0036, y: -0, z: 0.005}
   m_LocalScale: {x: 0.20000002, y: 0.20000008, z: 0.20000012}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5935,7 +5945,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachType: 0
   spotKey: 2
-  isOccupied: 0
+  MaxInstalledComp: 0
+  InstalledCompCount: 0
+  thisSpotName: "\u5DE6\u624B"
 --- !u!1 &8996444174997747812
 GameObject:
   m_ObjectHideFlags: 0
@@ -5961,7 +5973,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8996444174997747812}
   m_LocalRotation: {x: -0.81857586, y: -0.38487357, z: -0.38487336, w: -0.18351717}
-  m_LocalPosition: {x: 0, y: 0.0100773, z: 0}
+  m_LocalPosition: {x: -0.0027, y: 0.0101, z: 0.005}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.19999996}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5982,7 +5994,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachType: 0
   spotKey: 1
-  isOccupied: 0
+  MaxInstalledComp: 0
+  InstalledCompCount: 0
+  thisSpotName: "\u53F3\u624B"
 --- !u!1 &9019668065624155064
 GameObject:
   m_ObjectHideFlags: 0
