@@ -753,6 +753,8 @@ public class PlayerController : Singletion<PlayerController>
     IEnumerator SetUnitToMaintenance()
     {
         if(selectedObject == null) yield break;
+        if(selectedObject.componentBasements.Count <= 0) yield break;
+
         curScene = PlayerScene.Maintenance;
         if (FocusedUnit != null) Destroy(FocusedUnit);
         FocusedUnit = GameObject.Instantiate(selectedObject);
