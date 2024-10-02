@@ -108,6 +108,35 @@ public class CompFunction : BaseComponent
                     }
                     break;
                 }
+            case ComponentFunctionType.Build:
+                {
+                    if (isFunctionProgressing) return;
+                    var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
+                    bool checkResources = true;
+                    if (storage != null)
+                    {
+                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        {
+                            if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
+                            {
+                                checkResources = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        checkResources = false;
+                    }
+
+                    checkResources = true;
+
+                    if (checkResources)
+                    {
+                        PlayerController.Instance.GetBuildRange();
+                    }
+
+                    break;
+                }
         }
     }
 

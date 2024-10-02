@@ -8,20 +8,6 @@ using static UnityEditor.Progress;
 
 public class DataController : Singletion<DataController>
 {
-    //public SO_ItemData GetItemInfo(string itemID)
-    //{
-    //    var item = Resources.Load<SO_ItemData>("ScriptableItems/Items/" + itemID);
-    //    return item;
-    //}
-    //public SO_ComponentData GetComponentData(string compID)
-    //{
-    //    return Resources.Load<SO_ComponentData>("ScriptableItems/Components/" + compID);
-    //}
-    //public BaseObj GetEntityViaID(string entityID)
-    //{
-    //    var entityItem = Resources.Load<SO_EntityData>("ScriptableItems/Entities/" +  entityID);
-    //    return entityItem.EntityObject;
-    //}
     public ItemDataEditor GetItemData(string itemID)
     {
         var path = Application.dataPath + "/Resources/ScriptableItems/Items/" + itemID + ".json";
@@ -52,6 +38,20 @@ public class DataController : Singletion<DataController>
             var json = File.ReadAllText(path);
             var data = JsonConvert.DeserializeObject<EntityData>(json);
             var obj = Resources.Load<GameObject>("Prefabs/Characters/" + data.EntityIndex);
+            var target = obj.gameObject.GetComponent<BaseUnit>();
+            target.thisEntityData = data;
+            return target;
+        }
+        return null;
+    }
+    public BaseUnit GetConstructData(string entityID)
+    {
+        var path = Application.dataPath + "/Resources/ScriptableItems/Entities/" + entityID + ".json";
+        if (File.Exists(path))
+        {
+            var json = File.ReadAllText(path);
+            var data = JsonConvert.DeserializeObject<EntityData>(json);
+            var obj = Resources.Load<GameObject>("Prefabs/Entities/Construction/" + data.EntityIndex);
             var target = obj.gameObject.GetComponent<BaseUnit>();
             target.thisEntityData = data;
             return target;

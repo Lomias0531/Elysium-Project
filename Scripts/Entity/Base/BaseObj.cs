@@ -166,6 +166,13 @@ public abstract class BaseObj : MonoBehaviour
         componentBasements = attachments.ToList();
 
         components = new List<BaseComponent>();
+
+        var comp1 = this.gameObject.GetComponents<BaseComponent>();
+        foreach ( var component in comp1)
+        {
+            components.Add(component);
+        }
+
         if(thisEntityData.InstalledComponents != null)
         {
             for(int i = 0;i<thisEntityData.InstalledComponents.Length;i++)

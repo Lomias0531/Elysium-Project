@@ -97,16 +97,18 @@ public class DataEditorMain : MonoBehaviour
     [Space(1)]
     [Header("Constructor Components")]
     public CanvasGroup canvas_Constructor;
-    public InputField ipt_ConstructItemID;
+    public Dropdown dpd_ConstructItemID;
     public Button btn_AddKeyValuePair;
     public Transform tsf_constructorKeyValuePairContainer;
+    Dictionary<string,string> constructItemIDNamePair = new Dictionary<string,string>();
     [Space(1)]
     [Header("Builder Components")]
     public CanvasGroup canvas_Builder;
     public InputField ipt_BuildRange;
-    public InputField ipt_BuildItemID;
+    public Dropdown dpd_BuildItemID;
     public Button btn_AddBuilderKeyValuePair;
     public Transform tsf_builderKeyValuePairContainer;
+    Dictionary<string,string> buildItemIDNamePair = new Dictionary<string,string>();
     [Space(1)]
     [Header("Power Dispatcher Components")]
     public CanvasGroup canvas_PowerDispatcher;
@@ -591,7 +593,7 @@ public class DataEditorMain : MonoBehaviour
                     txt_FunctionValueDesc.text = "伤害";
 
                     dpd_WeapenBallisticType.ClearOptions();
-                    foreach (var item in Enum.GetNames(typeof(CompWeapon.WeaponAttackType)))
+                    foreach (var item in Enum.GetNames(typeof(CompWeapon.WeaponProjectileType)))
                     {
                         dpd_WeapenBallisticType.options.Add(new Dropdown.OptionData() { text = item });
                     }
@@ -601,11 +603,45 @@ public class DataEditorMain : MonoBehaviour
             case ComponentFunctionType.Construct:
                 {
                     txt_FunctionValueDesc.text = "建造时间";
+
+                    dpd_ConstructItemID.ClearOptions();
+
+                    var dicPath = Application.dataPath + "/Resources/ScriptableItems/Entities/";
+                    var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.json").ToList();
+                    var files = folderInfo.Select(x => x.Name).ToList();
+
+                    foreach (var item in files)
+                    {
+                        var json = File.ReadAllText(dicPath + item);
+                        var thisData = JsonConvert.DeserializeObject<EntityData>(json);
+                        if (thisData.entityType != EntityType.Unit) continue;
+
+                        constructItemIDNamePair.Add(thisData.EntityID, thisData.EntityName);
+
+                        dpd_ConstructItemID.options.Add(new Dropdown.OptionData() { text = thisData.EntityName });
+                    }
                     break;
                 }
             case ComponentFunctionType.Build:
                 {
                     txt_FunctionValueDesc.text = "建造时间";
+
+                    dpd_BuildItemID.ClearOptions();
+
+                    var dicPath = Application.dataPath + "/Resources/ScriptableItems/Entities/";
+                    var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.json").ToList();
+                    var files = folderInfo.Select(x => x.Name).ToList();
+
+                    foreach (var item in files)
+                    {
+                        var json = File.ReadAllText(dicPath + item);
+                        var thisData = JsonConvert.DeserializeObject<EntityData>(json);
+                        if (thisData.entityType != EntityType.Construct) continue;
+
+                        buildItemIDNamePair.Add(thisData.EntityID, thisData.EntityName);
+
+                        dpd_BuildItemID.options.Add(new Dropdown.OptionData() { text = thisData.EntityName });
+                    }
                     break;
                 }
             case ComponentFunctionType.Harvest:
@@ -722,7 +758,7 @@ public class DataEditorMain : MonoBehaviour
                     txt_FunctionValueDesc.text = "伤害";
 
                     dpd_WeapenBallisticType.ClearOptions();
-                    foreach (var item in Enum.GetNames(typeof(CompWeapon.WeaponAttackType)))
+                    foreach (var item in Enum.GetNames(typeof(CompWeapon.WeaponProjectileType)))
                     {
                         dpd_WeapenBallisticType.options.Add(new Dropdown.OptionData() { text = item });
                     }
@@ -741,7 +777,7 @@ public class DataEditorMain : MonoBehaviour
                 {
                     txt_FunctionValueDesc.text = "建造时间";
 
-                    ipt_ConstructItemID.text = func.functionStringVal[0].ToString();
+                    dpd_ConstructItemID.captionText.text = func.functionStringVal[0].ToString();
                     ipt_FunctionValue.text = func.functionFloatVal[0].ToString();
                     for(int i = 1;i<func.functionStringVal.Length;i++)
                     {
@@ -759,7 +795,7 @@ public class DataEditorMain : MonoBehaviour
                 {
                     txt_FunctionValueDesc.text = "建造时间";
 
-                    ipt_BuildItemID.text = func.functionStringVal[0].ToString();
+                    dpd_BuildItemID.captionText.text = func.functionStringVal[0].ToString();
                     ipt_FunctionValue.text = func.functionFloatVal[0].ToString();
                     ipt_BuildRange.text = func.functionValue.ToString();
                     for (int i = 1; i < func.functionStringVal.Length; i++)
@@ -887,7 +923,9 @@ public class DataEditorMain : MonoBehaviour
                 {
                     List<string> strList = new List<string>();
                     List<float> floatList = new List<float>();
-                    strList.Add(ipt_ConstructItemID.text);
+
+                    var list = constructItemIDNamePair.Keys.ToList();
+                    strList.Add(list[dpd_ConstructItemID.value]);
                     floatList.Add(float.Parse(ipt_FunctionValue.text));
 
                     foreach (var item in KeyValuePairItems)
@@ -905,7 +943,9 @@ public class DataEditorMain : MonoBehaviour
                 {
                     List<string> strList = new List<string>();
                     List<float> floatList = new List<float>();
-                    strList.Add(ipt_BuildItemID.text);
+
+                    var list = buildItemIDNamePair.Keys.ToList();
+                    strList.Add(list[dpd_BuildItemID.value]);
                     floatList.Add(float.Parse(ipt_FunctionValue.text));
 
                     foreach (var item in KeyValuePairItems)

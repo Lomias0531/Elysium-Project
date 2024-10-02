@@ -298,15 +298,15 @@ public class UnitSelectMenu : MonoBehaviour
         {
             for (int i = 0; i < skillTriggers.Count; i++)
             {
-                //var posX = Mathf.Sin(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
-                //var posY = Mathf.Cos(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
-                //skillTriggers[i].transform.localPosition = new Vector3(posX, posY, 0);
+                var posX = Mathf.Sin(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
+                var posY = Mathf.Cos(360f * Mathf.Deg2Rad * val * ((float)i / (float)skillTriggers.Count)) * 0.75f;
+                skillTriggers[i].transform.localPosition = new Vector3(posX, posY, 0);
 
-                var isLeft = i % 2 == 0 ? 1 : -1;
-                var arrange = Mathf.FloorToInt(i / 2);
+                //var isLeft = i % 2 == 0 ? 1 : -1;
+                //var arrange = Mathf.FloorToInt(i / 2);
 
-                var posX = (0.75f + arrange * val * 0.35f) * isLeft;
-                skillTriggers[i].transform.localPosition = new Vector3(posX, 0, 0);
+                //var posX = (0.75f + arrange * val * 0.35f) * isLeft;
+                //skillTriggers[i].transform.localPosition = new Vector3(posX, 0, 0);
             }
         }
     }
