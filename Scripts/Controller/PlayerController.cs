@@ -278,7 +278,7 @@ public class PlayerController : Singletion<PlayerController>
 
                         CancelAllOperations();
                     }
-                    if(attackRangeIndicators.Contains(hoveredTile))
+                    if(attackIndicators.Contains(hoveredTile))
                     {
                         var targetUnit = hoveredTile.GetEntitynThisTile();
                         if(targetUnit != null)
