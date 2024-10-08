@@ -626,6 +626,8 @@ public class DataEditorMain : MonoBehaviour
                 {
                     txt_FunctionValueDesc.text = "建造时间";
 
+                    buildItemIDNamePair.Clear();
+
                     dpd_BuildItemID.ClearOptions();
 
                     var dicPath = Application.dataPath + "/Resources/ScriptableItems/Entities/";
@@ -777,7 +779,7 @@ public class DataEditorMain : MonoBehaviour
                 {
                     txt_FunctionValueDesc.text = "建造时间";
 
-                    dpd_ConstructItemID.captionText.text = func.functionStringVal[0].ToString();
+                    dpd_ConstructItemID.captionText.text = constructItemIDNamePair[func.functionStringVal[0].ToString()];
                     ipt_FunctionValue.text = func.functionFloatVal[0].ToString();
                     for(int i = 1;i<func.functionStringVal.Length;i++)
                     {
@@ -795,7 +797,7 @@ public class DataEditorMain : MonoBehaviour
                 {
                     txt_FunctionValueDesc.text = "建造时间";
 
-                    dpd_BuildItemID.captionText.text = func.functionStringVal[0].ToString();
+                    dpd_BuildItemID.captionText.text = buildItemIDNamePair[func.functionStringVal[0].ToString()];
                     ipt_FunctionValue.text = func.functionFloatVal[0].ToString();
                     ipt_BuildRange.text = func.functionValue.ToString();
                     for (int i = 1; i < func.functionStringVal.Length; i++)

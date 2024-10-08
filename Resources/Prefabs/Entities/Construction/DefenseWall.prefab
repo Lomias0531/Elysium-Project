@@ -229,14 +229,20 @@ MonoBehaviour:
   Pos: {x: 0, y: 0, z: 0}
   EntityID: 
   animator: {fileID: 0}
+  curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
   objName: "\u9632\u5FA1\u5899"
-  components: []
   Faction: 
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
+    functionType: 0
     functionName: 
-    function: 0
-    functionIcon: {fileID: 0}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 0
     functionValue: 0
     functionConsume: 0
@@ -256,23 +262,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6317644956585612038}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 74d608b4a54a0e545b4cde19401d7631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 50
   MaxHP: 50
   EP: 10
   MaxEP: 10
-  Defense: 2
-  functions: []
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   BottomPoint: {fileID: 5154167684535166515}
   TopPoint: {fileID: 4994374879665333575}
 --- !u!1 &6796912347403231891

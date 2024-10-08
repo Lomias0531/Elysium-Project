@@ -9,7 +9,7 @@ using static CompWeapon;
 public class CompFunction : BaseComponent
 {
     Coroutine attactCoroutine;
-    BaseObj attackTarget;
+    BaseTile attackTile;
 
     float valueTimeRequired;
     float valueTimeElapsed;
@@ -166,11 +166,11 @@ public class CompFunction : BaseComponent
                     if (attactCoroutine != null)
                         StopCoroutine(attactCoroutine);
 
-                    if ((BaseObj)obj[0] != null)
+                    if ((BaseTile)obj[0] != null)
                     {
-                        attackTarget = (BaseObj)obj[0];
+                        attackTile = (BaseTile)obj[0];
 
-                        CommenceAttack(attackTarget);
+                        CommenceAttack(attackTile);
                     }
                     break;
                 }
@@ -459,20 +459,20 @@ public class CompFunction : BaseComponent
     }
     #endregion
     #region Weapon
-    public void CommenceAttack(BaseObj target)
+    public void CommenceAttack(BaseTile targetTile)
     {
-        if (target == null)
+        if (targetTile == null)
         {
             var cpu = thisObj.GetDesiredComponent<CompAutoController>();
             if (cpu != null) cpu.ReceiveActionException(CompAutoController.UnitActException.IllegalAttack);
             return;
         }
-        attackTarget = target;
+        attackTile = targetTile;
         if (EP < thisObj.curSelectedFunction.functionConsume) return;
 
         if (thisObj.tsf_Turret != null)
         {
-            var dir = thisObj.gameObject.transform.position - attackTarget.gameObject.transform.position;
+            var dir = thisObj.gameObject.transform.position - attackTile.gameObject.transform.position;
             dir.y = 0;
 
             float angle = Vector3.SignedAngle(thisObj.tsf_Turret.forward, dir, Vector3.up);
@@ -503,6 +503,8 @@ public class CompFunction : BaseComponent
 
         FunctionTriggered(thisObj.curSelectedFunction);
 
+        BaseObj attackTarget = targetTile.GetEntitynThisTile();
+
         switch ((WeaponProjectileType)thisObj.curSelectedFunction.functionIntVal[3])
         {
             default:
@@ -511,6 +513,8 @@ public class CompFunction : BaseComponent
                 }
             case WeaponProjectileType.Laser:
                 {
+                    if (attackTarget == null) return;
+
                     var laserInstance = (GameObject)Resources.Load("Prefabs/Projectile/LaserBeam");
                     if (laserInstance != null)
                     {
@@ -523,16 +527,18 @@ public class CompFunction : BaseComponent
                 }
             case WeaponProjectileType.CurveProjectile:
                 {
-                    StartCoroutine(CreateProjectile(attackTarget, true));
+                    StartCoroutine(CreateProjectile(targetTile, true));
                     break;
                 }
             case WeaponProjectileType.StraightProjectile:
                 {
-                    StartCoroutine(CreateProjectile(attackTarget, false));
+                    StartCoroutine(CreateProjectile(targetTile, false));
                     break;
                 }
             case WeaponProjectileType.Melee:
                 {
+                    if (attackTarget == null) return;
+
                     attackTarget.TakeDamage(thisObj.curSelectedFunction.functionValue, WeaponAttackType.Pierce);
                     break;
                 }
@@ -540,10 +546,10 @@ public class CompFunction : BaseComponent
         attackTarget = null;
 
     }
-    IEnumerator CreateProjectile(BaseObj target, bool curve)
+    IEnumerator CreateProjectile(BaseTile target, bool curve)
     {
-        var tile = target.GetTileWhereUnitIs();
-        var tiles = Tools.GetTileWithinRange(tile, thisObj.curSelectedFunction.functionIntVal[2], Tools.IgnoreType.All);
+        //var tile = target.GetTileWhereUnitIs();
+        var tiles = Tools.GetTileWithinRange(target, thisObj.curSelectedFunction.functionIntVal[2], Tools.IgnoreType.All);
 
         List<BaseTile> tilesWeight = new List<BaseTile>();
         foreach (var item in tiles)

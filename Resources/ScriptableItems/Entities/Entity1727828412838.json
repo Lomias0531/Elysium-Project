@@ -1,1 +1,1 @@
-{"EntityID":"Entity1727828412838","EntityName":"防御墙","EntityIndex":"DefenseWall","entityType":1,"EntityProductor":"","InstalledComponents":[],"InstalledComponentsKey":[]}
+{"EntityID":"Entity1727828412838","EntityName":"防御墙","EntityIndex":"DefenseWall","entityType":1,"EntityProductor":"","InstalledComponents":["Comp1728379780413"],"InstalledComponentsKey":[0]}

@@ -597,10 +597,16 @@ MonoBehaviour:
   EntityID: 
   animator: {fileID: 0}
   curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
   objName: "\u5BFC\u5F39\u70AE\u5854"
   Faction: 
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
+    functionType: 0
     functionName: 
     functionIconPath: 
     functionIconIndex: 0
@@ -623,38 +629,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2874368493639155374}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5208b61d586c7e342bca118d7ba72099, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 25
   MaxHP: 25
   EP: 30
   MaxEP: 30
-  Defense: 0
-  functions:
-  - functionName: "\u5BFC\u5F39\u653B\u51FB"
-    functionIconPath: 
-    functionIconIndex: 0
-    functionApplyTimeInterval: 1.5
-    functionValue: 6
-    functionConsume: 3
-    canBeAuto: 0
-    isAuto: 0
-    functionIntVal: 0200000008000000010000000200000004000000
-    functionFloatVal:
-    - 0.4
-    - 2
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: 
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   tsf_Turret: {fileID: 3205769420500009021}
   turretTurnRate: 60
   tsf_FirePos:
@@ -667,23 +654,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2874368493639155374}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69b2f8b91d781fb48ba75fe396af6e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 10
   MaxHP: 10
   EP: 20
   MaxEP: 20
-  Defense: 0
-  functions: []
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
 --- !u!1 &3001971113940555313
 GameObject:
   m_ObjectHideFlags: 0

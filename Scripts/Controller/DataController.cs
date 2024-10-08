@@ -44,7 +44,7 @@ public class DataController : Singletion<DataController>
         }
         return null;
     }
-    public BaseUnit GetConstructData(string entityID)
+    public BaseObj GetConstructData(string entityID)
     {
         var path = Application.dataPath + "/Resources/ScriptableItems/Entities/" + entityID + ".json";
         if (File.Exists(path))
@@ -52,7 +52,7 @@ public class DataController : Singletion<DataController>
             var json = File.ReadAllText(path);
             var data = JsonConvert.DeserializeObject<EntityData>(json);
             var obj = Resources.Load<GameObject>("Prefabs/Entities/Construction/" + data.EntityIndex);
-            var target = obj.gameObject.GetComponent<BaseUnit>();
+            var target = obj.gameObject.GetComponent<BaseObj>();
             target.thisEntityData = data;
             return target;
         }

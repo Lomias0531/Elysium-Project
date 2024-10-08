@@ -288,6 +288,7 @@ public abstract class BaseObj : MonoBehaviour
     {
         foreach (var comp in components)
         {
+            if (comp.thisCompData.functions == null) continue;
             foreach (var func in comp.thisCompData.functions)
             {
                 if(func.functionType == type)
@@ -378,6 +379,8 @@ public abstract class BaseObj : MonoBehaviour
                                 index += 1;
                             }
                         }
+
+                        if (index <= 0) return;
 
                         int compIndex = Random.Range(0, dic.Count);
                         var damagedComp = Components[dic[compIndex]];

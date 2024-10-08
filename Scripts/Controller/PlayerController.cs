@@ -280,12 +280,8 @@ public class PlayerController : Singletion<PlayerController>
                     }
                     if(attackIndicators.Contains(hoveredTile))
                     {
-                        var targetUnit = hoveredTile.GetEntitynThisTile();
-                        if(targetUnit != null)
-                        {
-                            selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
-                            selectedObject.curSelectedComp.OnTriggerFunction(ComponentFunctionType.Weapon, targetUnit);
-                        }
+                        selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
+                        selectedObject.curSelectedComp.OnTriggerFunction(ComponentFunctionType.Weapon, hoveredTile);
                     }
 
                     EntityFinishedAction();

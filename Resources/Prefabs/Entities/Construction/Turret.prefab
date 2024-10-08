@@ -5218,13 +5218,20 @@ MonoBehaviour:
   Pos: {x: 0, y: 0, z: 0}
   EntityID: 
   animator: {fileID: 0}
+  curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
   objName: "\u6FC0\u5149\u70AE\u5854"
   Faction: 
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
+    functionType: 0
     functionName: 
-    function: 0
-    functionIcon: {fileID: 0}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 0
     functionValue: 0
     functionConsume: 0
@@ -5244,36 +5251,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1931158550506461125}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5208b61d586c7e342bca118d7ba72099, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 25
   MaxHP: 25
   EP: 30
   MaxEP: 30
-  Defense: 0
-  functions:
-  - functionName: "\u6FC0\u5149\u653B\u51FB"
-    function: 1
-    functionIcon: {fileID: 515103687, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
-    functionApplyTimeInterval: 0.3
-    functionValue: 6
-    functionConsume: 3
-    canBeAuto: 0
-    isAuto: 0
-    functionIntVal: 00000000060000000000000001000000
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: 
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   tsf_Turret: {fileID: 4690278245587573362}
   turretTurnRate: 60
   tsf_FirePos:
@@ -5285,24 +5275,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1931158550506461125}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69b2f8b91d781fb48ba75fe396af6e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 10
   MaxHP: 10
   EP: 20
   MaxEP: 20
-  Defense: 0
-  functions: []
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 1
   functionTimeElapsed: 0
   isAvailable: 1
-  ScanRange: 12
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
 --- !u!1 &1942678493693213016
 GameObject:
   m_ObjectHideFlags: 0

@@ -147,20 +147,25 @@ MonoBehaviour:
   Pos: {x: 5, y: -28, z: 23}
   EntityID: 1e0e6f86740aa5443904242b56a20f7d
   animator: {fileID: 0}
+  curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
   objName: "\u53D1\u7535\u7AD9"
-  components:
-  - {fileID: 326078578107120391}
-  - {fileID: -2209044357892873509}
-  - {fileID: -5517626163135998944}
   Faction: Elysium
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
+    functionType: 0
     functionName: 
-    function: 0
-    functionIcon: {fileID: 0}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 0
     functionValue: 0
     functionConsume: 0
+    canBeAuto: 0
+    isAuto: 0
     functionIntVal: 
     functionFloatVal: []
     functionBoolVal: 
@@ -175,23 +180,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2190377822495217320}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18ff699ba10efc345a80e629943a6224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 10
   MaxHP: 10
   EP: 20
   MaxEP: 20
-  Defense: 0
-  functions: []
-  thisObj: {fileID: 6953394697777499655}
-  compResID: 
-  isCritical: 1
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 6953394697777499655}
+  tsf_InstalledSlot: {fileID: 0}
   img_PowerOff: {fileID: 6746611488939427394}
 --- !u!114 &-2209044357892873509
 MonoBehaviour:
@@ -200,23 +201,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2190377822495217320}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58c9af3fcb60b664dadef4e1cbac74ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 10
   MaxHP: 10
   EP: 20
   MaxEP: 20
-  Defense: 0
-  functions: []
-  thisObj: {fileID: 6953394697777499655}
-  compResID: 
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 6953394697777499655}
+  tsf_InstalledSlot: {fileID: 0}
   powerCapacity: 15
   powerRegenRate: 5
 --- !u!114 &-5517626163135998944
@@ -226,34 +223,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2190377822495217320}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9532808ac05ce1a4c988756e7c979b93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 5
   MaxHP: 5
   EP: 50
   MaxEP: 50
-  Defense: 0
-  functions:
-  - functionName: "\u7535\u529B\u8F93\u9001"
-    function: 2
-    functionIcon: {fileID: -521404969, guid: 864f29bde957df140ab634a2c8a012d4, type: 3}
-    functionApplyTimeInterval: 1
-    functionValue: 0
-    functionConsume: 0
-    functionIntVal: 
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: "\u8F93\u9001\u7535\u529B"
-  thisObj: {fileID: 6953394697777499655}
-  compResID: 
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 6953394697777499655}
+  tsf_InstalledSlot: {fileID: 0}
   powerRadiationRange: 5
   maxPowerDispathable: 20
   powerProject: {fileID: 3044948944099306833}

@@ -986,17 +986,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b2604fd0be55364485960e3f8a4c3f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 0
   MaxHP: 0
   EP: 0
   MaxEP: 0
-  functions: []
-  thisObj: {fileID: 0}
-  compResID: StorageComp01
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   maxStorageSlot: 12
   inventory: []
 --- !u!114 &451714660430891091
@@ -1006,22 +1003,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4062118270494293312}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83afd8824cdaee14183975a2bfc78fb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 0
   MaxHP: 0
   EP: 0
   MaxEP: 0
-  functions: []
-  thisObj: {fileID: 0}
-  compResID: ConstructComp01
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   isConstructing: 0
   img_Progress: {fileID: 4691115031832246489}
   canvas: {fileID: 4051847800353732664}
@@ -1032,34 +1026,39 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4062118270494293312}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65776914856f09d4391b3a895978d451, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Pos: {x: 0, y: 0, z: 0}
   EntityID: 
+  animator: {fileID: 0}
+  curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
   objName: "\u5EFA\u9020\u5DE5\u5382"
-  components: []
   Faction: 
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
+    functionType: 0
     functionName: 
-    function: 0
-    functionIcon: {fileID: 0}
+    functionIconPath: 
+    functionIconIndex: 0
     functionApplyTimeInterval: 0
     functionValue: 0
     functionConsume: 0
+    canBeAuto: 0
+    isAuto: 0
     functionIntVal: 
     functionFloatVal: []
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 
-  EnergyProduced: 0
   EnergyConsumed: 5
-  OrganicStorage: 0
-  ConstructStorage: 0
-  MetalStorage: 0
   BuildProgress: 0
 --- !u!114 &7456802622496861559
 MonoBehaviour:
@@ -1068,22 +1067,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4062118270494293312}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18ff699ba10efc345a80e629943a6224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 5
   MaxHP: 5
   EP: 5
   MaxEP: 5
-  functions: []
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 1
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   img_PowerOff: {fileID: 3638673219239882497}
 --- !u!1 &4400134669909634348
 GameObject:

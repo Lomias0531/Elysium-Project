@@ -167,10 +167,16 @@ MonoBehaviour:
   EntityID: 
   animator: {fileID: 0}
   curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
   objName: "\u653B\u51FB\u673A\u5668\u4EBA"
   Faction: 
   curSelectedComp: {fileID: 0}
   curSelectedFunction:
+    functionType: 0
     functionName: 
     functionIconPath: 
     functionIconIndex: 0
@@ -191,23 +197,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2790551456985353332}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58c9af3fcb60b664dadef4e1cbac74ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 30
   MaxHP: 30
   EP: 50
   MaxEP: 50
-  Defense: 2
-  functions: []
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   powerCapacity: 100
   powerRegenRate: 30
 --- !u!114 &7522518821669899866
@@ -217,38 +219,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2790551456985353332}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5208b61d586c7e342bca118d7ba72099, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 50
   MaxHP: 50
   EP: 30
   MaxEP: 30
-  Defense: 3
-  functions:
-  - functionName: "\u706B\u70AE\u653B\u51FB"
-    functionIconPath: 
-    functionIconIndex: 0
-    functionApplyTimeInterval: 1.5
-    functionValue: 4
-    functionConsume: 3
-    canBeAuto: 0
-    isAuto: 0
-    functionIntVal: 0000000006000000000000000300000002000000
-    functionFloatVal:
-    - 0.4
-    - 2
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: 
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   tsf_Turret: {fileID: 0}
   turretTurnRate: 0
   tsf_FirePos:
@@ -261,23 +244,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2790551456985353332}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69b2f8b91d781fb48ba75fe396af6e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 20
   MaxHP: 20
   EP: 60
   MaxEP: 60
-  Defense: 3
-  functions: []
-  thisObj: {fileID: 0}
-  compResID: 
-  isCritical: 1
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
 --- !u!114 &3503909759400036403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,36 +264,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2790551456985353332}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16ad089886059404cb692e2ee81bd808, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  compName: 
   HP: 20
   MaxHP: 20
   EP: 10
   MaxEP: 10
-  Defense: 0
-  functions:
-  - functionName: "\u79FB\u52A8"
-    functionIconPath: 
-    functionIconIndex: 0
-    functionApplyTimeInterval: 0.5
-    functionValue: 4
-    functionConsume: 5
-    canBeAuto: 0
-    isAuto: 0
-    functionIntVal: 0100000001000000
-    functionFloatVal: []
-    functionBoolVal: 
-    functionStringVal: []
-    functionDescription: 
-  thisObj: {fileID: 0}
-  compResID: MobileComp01
-  isCritical: 0
   functionTimeElapsed: 0
   isAvailable: 1
+  thisObj: {fileID: 0}
+  tsf_InstalledSlot: {fileID: 0}
   isMoving: 0
 --- !u!1 &4539024969209721467
 GameObject:

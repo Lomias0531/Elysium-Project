@@ -400,7 +400,7 @@ public class CompAutoController : BaseComponent
                 thisObj.curSelectedComp = weapon;
 
                 weapon.FunctionTriggered(randomList[i]);
-                weapon.CommenceAttack(curAttackingTarget);
+                weapon.CommenceAttack(curAttackingTarget.GetTileWhereUnitIs());
                 fired = true;
                 break;
             }
