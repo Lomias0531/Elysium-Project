@@ -1,10 +1,10 @@
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static BaseObj;
 using static CompWeapon;
+using Random = UnityEngine.Random;
 
 public class CompFunction : BaseComponent
 {
@@ -31,6 +31,7 @@ public class CompFunction : BaseComponent
 
     public override void OnApply(int index)
     {
+        if (isFunctionProgressing) return;
         switch(thisCompData.functions[index].functionType)
         {
             default:
@@ -74,7 +75,7 @@ public class CompFunction : BaseComponent
                     }
                     else
                     {
-                        checkResources = false;
+                        checkResources = true;
                     }
 
                     int availableTileCount = 0;
@@ -125,16 +126,52 @@ public class CompFunction : BaseComponent
                     }
                     else
                     {
-                        checkResources = false;
+                        checkResources = true;
                     }
-
-                    checkResources = true;
 
                     if (checkResources)
                     {
                         PlayerController.Instance.GetBuildRange();
                     }
 
+                    break;
+                }
+            case ComponentFunctionType.Production:
+                {
+                    if (isFunctionProgressing) return;
+
+                    var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
+                    bool checkResources = true;
+                    if (storage != null)
+                    {
+                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        {
+                            if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
+                            {
+                                checkResources = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        checkResources = true;
+                    }
+
+                    if(checkResources)
+                    {
+                        curSelectedIndex = index;
+                        isFunctionProgressing = true;
+                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        {
+                            ItemData item = new ItemData();
+                            item.itemID = thisCompData.functions[index].functionStringVal[i];
+                            item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
+
+                            storage.RemoveItem(item);
+                        }
+                        valueTimeElapsed = 0;
+                        valueTimeRequired = thisCompData.functions[index].functionFloatVal[0];
+                    }
                     break;
                 }
         }
@@ -289,6 +326,16 @@ public class CompFunction : BaseComponent
                     case ComponentFunctionType.Construct:
                         {
                             StartCoroutine(constructItem());
+                            break;
+                        }
+                    case ComponentFunctionType.Production:
+                        {
+                            var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
+                            ItemData item = new ItemData();
+                            item.itemID = thisCompData.functions[curSelectedIndex].functionStringVal[0];
+                            item.stackCount = (int)thisCompData.functions[curSelectedIndex].functionFloatVal[0];
+
+                            storage.ReceiveItem(item);
                             break;
                         }
                 }

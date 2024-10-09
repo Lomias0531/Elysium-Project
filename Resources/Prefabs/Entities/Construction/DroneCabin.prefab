@@ -922,10 +922,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 903256355359833061}
-  - component: {fileID: 8617419849570065919}
-  - component: {fileID: 451714660430891091}
   - component: {fileID: -188832587102631275}
-  - component: {fileID: 7456802622496861559}
   m_Layer: 0
   m_Name: DroneCabin
   m_TagString: Untagged
@@ -974,51 +971,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 120, z: 0}
---- !u!114 &8617419849570065919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4062118270494293312}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b2604fd0be55364485960e3f8a4c3f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 0
-  MaxHP: 0
-  EP: 0
-  MaxEP: 0
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  maxStorageSlot: 12
-  inventory: []
---- !u!114 &451714660430891091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4062118270494293312}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83afd8824cdaee14183975a2bfc78fb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 0
-  MaxHP: 0
-  EP: 0
-  MaxEP: 0
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  isConstructing: 0
-  img_Progress: {fileID: 4691115031832246489}
-  canvas: {fileID: 4051847800353732664}
 --- !u!114 &-188832587102631275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1026,7 +978,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4062118270494293312}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65776914856f09d4391b3a895978d451, type: 3}
   m_Name: 
@@ -1040,6 +992,8 @@ MonoBehaviour:
   maxStorageSlot: 0
   inventory: []
   componentBasements: []
+  WallBottomPoint: {fileID: 0}
+  WallTopPoint: {fileID: 0}
   objName: "\u5EFA\u9020\u5DE5\u5382"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -1060,27 +1014,6 @@ MonoBehaviour:
     functionDescription: 
   EnergyConsumed: 5
   BuildProgress: 0
---- !u!114 &7456802622496861559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4062118270494293312}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18ff699ba10efc345a80e629943a6224, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 5
-  MaxHP: 5
-  EP: 5
-  MaxEP: 5
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  img_PowerOff: {fileID: 3638673219239882497}
 --- !u!1 &4400134669909634348
 GameObject:
   m_ObjectHideFlags: 0

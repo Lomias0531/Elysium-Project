@@ -118,6 +118,13 @@ public class DataEditorMain : MonoBehaviour
     public CanvasGroup canvas_Resource;
     public Dropdown dpd_RespurceType;
     [Space(1)]
+    [Header("Production Components")]
+    public CanvasGroup canvas_Product;
+    public DataEditorStringValuePair productionResultItem;
+    public Transform tsf_ProductionKeyValuePairContainer;
+    public Button btn_AddProductKeyValuePair;
+    Dictionary<string, string> productItemIDNamePair = new Dictionary<string, string>();
+    [Space(1)]
     [Header("Entities")]
     public CanvasGroup canvas_Entities;
     public InputField ipt_EneityID;
@@ -675,6 +682,10 @@ public class DataEditorMain : MonoBehaviour
                     {
                         dpd_RespurceType.options.Add(new Dropdown.OptionData() { text = item });
                     }
+                    break;
+                }
+            case ComponentFunctionType.Production:
+                {
                     break;
                 }
         }
@@ -1275,6 +1286,7 @@ public enum ComponentFunctionType
     PowerDispatcher,
     Storage,
     Resource,
+    Production,
 }
 public enum CompType
 {

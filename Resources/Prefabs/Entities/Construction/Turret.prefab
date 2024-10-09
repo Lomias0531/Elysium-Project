@@ -5178,8 +5178,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1262990129729179007}
   - component: {fileID: -754061889600223008}
-  - component: {fileID: 1317643707348717514}
-  - component: {fileID: 3675111302452430442}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -5224,6 +5222,8 @@ MonoBehaviour:
   maxStorageSlot: 0
   inventory: []
   componentBasements: []
+  WallBottomPoint: {fileID: 0}
+  WallTopPoint: {fileID: 0}
   objName: "\u6FC0\u5149\u70AE\u5854"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -5244,50 +5244,6 @@ MonoBehaviour:
     functionDescription: 
   EnergyConsumed: 0
   BuildProgress: 0
---- !u!114 &1317643707348717514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931158550506461125}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5208b61d586c7e342bca118d7ba72099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 25
-  MaxHP: 25
-  EP: 30
-  MaxEP: 30
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  tsf_Turret: {fileID: 4690278245587573362}
-  turretTurnRate: 60
-  tsf_FirePos:
-  - {fileID: 1359040527530880832}
---- !u!114 &3675111302452430442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931158550506461125}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69b2f8b91d781fb48ba75fe396af6e7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 10
-  MaxHP: 10
-  EP: 20
-  MaxEP: 20
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
 --- !u!1 &1942678493693213016
 GameObject:
   m_ObjectHideFlags: 0

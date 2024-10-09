@@ -144,8 +144,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6021235637266369974}
   - component: {fileID: -6244669199888960101}
-  - component: {fileID: -7198252536015291225}
-  - component: {fileID: -6135468054001597746}
   m_Layer: 0
   m_Name: CommandCenter
   m_TagString: Untagged
@@ -191,6 +189,8 @@ MonoBehaviour:
   maxStorageSlot: 0
   inventory: []
   componentBasements: []
+  WallBottomPoint: {fileID: 0}
+  WallTopPoint: {fileID: 0}
   objName: "\u63A7\u5236\u4E2D\u5FC3"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -211,51 +211,6 @@ MonoBehaviour:
     functionDescription: 
   EnergyConsumed: 0
   BuildProgress: 0
---- !u!114 &-7198252536015291225
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2500375694697783506}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83afd8824cdaee14183975a2bfc78fb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 50
-  MaxHP: 50
-  EP: 100
-  MaxEP: 100
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  isConstructing: 0
-  img_Progress: {fileID: 6607555406242695047}
-  canvas: {fileID: 8385062953645858009}
---- !u!114 &-6135468054001597746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2500375694697783506}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b2604fd0be55364485960e3f8a4c3f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 40
-  MaxHP: 40
-  EP: 30
-  MaxEP: 30
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  maxStorageSlot: 0
-  inventory: []
 --- !u!1 &6615782421597827627
 GameObject:
   m_ObjectHideFlags: 0

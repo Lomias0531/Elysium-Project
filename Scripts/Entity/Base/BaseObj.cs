@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 public abstract class BaseObj : MonoBehaviour
@@ -22,6 +21,9 @@ public abstract class BaseObj : MonoBehaviour
     public List<ItemData> inventory = new List<ItemData>();
 
     public List<BaseUnitSpot> componentBasements = new List<BaseUnitSpot>();
+
+    public GameObject WallBottomPoint;
+    public GameObject WallTopPoint;
 
     [HideInInspector]
     public MoveType[] moveType
@@ -311,6 +313,24 @@ public abstract class BaseObj : MonoBehaviour
                     result.Add((CompFunction)comp);
                 }
             }
+        }
+        return result;
+    }
+    public CompFunction GetFunctionComponent(CompType type)
+    {
+        foreach (var comp in components)
+        {
+            if (comp.thisCompData.functions == null) continue;
+            if (comp.thisCompData.thisCompType == type) return (CompFunction)comp;
+        }
+        return null;
+    }
+    public List<CompFunction> GetFunctionComponents(CompType type)
+    {
+        List<CompFunction> result = new List<CompFunction>();
+        foreach (var comp in components)
+        {
+            if(comp.thisCompData.thisCompType == type) result.Add((CompFunction)comp);
         }
         return result;
     }

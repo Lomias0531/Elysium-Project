@@ -188,7 +188,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6694345969923951036}
   - component: {fileID: 5395209891713900158}
-  - component: {fileID: 5723842061815896394}
   m_Layer: 0
   m_Name: DefenseWall
   m_TagString: Untagged
@@ -235,6 +234,8 @@ MonoBehaviour:
   maxStorageSlot: 0
   inventory: []
   componentBasements: []
+  WallBottomPoint: {fileID: 5154167684535166515}
+  WallTopPoint: {fileID: 4994374879665333575}
   objName: "\u9632\u5FA1\u5899"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -255,28 +256,6 @@ MonoBehaviour:
     functionDescription: 
   EnergyConsumed: 0
   BuildProgress: 0
---- !u!114 &5723842061815896394
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6317644956585612038}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74d608b4a54a0e545b4cde19401d7631, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 50
-  MaxHP: 50
-  EP: 10
-  MaxEP: 10
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  BottomPoint: {fileID: 5154167684535166515}
-  TopPoint: {fileID: 4994374879665333575}
 --- !u!1 &6796912347403231891
 GameObject:
   m_ObjectHideFlags: 0

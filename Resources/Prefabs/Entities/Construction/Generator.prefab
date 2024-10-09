@@ -93,9 +93,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1526185545335098386}
   - component: {fileID: 6953394697777499655}
-  - component: {fileID: 326078578107120391}
-  - component: {fileID: -2209044357892873509}
-  - component: {fileID: -5517626163135998944}
   - component: {fileID: 3044948944099306833}
   m_Layer: 0
   m_Name: Generator
@@ -153,6 +150,8 @@ MonoBehaviour:
   maxStorageSlot: 0
   inventory: []
   componentBasements: []
+  WallBottomPoint: {fileID: 0}
+  WallTopPoint: {fileID: 0}
   objName: "\u53D1\u7535\u7AD9"
   Faction: Elysium
   curSelectedComp: {fileID: 0}
@@ -173,73 +172,6 @@ MonoBehaviour:
     functionDescription: 
   EnergyConsumed: 0
   BuildProgress: 0
---- !u!114 &326078578107120391
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2190377822495217320}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18ff699ba10efc345a80e629943a6224, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 10
-  MaxHP: 10
-  EP: 20
-  MaxEP: 20
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 6953394697777499655}
-  tsf_InstalledSlot: {fileID: 0}
-  img_PowerOff: {fileID: 6746611488939427394}
---- !u!114 &-2209044357892873509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2190377822495217320}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58c9af3fcb60b664dadef4e1cbac74ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 10
-  MaxHP: 10
-  EP: 20
-  MaxEP: 20
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 6953394697777499655}
-  tsf_InstalledSlot: {fileID: 0}
-  powerCapacity: 15
-  powerRegenRate: 5
---- !u!114 &-5517626163135998944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2190377822495217320}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9532808ac05ce1a4c988756e7c979b93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 5
-  MaxHP: 5
-  EP: 50
-  MaxEP: 50
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 6953394697777499655}
-  tsf_InstalledSlot: {fileID: 0}
-  powerRadiationRange: 5
-  maxPowerDispathable: 20
-  powerProject: {fileID: 3044948944099306833}
-  obj_TransferStart: {fileID: 7290361189932075828}
 --- !u!120 &3044948944099306833
 LineRenderer:
   m_ObjectHideFlags: 0

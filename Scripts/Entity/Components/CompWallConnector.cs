@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CompWallConnector : BaseComponent
 {
-    public GameObject BottomPoint;
-    public GameObject TopPoint;
+    //public GameObject BottomPoint;
+    //public GameObject TopPoint;
     public Dictionary<BaseTile.HexDirection, GameObject> wallDir = new Dictionary<BaseTile.HexDirection, GameObject>();
     public override void OnApply(int index)
     {
@@ -83,10 +83,10 @@ public class CompWallConnector : BaseComponent
             List<Vector3> vertices = new List<Vector3>();
             List<int> triangles = new List<int>();
 
-            vertices.Add(this.TopPoint.transform.position);
-            vertices.Add(this.BottomPoint.transform.position);
-            vertices.Add(targetWall.TopPoint.transform.position);
-            vertices.Add(targetWall.BottomPoint.transform.position);
+            vertices.Add(this.thisObj.WallTopPoint.transform.position);
+            vertices.Add(this.thisObj.WallBottomPoint.transform.position);
+            vertices.Add(targetWall.thisObj.WallTopPoint.transform.position);
+            vertices.Add(targetWall.thisObj.WallBottomPoint.transform.position);
 
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 2);
