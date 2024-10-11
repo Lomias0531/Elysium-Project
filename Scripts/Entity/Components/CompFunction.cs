@@ -55,7 +55,20 @@ public class CompFunction : BaseComponent
                 }
             case ComponentFunctionType.Harvest:
                 {
-                    PlayerController.Instance.GetInteractRange(ComponentFunctionType.Harvest);
+                    //PlayerController.Instance.GetInteractRange(ComponentFunctionType.Harvest);
+                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)thisCompData.functions[index].functionValue, Tools.IgnoreType.All);
+                    foreach (var tile in tiles)
+                    {
+                        var entity = tile.curObj;
+                        if(entity != null)
+                        {
+                            var resource = entity.GetFunctionComponent(ComponentFunctionType.Resource);
+                            if(resource != null)
+                            {
+                                resource.OnTriggerFunction(ComponentFunctionType.Resource, thisObj);
+                            }
+                        }
+                    }
                     break;
                 }
             case ComponentFunctionType.Construct:
@@ -146,7 +159,7 @@ public class CompFunction : BaseComponent
                     {
                         for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
                         {
-                            if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
+                            if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionIntVal[i])
                             {
                                 checkResources = false;
                             }
@@ -165,12 +178,12 @@ public class CompFunction : BaseComponent
                         {
                             ItemData item = new ItemData();
                             item.itemID = thisCompData.functions[index].functionStringVal[i];
-                            item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
+                            item.stackCount = thisCompData.functions[index].functionIntVal[i];
 
                             storage.RemoveItem(item);
                         }
                         valueTimeElapsed = 0;
-                        valueTimeRequired = thisCompData.functions[index].functionFloatVal[0];
+                        valueTimeRequired = thisCompData.functions[index].functionValue;
                     }
                     break;
                 }
@@ -299,7 +312,17 @@ public class CompFunction : BaseComponent
             }
             if(func.functionType == ComponentFunctionType.PowerDispatcher)
             {
+                if(this.functionTimeElapsed <= 0)
+                {
+                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)thisCompData.functions[curSelectedIndex].functionValue, Tools.IgnoreType.All);
+                }
+            }
+            if(func.functionType == ComponentFunctionType.Harvest)
+            {
+                if (this.functionTimeElapsed <= 0)
+                {
 
+                }
             }
         }
 
@@ -779,6 +802,18 @@ public class CompFunction : BaseComponent
         if (!check)
         {
             Destroy(objGenerated.gameObject);
+        }
+    }
+    #endregion
+    #region Power Dispatcher
+    void DisplayPowerDispatcher(BaseObj target)
+    {
+        var laserInstance = (GameObject)Resources.Load("Prefabs/Projectile/LaserBeam");
+        if (laserInstance != null)
+        {
+            var laserBeam = ObjectPool.Instance.CreateObject("LaserBeam", laserInstance, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_LaerBeam>();
+
+            laserBeam.TriggerThis(tsf_InstalledSlot.position, target.gameObject.transform.position, new Color(0, 0, 1, 0.75f));
         }
     }
     #endregion

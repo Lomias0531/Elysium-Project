@@ -50,6 +50,16 @@ public class DataEditorStringValuePair : MonoBehaviour
                     folderName = "Components";
                     break;
                 }
+            case StringIndexType.Item:
+                {
+                    folderName = "Items";
+                    break;
+                }
+            case StringIndexType.Entity:
+                {
+                    folderName = "Entities";
+                    break;
+                }
         }
 
         var dicPath = Application.dataPath + "/Resources/ScriptableItems/" + folderName + "/";
@@ -71,6 +81,18 @@ public class DataEditorStringValuePair : MonoBehaviour
                     {
                         var thisData = JsonConvert.DeserializeObject<ComponentData>(json);
                         curSelectedNames.Add(name, thisData.ComponentName);
+                        break;
+                    }
+                case StringIndexType.Item:
+                    {
+                        var thisData = JsonConvert.DeserializeObject<ItemDataEditor>(json);
+                        curSelectedNames.Add(name, thisData.ItemName);
+                        break;
+                    }
+                case StringIndexType.Entity:
+                    {
+                        var thisData = JsonConvert.DeserializeObject<EntityData>(json);
+                        curSelectedNames.Add(name, thisData.EntityName);
                         break;
                     }
             }

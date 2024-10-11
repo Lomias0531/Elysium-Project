@@ -183,6 +183,7 @@ public class DataEditorMain : MonoBehaviour
         btn_AddBuilderKeyValuePair.onClick.AddListener(AddBuilderStrValuePair);
         btn_AddPresetComponents.onClick.AddListener(AddPresetComponentsStrValuePair);
         btn_SelectItemIcon.onClick.AddListener(SelectComponentIcon);
+        btn_AddProductKeyValuePair.onClick.AddListener(AddProductionStrValuePair);
     }
     void AddPages()
     {
@@ -193,6 +194,7 @@ public class DataEditorMain : MonoBehaviour
         functionPages.Add(ComponentFunctionType.Build, canvas_Builder);
         functionPages.Add(ComponentFunctionType.PowerDispatcher, canvas_PowerDispatcher);
         functionPages.Add(ComponentFunctionType.Resource, canvas_Resource);
+        functionPages.Add(ComponentFunctionType.Production, canvas_Product);
 
         editorPages.Add(EditorPage.Entities, canvas_Entities);
 
@@ -686,6 +688,23 @@ public class DataEditorMain : MonoBehaviour
                 }
             case ComponentFunctionType.Production:
                 {
+                    txt_FunctionValueDesc.text = "建造时间";
+
+                    productItemIDNamePair.Clear();
+
+                    productionResultItem.InitThis(StringIndexType.Item, "", 0, this);
+
+                    var dicPath = Application.dataPath + "/Resources/ScriptableItems/Items/";
+                    var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.json").ToList();
+                    var files = folderInfo.Select(x => x.Name).ToList();
+
+                    foreach (var item in files)
+                    {
+                        var json = File.ReadAllText(dicPath + item);
+                        var thisData = JsonConvert.DeserializeObject<ItemDataEditor>(json);
+
+                        productItemIDNamePair.Add(thisData.ItemID, thisData.ItemName);
+                    }
                     break;
                 }
         }
@@ -852,6 +871,23 @@ public class DataEditorMain : MonoBehaviour
                     dpd_RespurceType.value = func.functionIntVal[0];
                     break;
                 }
+            case ComponentFunctionType.Production:
+                {
+                    txt_FunctionValueDesc.text = "建造时间";
+
+                    ipt_FunctionValue.text = func.functionValue.ToString();
+
+                    productionResultItem.InitThis(StringIndexType.Item, func.functionStringVal[0], func.functionIntVal[0], this);
+                    for(int i = 1;i<func.functionStringVal.Length;i++)
+                    {
+                        var pairItem = Instantiate(stringValuePairItem);
+                        pairItem.gameObject.SetActive(true);
+                        pairItem.transform.SetParent(tsf_builderKeyValuePairContainer);
+                        pairItem.InitThis(StringIndexType.Item, func.functionStringVal[i], func.functionIntVal[i], this);
+                        KeyValuePairItems.Add(pairItem);
+                    }
+                    break;
+                }
         }
 
         btn_ConfirmFunctionEdit.interactable = true;
@@ -1002,6 +1038,26 @@ public class DataEditorMain : MonoBehaviour
                     };
 
                     newFunction.functionIntVal = intList.ToArray();
+                    break;
+                }
+            case ComponentFunctionType.Production:
+                {
+                    List<string> strList = new List<string>();
+                    List<int> intList = new List<int>();
+
+                    strList.Add(productionResultItem.GetThisValue().str);
+                    intList.Add((int)productionResultItem.GetThisValue().val);
+
+                    foreach (var item in KeyValuePairItems)
+                    {
+                        var result = item.GetThisValue();
+                        strList.Add(result.str);
+                        intList.Add((int)result.val);
+                    }
+
+                    newFunction.functionStringVal = strList.ToArray();
+                    newFunction.functionIntVal = intList.ToArray();
+                    newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
                     break;
                 }
         }
@@ -1216,6 +1272,10 @@ public class DataEditorMain : MonoBehaviour
     void AddPresetComponentsStrValuePair()
     {
         AddStrValuePair(tsf_PresetComponentItemContainer, StringIndexType.Components);
+    }
+    void AddProductionStrValuePair()
+    {
+        AddStrValuePair(tsf_ProductionKeyValuePairContainer, StringIndexType.Item);
     }
     void AddStrValuePair(Transform tsf_Container, StringIndexType type)
     {

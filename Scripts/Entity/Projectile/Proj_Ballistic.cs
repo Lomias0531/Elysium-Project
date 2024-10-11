@@ -54,6 +54,7 @@ public class Proj_Ballistic : MonoBehaviour
         trails.time = 2f;
         trails.startColor = Color.white;
         trails.endColor = Color.black;
+        trails.minVertexDistance = 0.5f;
 
         if(meshRenderers == null)
         {
