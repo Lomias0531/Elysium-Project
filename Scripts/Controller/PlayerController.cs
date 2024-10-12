@@ -282,6 +282,8 @@ public class PlayerController : Singletion<PlayerController>
                     {
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
                         selectedObject.curSelectedComp.OnTriggerFunction(ComponentFunctionType.Weapon, hoveredTile);
+
+                        CancelAllOperations();
                     }
 
                     EntityFinishedAction();

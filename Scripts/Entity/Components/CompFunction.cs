@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -308,20 +309,74 @@ public class CompFunction : BaseComponent
         {
             if(func.functionType == ComponentFunctionType.Generator)
             {
-                this.EP += func.functionValue * Time.deltaTime;
+                foreach (var comp in thisObj.Components)
+                {
+                    comp.EP += func.functionValue * Time.deltaTime;
+                }
             }
             if(func.functionType == ComponentFunctionType.PowerDispatcher)
             {
                 if(this.functionTimeElapsed <= 0)
                 {
-                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)thisCompData.functions[curSelectedIndex].functionValue, Tools.IgnoreType.All);
+                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
+                    List<BaseComponent> targetComp = new List<BaseComponent>();
+                    foreach (var tile in tiles)
+                    {
+                        if(tile.curObj != null)
+                        {
+                            foreach (var comp in tile.curObj.Components)
+                            {
+                                if(comp.EP / comp.MaxEP < 0.75)
+                                {
+                                    targetComp.Add(comp);
+                                }
+                            }
+                        }
+                    }
+                    if(targetComp.Count > 0)
+                    {
+                        targetComp.Sort((a,b) => (a.EP/a.MaxEP).CompareTo(b.EP / b.MaxEP));
+                        float powerDispatchable = func.functionFloatVal[0];
+                        if(powerDispatchable > this.EP) powerDispatchable = this.EP;
+                        do
+                        {
+                            var powerDiv = targetComp[0].MaxEP - targetComp[0].EP;
+                            if(powerDiv > powerDispatchable)
+                            {
+                                targetComp[0].EP += powerDispatchable;
+                                this.EP -= powerDispatchable;
+                                powerDispatchable = 0;
+                            }else
+                            {
+                                powerDispatchable -= powerDiv;
+                                targetComp[0].EP += powerDiv;
+                                this.EP -= powerDiv;
+                            }
+                            DisplayPowerDispatcher(targetComp[0].thisObj);
+                            targetComp.RemoveAt(0);
+                        } while (powerDispatchable > 0 && targetComp.Count > 0);
+                    }
+                    FunctionTriggered(func);
                 }
             }
             if(func.functionType == ComponentFunctionType.Harvest)
             {
                 if (this.functionTimeElapsed <= 0)
                 {
-
+                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
+                    foreach (var tile in tiles)
+                    {
+                        var entity = tile.curObj;
+                        if (entity != null)
+                        {
+                            var resource = entity.GetFunctionComponent(ComponentFunctionType.Resource);
+                            if (resource != null)
+                            {
+                                resource.OnTriggerFunction(ComponentFunctionType.Resource, thisObj);
+                            }
+                        }
+                    }
+                    FunctionTriggered(func);
                 }
             }
         }
@@ -538,7 +593,7 @@ public class CompFunction : BaseComponent
             return;
         }
         attackTile = targetTile;
-        if (EP < thisObj.curSelectedFunction.functionConsume) return;
+        //if (EP < thisObj.curSelectedFunction.functionConsume) return;
 
         if (thisObj.tsf_Turret != null)
         {

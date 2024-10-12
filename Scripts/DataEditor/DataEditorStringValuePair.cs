@@ -29,8 +29,9 @@ public class DataEditorStringValuePair : MonoBehaviour
     {
         
     }
-    public void InitThis(StringIndexType type, string str, float value, DataEditorMain _editor)
+    public IEnumerator InitThis(StringIndexType type, string str, float value, DataEditorMain _editor)
     {
+        yield return null;
         curSelectedNames.Clear();
         editor = _editor;
 
@@ -99,7 +100,22 @@ public class DataEditorStringValuePair : MonoBehaviour
         }
         GetSearchResult("");
 
-        dpd_String.captionText.text = str;
+        yield return null;
+
+        //dpd_String.captionText.text = str;
+        if(curSelectedNames.ContainsKey(str))
+        {
+            var list = curSelectedNames.Keys.ToList();
+            for (int i = 0;i< list.Count;i++)
+            {
+                if (list[i] == str)
+                {
+                    dpd_String.value = i;
+                    break;
+                }
+            }
+            dpd_String.captionText.text = curSelectedNames[str];
+        }
         ipt_Value.text = value.ToString();
     }
     public void GetSearchResult(string str)

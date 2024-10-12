@@ -692,7 +692,7 @@ public class DataEditorMain : MonoBehaviour
 
                     productItemIDNamePair.Clear();
 
-                    productionResultItem.InitThis(StringIndexType.Item, "", 0, this);
+                    StartCoroutine(productionResultItem.InitThis(StringIndexType.Item, "", 0, this));
 
                     var dicPath = Application.dataPath + "/Resources/ScriptableItems/Items/";
                     var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.json").ToList();
@@ -816,7 +816,7 @@ public class DataEditorMain : MonoBehaviour
                         var pairItem = Instantiate(stringValuePairItem);
                         pairItem.gameObject.SetActive(true);
                         pairItem.transform.SetParent(tsf_constructorKeyValuePairContainer);
-                        pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionFloatVal[i], this);
+                        StartCoroutine(pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionFloatVal[i], this));
                         KeyValuePairItems.Add(pairItem);
                     }
 
@@ -835,7 +835,7 @@ public class DataEditorMain : MonoBehaviour
                         var pairItem = Instantiate(stringValuePairItem);
                         pairItem.gameObject.SetActive(true);
                         pairItem.transform.SetParent(tsf_builderKeyValuePairContainer);
-                        pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionFloatVal[i], this);
+                        StartCoroutine(pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionFloatVal[i], this));
                         KeyValuePairItems.Add(pairItem);
                     }
 
@@ -877,13 +877,13 @@ public class DataEditorMain : MonoBehaviour
 
                     ipt_FunctionValue.text = func.functionValue.ToString();
 
-                    productionResultItem.InitThis(StringIndexType.Item, func.functionStringVal[0], func.functionIntVal[0], this);
+                    StartCoroutine(productionResultItem.InitThis(StringIndexType.Item, func.functionStringVal[0], func.functionIntVal[0], this));
                     for(int i = 1;i<func.functionStringVal.Length;i++)
                     {
                         var pairItem = Instantiate(stringValuePairItem);
                         pairItem.gameObject.SetActive(true);
                         pairItem.transform.SetParent(tsf_builderKeyValuePairContainer);
-                        pairItem.InitThis(StringIndexType.Item, func.functionStringVal[i], func.functionIntVal[i], this);
+                        StartCoroutine(pairItem.InitThis(StringIndexType.Item, func.functionStringVal[i], func.functionIntVal[i], this));
                         KeyValuePairItems.Add(pairItem);
                     }
                     break;
@@ -1107,7 +1107,7 @@ public class DataEditorMain : MonoBehaviour
                     var pairItem = Instantiate(stringValuePairItem);
                     pairItem.gameObject.SetActive(true);
                     pairItem.transform.SetParent(tsf_PresetComponentItemContainer);
-                    pairItem.InitThis(StringIndexType.Components, data.InstalledComponents[i], data.InstalledComponentsKey == null ? -1 : data.InstalledComponentsKey[i], this);
+                    StartCoroutine(pairItem.InitThis(StringIndexType.Components, data.InstalledComponents[i], data.InstalledComponentsKey == null ? -1 : data.InstalledComponentsKey[i], this));
                     KeyValuePairItems.Add(pairItem);
                 }
 
@@ -1281,7 +1281,7 @@ public class DataEditorMain : MonoBehaviour
     {
         var pairItem = Instantiate(stringValuePairItem);
         pairItem.gameObject.SetActive(true);
-        pairItem.InitThis(type, "", 0, this);
+        StartCoroutine(pairItem.InitThis(type, "", 0, this));
         pairItem.transform.SetParent(tsf_Container);
         KeyValuePairItems.Add(pairItem);
 
