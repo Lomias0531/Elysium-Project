@@ -129,8 +129,10 @@ public class DataEditorMain : MonoBehaviour
     public CanvasGroup canvas_Entities;
     public InputField ipt_EneityID;
     public InputField ipt_EntityName;
-    public InputField ipt_EntityIndex;
+    //public InputField ipt_EntityIndex;
     public Dropdown dpd_EntityType;
+    public Dropdown dpd_EntityIndex;
+    public InputField ipt_InventorySlot;
     EntityData curSelectedEntity;
     public InputField ipt_EntityProductor;
     public Button btn_AddPresetComponents;
@@ -614,6 +616,7 @@ public class DataEditorMain : MonoBehaviour
                     txt_FunctionValueDesc.text = "建造时间";
 
                     dpd_ConstructItemID.ClearOptions();
+                    constructItemIDNamePair.Clear();
 
                     var dicPath = Application.dataPath + "/Resources/ScriptableItems/Entities/";
                     var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.json").ToList();
@@ -1091,12 +1094,33 @@ public class DataEditorMain : MonoBehaviour
         }
         KeyValuePairItems.Clear();
 
+        List<FileInfo> indexList = new List<FileInfo>();
+        var dicPath = Application.dataPath + "/Resources/Prefabs/Characters/";
+        var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList();
+        indexList.AddRange(folderInfo);
+        dicPath = Application.dataPath + "/Resources/Prefabs/Entities/Construction/";
+        indexList.AddRange(new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList());
+        dicPath = Application.dataPath + "/Resources/Prefabs/Entities/Nature/";
+        indexList.AddRange(new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList());
+        dpd_EntityIndex.ClearOptions();
+        for(int i = 0;i<indexList.Count;i++)
+        {
+            var name = indexList[i].Name.Split('.');
+            dpd_EntityIndex.options.Add(new Dropdown.OptionData() { text = name[0] });
+
+            if (data.EntityIndex == name[0])
+            {
+                dpd_EntityIndex.value = i;
+            }
+        }
+
         ipt_EneityID.text = data.EntityID;
         ipt_EntityName.text = data.EntityName;
-        ipt_EntityIndex.text = data.EntityIndex;
+        //ipt_EntityIndex.text = data.EntityIndex;
         dpd_EntityType.value = (int)data.entityType;
         dpd_EntityType.captionText.text = data.entityType.ToString();
         ipt_EntityProductor.text = data.EntityProductor;
+        ipt_InventorySlot.text = data.MaxInventoryCount.ToString();
 
         if (data.InstalledComponents != null)
         {
@@ -1120,9 +1144,11 @@ public class DataEditorMain : MonoBehaviour
         EntityData newEntity = new EntityData();
         newEntity.EntityID = ipt_EneityID.text;
         newEntity.EntityName = ipt_EntityName.text;
-        newEntity.EntityIndex = ipt_EntityIndex.text;
+        //newEntity.EntityIndex = ipt_EntityIndex.text;
         newEntity.entityType = (EntityType)dpd_EntityType.value;
         newEntity.EntityProductor = ipt_EntityProductor.text;
+        newEntity.MaxInventoryCount = int.Parse(ipt_InventorySlot.text);
+        newEntity.EntityIndex = dpd_EntityIndex.captionText.text;
 
         List<string> stringList = new List<string>();
         List<int> intList = new List<int>();
@@ -1372,6 +1398,7 @@ public struct EntityData
     public string EntityProductor;
     public string[] InstalledComponents;
     public int[] InstalledComponentsKey;
+    public int MaxInventoryCount;
 }
 public enum EntityType
 {

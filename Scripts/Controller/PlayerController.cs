@@ -263,9 +263,11 @@ public class PlayerController : Singletion<PlayerController>
                     {
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
 
-                        var newConstruct = GameObject.Instantiate(obj_Build, MapController.Instance.entityContainer);
+                        var obj = DataController.Instance.GetConstructData(selectedObject.curSelectedFunction.functionStringVal[0]);
+                        var newConstruct = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
                         newConstruct.transform.eulerAngles = obj_Build.transform.eulerAngles;
                         newConstruct.Faction = "Elysium";
+                        newConstruct.thisEntityData = obj_Build.thisEntityData;
                         newConstruct.InitThis();
                         MapController.Instance.RegisterObject(newConstruct);
                         newConstruct.Pos = hoveredTile.Pos;
@@ -273,7 +275,11 @@ public class PlayerController : Singletion<PlayerController>
                         newConstruct.curTile = hoveredTile;
                         hoveredTile.curObj = newConstruct;
 
-                        var compBuild = newConstruct.GetDesiredComponent<CompConstructTemp>();
+                        var compBuild = newConstruct.AddComponent<CompConstructTemp>();
+                        newConstruct.Components.Add(compBuild);
+                        compBuild.thisObj = newConstruct;
+                        compBuild.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
+                        compBuild.SimBuild();
                         compBuild.InitConstruct();
 
                         CancelAllOperations();

@@ -124,10 +124,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3310664074911536846}
   - component: {fileID: 4748359697920089451}
-  - component: {fileID: 6167226557711804473}
-  - component: {fileID: 7522518821669899866}
-  - component: {fileID: 2193086163608760646}
-  - component: {fileID: 3503909759400036403}
   m_Layer: 0
   m_Name: AttackBot
   m_TagString: Untagged
@@ -172,6 +168,8 @@ MonoBehaviour:
   maxStorageSlot: 0
   inventory: []
   componentBasements: []
+  WallBottomPoint: {fileID: 0}
+  WallTopPoint: {fileID: 0}
   objName: "\u653B\u51FB\u673A\u5668\u4EBA"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -190,94 +188,6 @@ MonoBehaviour:
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 
---- !u!114 &6167226557711804473
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790551456985353332}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58c9af3fcb60b664dadef4e1cbac74ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 30
-  MaxHP: 30
-  EP: 50
-  MaxEP: 50
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  powerCapacity: 100
-  powerRegenRate: 30
---- !u!114 &7522518821669899866
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790551456985353332}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5208b61d586c7e342bca118d7ba72099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 50
-  MaxHP: 50
-  EP: 30
-  MaxEP: 30
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  tsf_Turret: {fileID: 0}
-  turretTurnRate: 0
-  tsf_FirePos:
-  - {fileID: 5869401264241292927}
-  - {fileID: 2213948355035102011}
---- !u!114 &2193086163608760646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790551456985353332}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69b2f8b91d781fb48ba75fe396af6e7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 20
-  MaxHP: 20
-  EP: 60
-  MaxEP: 60
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
---- !u!114 &3503909759400036403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790551456985353332}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16ad089886059404cb692e2ee81bd808, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 20
-  MaxHP: 20
-  EP: 10
-  MaxEP: 10
-  functionTimeElapsed: 0
-  isAvailable: 1
-  thisObj: {fileID: 0}
-  tsf_InstalledSlot: {fileID: 0}
-  isMoving: 0
 --- !u!1 &4539024969209721467
 GameObject:
   m_ObjectHideFlags: 0
