@@ -167,6 +167,8 @@ public abstract class BaseObj : MonoBehaviour
         var attachments = this.gameObject.GetComponentsInChildren<BaseUnitSpot>();
         componentBasements = attachments.ToList();
 
+        maxStorageSlot = thisEntityData.MaxInventoryCount;
+
         components = new List<BaseComponent>();
 
         var comp1 = this.gameObject.GetComponents<BaseComponent>();
@@ -434,4 +436,133 @@ public abstract class BaseObj : MonoBehaviour
                 }
         }
     }
+    #region Storage
+    public ItemData ReceiveItem(ItemData receivedItem)
+    {
+        //SO_ItemData itemInfo = DataController.Instance.GetItemInfo(receivedItem.itemID);
+        var itemData = DataController.Instance.GetItemData(receivedItem.itemID);
+
+        int index = 0;
+        do
+        {
+            if (index >= inventory.Count && index < maxStorageSlot)
+            {
+                var rec = new ItemData();
+                rec.itemID = receivedItem.itemID;
+                rec.stackCount = 0;
+                inventory.Add(rec);
+            }
+
+            if (index < inventory.Count)
+            {
+                if (inventory[index].itemID == receivedItem.itemID)
+                {
+                    if (inventory[index].stackCount + receivedItem.stackCount <= itemData.maxStackCount)
+                    {
+                        SetInvCount(index, inventory[index].stackCount + receivedItem.stackCount);
+                        receivedItem.stackCount = 0;
+                    }
+                    else
+                    {
+                        var stackDiv = itemData.maxStackCount - inventory[index].stackCount;
+                        SetInvCount(index, itemData.maxStackCount);
+                        receivedItem.stackCount -= stackDiv;
+                    }
+                }
+            }
+
+            index++;
+        } while (receivedItem.stackCount > 0 && index <= maxStorageSlot);
+
+        return receivedItem;
+    }
+    public ItemData TransferItem(CompStorage targetStorage, ItemData transferedItem)
+    {
+        for (int i = inventory.Count - 1; i >= 0; i--)
+        {
+            if (inventory[i].itemID == transferedItem.itemID)
+            {
+                if (inventory[i].stackCount <= transferedItem.stackCount)
+                {
+                    ItemData dataTemp = new ItemData();
+                    dataTemp.itemID = inventory[i].itemID;
+                    dataTemp.stackCount = inventory[i].stackCount;
+
+                    var itemData = targetStorage.ReceiveItem(dataTemp);
+                    transferedItem.stackCount -= inventory[i].stackCount;
+                    if (itemData.stackCount <= 0)
+                    {
+                        SetInvCount(i, 0);
+                    }
+                    else
+                    {
+                        SetInvCount(i, itemData.stackCount);
+                    }
+                }
+                else
+                {
+                    var itemCount = transferedItem.stackCount;
+                    var itemData = targetStorage.ReceiveItem(transferedItem);
+                    var itemTransfered = itemCount - itemData.stackCount;
+
+                    transferedItem.stackCount -= itemTransfered;
+                    SetInvCount(i, inventory[i].stackCount - itemTransfered);
+                }
+            }
+            if (inventory[i].stackCount <= 0)
+            {
+                inventory.RemoveAt(i);
+            }
+            if (transferedItem.stackCount <= 0) break;
+        }
+        return transferedItem;
+    }
+    public int GetItemCount(string itemID)
+    {
+        int result = 0;
+        foreach (var item in inventory)
+        {
+            if (item.itemID == itemID)
+            {
+                result += item.stackCount;
+            }
+        }
+        return result;
+    }
+    public void RemoveItem(ItemData itemInfo)
+    {
+        for (int i = inventory.Count - 1; i >= 0; i--)
+        {
+            if (inventory[i].itemID == itemInfo.itemID)
+            {
+                if (inventory[i].stackCount <= itemInfo.stackCount)
+                {
+                    ItemData dataTemp = new ItemData();
+                    dataTemp.itemID = inventory[i].itemID;
+                    dataTemp.stackCount = inventory[i].stackCount;
+
+                    itemInfo.stackCount -= inventory[i].stackCount;
+                    SetInvCount(i, 0);
+                }
+                else
+                {
+                    SetInvCount(i, inventory[i].stackCount - itemInfo.stackCount);
+                    itemInfo.stackCount = 0;
+                }
+            }
+            if (inventory[i].stackCount <= 0)
+            {
+                inventory.RemoveAt(i);
+            }
+            if (itemInfo.stackCount <= 0) break;
+        }
+    }
+    void SetInvCount(int index, int count)
+    {
+        ItemData temp = new ItemData();
+        temp.itemID = inventory[index].itemID;
+        temp.stackCount = count;
+        inventory[index] = temp;
+    }
+    #endregion
 }

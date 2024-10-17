@@ -75,21 +75,14 @@ public class CompFunction : BaseComponent
             case ComponentFunctionType.Construct:
                 {
                     if (isFunctionProgressing) return;
-                    var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
                     bool checkResources = true;
-                    if (storage != null)
+
+                    for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
                     {
-                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        if (thisObj.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
                         {
-                            if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
-                            {
-                                checkResources = false;
-                            }
+                            checkResources = false;
                         }
-                    }
-                    else
-                    {
-                        checkResources = true;
                     }
 
                     int availableTileCount = 0;
@@ -116,7 +109,7 @@ public class CompFunction : BaseComponent
                             item.itemID = thisCompData.functions[index].functionStringVal[i];
                             item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
 
-                            storage.RemoveItem(item);
+                            thisObj.RemoveItem(item);
                         }
                         valueTimeElapsed = 0;
                         valueTimeRequired = thisCompData.functions[index].functionFloatVal[0];
@@ -126,25 +119,26 @@ public class CompFunction : BaseComponent
             case ComponentFunctionType.Build:
                 {
                     if (isFunctionProgressing) return;
-                    var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
                     bool checkResources = true;
-                    if (storage != null)
+
+                    for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
                     {
-                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        if (thisObj.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
                         {
-                            if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
-                            {
-                                checkResources = false;
-                            }
+                            checkResources = false;
                         }
-                    }
-                    else
-                    {
-                        checkResources = true;
                     }
 
                     if (checkResources)
                     {
+                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        {
+                            ItemData item = new ItemData();
+                            item.itemID = thisCompData.functions[index].functionStringVal[i];
+                            item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
+
+                            thisObj.RemoveItem(item);
+                        }
                         PlayerController.Instance.GetBuildRange();
                     }
 
@@ -154,24 +148,16 @@ public class CompFunction : BaseComponent
                 {
                     if (isFunctionProgressing) return;
 
-                    var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
                     bool checkResources = true;
-                    if (storage != null)
+                    for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
                     {
-                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        if (thisObj.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionIntVal[i])
                         {
-                            if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionIntVal[i])
-                            {
-                                checkResources = false;
-                            }
+                            checkResources = false;
                         }
                     }
-                    else
-                    {
-                        checkResources = true;
-                    }
 
-                    if(checkResources)
+                    if (checkResources)
                     {
                         curSelectedIndex = index;
                         isFunctionProgressing = true;
@@ -181,7 +167,7 @@ public class CompFunction : BaseComponent
                             item.itemID = thisCompData.functions[index].functionStringVal[i];
                             item.stackCount = thisCompData.functions[index].functionIntVal[i];
 
-                            storage.RemoveItem(item);
+                            thisObj.RemoveItem(item);
                         }
                         valueTimeElapsed = 0;
                         valueTimeRequired = thisCompData.functions[index].functionValue;
@@ -229,67 +215,63 @@ public class CompFunction : BaseComponent
                 {
                     if (obj[0] is BaseObj)
                     {
-                        var storage = ((BaseObj)obj[0]).GetFunctionComponent(ComponentFunctionType.Storage);
-                        if (storage != null)
+                        for (int i = 0; i < thisObj.curSelectedFunction.functionStringVal.Length; i++)
                         {
-                            for (int i = 0; i < thisObj.curSelectedFunction.functionStringVal.Length; i++)
-                            {
-                                ItemData data = new ItemData();
-                                data.itemID = thisObj.curSelectedFunction.functionStringVal[i];
-                                data.stackCount = thisObj.curSelectedFunction.functionIntVal[i];
-                                storage.ReceiveItem(data);
-                            }
+                            ItemData data = new ItemData();
+                            data.itemID = thisObj.curSelectedFunction.functionStringVal[i];
+                            data.stackCount = thisObj.curSelectedFunction.functionIntVal[i];
+                            ((BaseObj)obj[0]).ReceiveItem(data);
                         }
                     }
                     break;
                 }
-            case ComponentFunctionType.Storage:
-                {
-                    if (obj[0] is CompStorage && obj[1] is ItemData)
-                    {
-                        CompStorage targetStorage = (CompStorage)obj[0];
-                        ItemData transferedItem = (ItemData)obj[1];
+            //case ComponentFunctionType.Storage:
+            //    {
+            //        if (obj[0] is CompStorage && obj[1] is ItemData)
+            //        {
+            //            CompStorage targetStorage = (CompStorage)obj[0];
+            //            ItemData transferedItem = (ItemData)obj[1];
 
-                        for (int i = thisObj.inventory.Count - 1; i >= 0; i--)
-                        {
-                            if (thisObj.inventory[i].itemID == transferedItem.itemID)
-                            {
-                                if (thisObj.inventory[i].stackCount <= transferedItem.stackCount)
-                                {
-                                    ItemData dataTemp = new ItemData();
-                                    dataTemp.itemID = thisObj.inventory[i].itemID;
-                                    dataTemp.stackCount = thisObj.inventory[i].stackCount;
+            //            for (int i = thisObj.inventory.Count - 1; i >= 0; i--)
+            //            {
+            //                if (thisObj.inventory[i].itemID == transferedItem.itemID)
+            //                {
+            //                    if (thisObj.inventory[i].stackCount <= transferedItem.stackCount)
+            //                    {
+            //                        ItemData dataTemp = new ItemData();
+            //                        dataTemp.itemID = thisObj.inventory[i].itemID;
+            //                        dataTemp.stackCount = thisObj.inventory[i].stackCount;
 
-                                    var itemData = targetStorage.ReceiveItem(dataTemp);
-                                    transferedItem.stackCount -= thisObj.inventory[i].stackCount;
-                                    if (itemData.stackCount <= 0)
-                                    {
-                                        SetInvCount(i, 0);
-                                    }
-                                    else
-                                    {
-                                        SetInvCount(i, itemData.stackCount);
-                                    }
-                                }
-                                else
-                                {
-                                    var itemCount = transferedItem.stackCount;
-                                    var itemData = targetStorage.ReceiveItem(transferedItem);
-                                    var itemTransfered = itemCount - itemData.stackCount;
+            //                        var itemData = targetStorage.ReceiveItem(dataTemp);
+            //                        transferedItem.stackCount -= thisObj.inventory[i].stackCount;
+            //                        if (itemData.stackCount <= 0)
+            //                        {
+            //                            SetInvCount(i, 0);
+            //                        }
+            //                        else
+            //                        {
+            //                            SetInvCount(i, itemData.stackCount);
+            //                        }
+            //                    }
+            //                    else
+            //                    {
+            //                        var itemCount = transferedItem.stackCount;
+            //                        var itemData = targetStorage.ReceiveItem(transferedItem);
+            //                        var itemTransfered = itemCount - itemData.stackCount;
 
-                                    transferedItem.stackCount -= itemTransfered;
-                                    SetInvCount(i, thisObj.inventory[i].stackCount - itemTransfered);
-                                }
-                            }
-                            if (thisObj.inventory[i].stackCount <= 0)
-                            {
-                                thisObj.inventory.RemoveAt(i);
-                            }
-                            if (transferedItem.stackCount <= 0) break;
-                        }
-                    }
-                    break;
-                }
+            //                        transferedItem.stackCount -= itemTransfered;
+            //                        SetInvCount(i, thisObj.inventory[i].stackCount - itemTransfered);
+            //                    }
+            //                }
+            //                if (thisObj.inventory[i].stackCount <= 0)
+            //                {
+            //                    thisObj.inventory.RemoveAt(i);
+            //                }
+            //                if (transferedItem.stackCount <= 0) break;
+            //            }
+            //        }
+            //        break;
+            //    }
         }
     }
 
@@ -408,12 +390,11 @@ public class CompFunction : BaseComponent
                         }
                     case ComponentFunctionType.Production:
                         {
-                            var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
                             ItemData item = new ItemData();
                             item.itemID = thisCompData.functions[curSelectedIndex].functionStringVal[0];
                             item.stackCount = (int)thisCompData.functions[curSelectedIndex].functionFloatVal[0];
 
-                            storage.ReceiveItem(item);
+                            thisObj.ReceiveItem(item);
                             break;
                         }
                 }
@@ -700,135 +681,6 @@ public class CompFunction : BaseComponent
             }
             yield return new WaitForSeconds(thisObj.curSelectedFunction.functionFloatVal[0]);
         }
-    }
-    #endregion
-    #region Storage
-    public ItemData ReceiveItem(ItemData receivedItem)
-    {
-        //SO_ItemData itemInfo = DataController.Instance.GetItemInfo(receivedItem.itemID);
-        var itemData = DataController.Instance.GetItemData(receivedItem.itemID);
-
-        int index = 0;
-        do
-        {
-            if (index >= thisObj.inventory.Count && index < thisObj.maxStorageSlot)
-            {
-                var rec = new ItemData();
-                rec.itemID = receivedItem.itemID;
-                rec.stackCount = 0;
-                thisObj.inventory.Add(rec);
-            }
-
-            if (index < thisObj.inventory.Count)
-            {
-                if (thisObj.inventory[index].itemID == receivedItem.itemID)
-                {
-                    if (thisObj.inventory[index].stackCount + receivedItem.stackCount <= itemData.maxStackCount)
-                    {
-                        SetInvCount(index, thisObj.inventory[index].stackCount + receivedItem.stackCount);
-                        receivedItem.stackCount = 0;
-                    }
-                    else
-                    {
-                        var stackDiv = itemData.maxStackCount - thisObj.inventory[index].stackCount;
-                        SetInvCount(index, itemData.maxStackCount);
-                        receivedItem.stackCount -= stackDiv;
-                    }
-                }
-            }
-
-            index++;
-        } while (receivedItem.stackCount > 0 && index <= thisObj.maxStorageSlot);
-
-        return receivedItem;
-    }
-    public ItemData TransferItem(CompStorage targetStorage, ItemData transferedItem)
-    {
-        for (int i = thisObj.inventory.Count - 1; i >= 0; i--)
-        {
-            if (thisObj.inventory[i].itemID == transferedItem.itemID)
-            {
-                if (thisObj.inventory[i].stackCount <= transferedItem.stackCount)
-                {
-                    ItemData dataTemp = new ItemData();
-                    dataTemp.itemID = thisObj.inventory[i].itemID;
-                    dataTemp.stackCount = thisObj.inventory[i].stackCount;
-
-                    var itemData = targetStorage.ReceiveItem(dataTemp);
-                    transferedItem.stackCount -= thisObj.inventory[i].stackCount;
-                    if (itemData.stackCount <= 0)
-                    {
-                        SetInvCount(i, 0);
-                    }
-                    else
-                    {
-                        SetInvCount(i, itemData.stackCount);
-                    }
-                }
-                else
-                {
-                    var itemCount = transferedItem.stackCount;
-                    var itemData = targetStorage.ReceiveItem(transferedItem);
-                    var itemTransfered = itemCount - itemData.stackCount;
-
-                    transferedItem.stackCount -= itemTransfered;
-                    SetInvCount(i, thisObj.inventory[i].stackCount - itemTransfered);
-                }
-            }
-            if (thisObj.inventory[i].stackCount <= 0)
-            {
-                thisObj.inventory.RemoveAt(i);
-            }
-            if (transferedItem.stackCount <= 0) break;
-        }
-        return transferedItem;
-    }
-    public int GetItemCount(string itemID)
-    {
-        int result = 0;
-        foreach (var item in thisObj.inventory)
-        {
-            if (item.itemID == itemID)
-            {
-                result += item.stackCount;
-            }
-        }
-        return result;
-    }
-    public void RemoveItem(ItemData itemInfo)
-    {
-        for (int i = thisObj.inventory.Count - 1; i >= 0; i--)
-        {
-            if (thisObj.inventory[i].itemID == itemInfo.itemID)
-            {
-                if (thisObj.inventory[i].stackCount <= itemInfo.stackCount)
-                {
-                    ItemData dataTemp = new ItemData();
-                    dataTemp.itemID = thisObj.inventory[i].itemID;
-                    dataTemp.stackCount = thisObj.inventory[i].stackCount;
-
-                    itemInfo.stackCount -= thisObj.inventory[i].stackCount;
-                    SetInvCount(i, 0);
-                }
-                else
-                {
-                    SetInvCount(i, thisObj.inventory[i].stackCount - itemInfo.stackCount);
-                    itemInfo.stackCount = 0;
-                }
-            }
-            if (thisObj.inventory[i].stackCount <= 0)
-            {
-                thisObj.inventory.RemoveAt(i);
-            }
-            if (itemInfo.stackCount <= 0) break;
-        }
-    }
-    void SetInvCount(int index, int count)
-    {
-        ItemData temp = new ItemData();
-        temp.itemID = thisObj.inventory[index].itemID;
-        temp.stackCount = count;
-        thisObj.inventory[index] = temp;
     }
     #endregion
     #region Construct

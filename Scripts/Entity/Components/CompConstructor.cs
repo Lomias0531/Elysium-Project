@@ -26,21 +26,13 @@ public class CompConstructor : BaseComponent
     public override void OnApply(int index)
     {
         if (isConstructing) return;
-        var storage = thisObj.GetFunctionComponent(ComponentFunctionType.Storage);
         bool checkResources = true;
-        if (storage != null)
+        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
         {
-            for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+            if (thisObj.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
             {
-                if (storage.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
-                {
-                    checkResources = false;
-                }
+                checkResources = false;
             }
-        }
-        else
-        {
-            checkResources = false;
         }
 
         int availableTileCount = 0;
@@ -68,7 +60,7 @@ public class CompConstructor : BaseComponent
                 item.itemID = thisCompData.functions[index].functionStringVal[i];
                 item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
 
-                storage.RemoveItem(item);
+                thisObj.RemoveItem(item);
             }
             constructTimeElapsed = 0;
             constructTimeRequired = thisCompData.functions[index].functionFloatVal[0];

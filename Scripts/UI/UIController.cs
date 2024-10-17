@@ -17,6 +17,7 @@ public class UIController : Singletion<UIController>
     public Image img_hoveredUnitHP;
     public Image img_hoveredUnitEP;
     public Image img_hoveredUnitProgress;
+    public Transform tsf_InventoryItemContainer;
     [Space(1)]
     public GameObject obj_HoveredSkill;
     public Text txt_hoveredSkillName;
@@ -142,31 +143,31 @@ public class UIController : Singletion<UIController>
     }
     public void CreateUnitIndicators()
     {
-        foreach (var item in MapController.Instance.entityDic)
-        {
-            if(item.Value.Faction != "Resource")
-            {
-                var indicator = GameObject.Instantiate(unitIndicatorItem, tsf_UnitIndicatorContainer);
-                indicator.InitThis(item.Value);
-                indicator.gameObject.SetActive(true);
-                unitIndicatorItems.Add(item.Value, indicator);
-            }
-        }
+        //foreach (var item in MapController.Instance.entityDic)
+        //{
+        //    if(item.Value.Faction != "Resource")
+        //    {
+        //        var indicator = GameObject.Instantiate(unitIndicatorItem, tsf_UnitIndicatorContainer);
+        //        indicator.InitThis(item.Value);
+        //        indicator.gameObject.SetActive(true);
+        //        unitIndicatorItems.Add(item.Value, indicator);
+        //    }
+        //}
     }
     public void AddUnitIndicator(BaseObj obj)
     {
-        var indicator = GameObject.Instantiate(unitIndicatorItem, tsf_UnitIndicatorContainer);
-        indicator.InitThis(obj);
-        indicator.gameObject.SetActive(true);
-        unitIndicatorItems.Add(obj, indicator);
+        //var indicator = GameObject.Instantiate(unitIndicatorItem, tsf_UnitIndicatorContainer);
+        //indicator.InitThis(obj);
+        //indicator.gameObject.SetActive(true);
+        //unitIndicatorItems.Add(obj, indicator);
     }
     public void RemoveUnitIndicator(BaseObj obj)
     {
-        if(unitIndicatorItems.ContainsKey(obj))
-        {
-            Destroy(unitIndicatorItems[obj].gameObject);
-            unitIndicatorItems.Remove(obj);
-        }
+        //if(unitIndicatorItems.ContainsKey(obj))
+        //{
+        //    Destroy(unitIndicatorItems[obj].gameObject);
+        //    unitIndicatorItems.Remove(obj);
+        //}
     }
     public void InitMaintenanceScene()
     {
