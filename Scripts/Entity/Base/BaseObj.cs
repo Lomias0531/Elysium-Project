@@ -168,6 +168,7 @@ public abstract class BaseObj : MonoBehaviour
         componentBasements = attachments.ToList();
 
         maxStorageSlot = thisEntityData.MaxInventoryCount;
+        turretTurnRate = thisEntityData.TurretTurnRate;
 
         components = new List<BaseComponent>();
 

@@ -137,6 +137,7 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_EntityProductor;
     public Button btn_AddPresetComponents;
     public Transform tsf_PresetComponentItemContainer;
+    public InputField ipt_TurretTurnRate;
     [Space(1)]
     [Header("Items")]
     public CanvasGroup canvas_Items;
@@ -1121,6 +1122,7 @@ public class DataEditorMain : MonoBehaviour
         dpd_EntityType.captionText.text = data.entityType.ToString();
         ipt_EntityProductor.text = data.EntityProductor;
         ipt_InventorySlot.text = data.MaxInventoryCount.ToString();
+        ipt_TurretTurnRate.text = data.TurretTurnRate.ToString();
 
         if (data.InstalledComponents != null)
         {
@@ -1149,6 +1151,7 @@ public class DataEditorMain : MonoBehaviour
         newEntity.EntityProductor = ipt_EntityProductor.text;
         newEntity.MaxInventoryCount = int.Parse(ipt_InventorySlot.text);
         newEntity.EntityIndex = dpd_EntityIndex.captionText.text;
+        newEntity.TurretTurnRate = float.Parse(ipt_TurretTurnRate.text);
 
         List<string> stringList = new List<string>();
         List<int> intList = new List<int>();
@@ -1399,6 +1402,7 @@ public struct EntityData
     public string[] InstalledComponents;
     public int[] InstalledComponentsKey;
     public int MaxInventoryCount;
+    public float TurretTurnRate;
 }
 public enum EntityType
 {
