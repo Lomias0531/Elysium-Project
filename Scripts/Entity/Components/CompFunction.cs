@@ -207,7 +207,21 @@ public class CompFunction : BaseComponent
                     {
                         attackTile = (BaseTile)obj[0];
 
-                        CommenceAttack(attackTile);
+                        if(thisObj.tsf_Turret == null)
+                        {
+                            CommenceAttack(attackTile);
+                        }
+                        else
+                        {
+                            if(thisObj.isAimedAtTarget)
+                            {
+                                CommenceAttack(attackTile);
+                            }
+                            else
+                            {
+                                thisObj.SetTarget(attackTile);
+                            }
+                        }
                     }
                     break;
                 }
@@ -225,53 +239,6 @@ public class CompFunction : BaseComponent
                     }
                     break;
                 }
-            //case ComponentFunctionType.Storage:
-            //    {
-            //        if (obj[0] is CompStorage && obj[1] is ItemData)
-            //        {
-            //            CompStorage targetStorage = (CompStorage)obj[0];
-            //            ItemData transferedItem = (ItemData)obj[1];
-
-            //            for (int i = thisObj.inventory.Count - 1; i >= 0; i--)
-            //            {
-            //                if (thisObj.inventory[i].itemID == transferedItem.itemID)
-            //                {
-            //                    if (thisObj.inventory[i].stackCount <= transferedItem.stackCount)
-            //                    {
-            //                        ItemData dataTemp = new ItemData();
-            //                        dataTemp.itemID = thisObj.inventory[i].itemID;
-            //                        dataTemp.stackCount = thisObj.inventory[i].stackCount;
-
-            //                        var itemData = targetStorage.ReceiveItem(dataTemp);
-            //                        transferedItem.stackCount -= thisObj.inventory[i].stackCount;
-            //                        if (itemData.stackCount <= 0)
-            //                        {
-            //                            SetInvCount(i, 0);
-            //                        }
-            //                        else
-            //                        {
-            //                            SetInvCount(i, itemData.stackCount);
-            //                        }
-            //                    }
-            //                    else
-            //                    {
-            //                        var itemCount = transferedItem.stackCount;
-            //                        var itemData = targetStorage.ReceiveItem(transferedItem);
-            //                        var itemTransfered = itemCount - itemData.stackCount;
-
-            //                        transferedItem.stackCount -= itemTransfered;
-            //                        SetInvCount(i, thisObj.inventory[i].stackCount - itemTransfered);
-            //                    }
-            //                }
-            //                if (thisObj.inventory[i].stackCount <= 0)
-            //                {
-            //                    thisObj.inventory.RemoveAt(i);
-            //                }
-            //                if (transferedItem.stackCount <= 0) break;
-            //            }
-            //        }
-            //        break;
-            //    }
         }
     }
 
@@ -359,6 +326,16 @@ public class CompFunction : BaseComponent
                         }
                     }
                     FunctionTriggered(func);
+                }
+            }
+            if(func.functionType == ComponentFunctionType.Weapon)
+            {
+                if(this.functionTimeElapsed <= 0)
+                {
+                    if(thisObj.isAimedAtTarget)
+                    {
+                        CommenceAttack(attackTile);
+                    }
                 }
             }
         }
@@ -574,34 +551,8 @@ public class CompFunction : BaseComponent
             return;
         }
         attackTile = targetTile;
-        //if (EP < thisObj.curSelectedFunction.functionConsume) return;
 
-        if (thisObj.tsf_Turret != null)
-        {
-            var dir = thisObj.gameObject.transform.position - attackTile.gameObject.transform.position;
-            dir.y = 0;
-
-            float angle = Vector3.SignedAngle(thisObj.tsf_Turret.forward, dir, Vector3.up);
-            float rotateDir = Mathf.Sign(angle);
-
-            float step;
-
-            if (Mathf.Abs(angle) >= thisObj.turretTurnRate * Time.deltaTime)
-            {
-                step = rotateDir * thisObj.turretTurnRate * Time.deltaTime;
-
-                thisObj.tsf_Turret.Rotate(0, step, 0);
-                return;
-            }
-            else
-            {
-                step = angle;
-
-                thisObj.tsf_Turret.Rotate(0, step, 0);
-
-                if (functionTimeElapsed > 0) return;
-            }
-        }
+        thisObj.isAimedAtTarget = false;
 
         if (thisObj.curSelectedComp != this) return;
 
@@ -649,8 +600,7 @@ public class CompFunction : BaseComponent
                     break;
                 }
         }
-        attackTarget = null;
-
+        thisObj.SetTarget(null);
     }
     IEnumerator CreateProjectile(BaseTile target, bool curve)
     {

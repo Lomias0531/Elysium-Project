@@ -114,6 +114,7 @@ Transform:
   - {fileID: 973302745169291531}
   - {fileID: 6623272097052382779}
   - {fileID: 8322984343430078922}
+  - {fileID: 6200940952557124223}
   m_Father: {fileID: 3205769420500009021}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: -90, z: 0}
@@ -595,13 +596,15 @@ MonoBehaviour:
   EntityID: 
   animator: {fileID: 0}
   curTile: {fileID: 0}
-  tsf_Turret: {fileID: 0}
+  tsf_Turret: {fileID: 3205769420500009021}
   turretTurnRate: 0
   maxStorageSlot: 0
   inventory: []
   componentBasements: []
   WallBottomPoint: {fileID: 0}
   WallTopPoint: {fileID: 0}
+  isAimedAtTarget: 0
+  targetTile: {fileID: 0}
   objName: "\u5BFC\u5F39\u70AE\u5854"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -654,6 +657,55 @@ Transform:
   m_Father: {fileID: 3943190742616911310}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3025639086945791012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6200940952557124223}
+  - component: {fileID: 8865348203644678497}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6200940952557124223
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3025639086945791012}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0197, y: 0, z: 0.0229}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 293143713883802568}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8865348203644678497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3025639086945791012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b4084d63c1d494eb7408c869fa9a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachType: 0
+  spotKey: 0
+  MaxInstalledComp: 1
+  InstalledCompCount: 0
+  thisSpotName: 
 --- !u!1 &3242604639929486029
 GameObject:
   m_ObjectHideFlags: 0

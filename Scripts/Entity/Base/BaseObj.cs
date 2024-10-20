@@ -25,6 +25,9 @@ public abstract class BaseObj : MonoBehaviour
     public GameObject WallBottomPoint;
     public GameObject WallTopPoint;
 
+    public bool isAimedAtTarget = false;
+    public BaseTile targetTile;
+
     [HideInInspector]
     public MoveType[] moveType
     {
@@ -157,7 +160,7 @@ public abstract class BaseObj : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        
+        AimAtTarget();
     }
     public virtual void InitThis()
     {
@@ -566,4 +569,44 @@ public abstract class BaseObj : MonoBehaviour
         inventory[index] = temp;
     }
     #endregion
+    void AimAtTarget()
+    {
+        if (targetTile == null) return;
+        if(tsf_Turret == null)
+        {
+            isAimedAtTarget = true;
+            return;
+        }else
+        {
+            isAimedAtTarget = false;
+
+            var dir = this.gameObject.transform.position - targetTile.gameObject.transform.position;
+            dir.y = 0;
+
+            float angle = Vector3.SignedAngle(tsf_Turret.forward, dir, Vector3.up);
+            float rotateDir = Mathf.Sign(angle);
+
+            float step;
+
+            if (Mathf.Abs(angle) >= turretTurnRate * Time.deltaTime)
+            {
+                step = rotateDir * turretTurnRate * Time.deltaTime;
+
+                tsf_Turret.Rotate(0, step, 0);
+                return;
+            }
+            else
+            {
+                step = angle;
+
+                tsf_Turret.Rotate(0, step, 0);
+
+                isAimedAtTarget = true;
+            }
+        }
+    }
+    public void SetTarget(BaseTile target)
+    {
+        targetTile = target;
+    }
 }
