@@ -590,6 +590,7 @@ public class CompFunction : BaseComponent
             case WeaponProjectileType.StraightProjectile:
                 {
                     StartCoroutine(CreateProjectile(targetTile, false));
+                    thisObj.Recoil();
                     break;
                 }
             case WeaponProjectileType.Melee:

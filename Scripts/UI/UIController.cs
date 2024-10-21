@@ -18,6 +18,8 @@ public class UIController : Singletion<UIController>
     public Image img_hoveredUnitEP;
     public Image img_hoveredUnitProgress;
     public Transform tsf_InventoryItemContainer;
+    public UIInventoryItem inventoryItem;
+    public List<UIInventoryItem> inventoryItems;
     [Space(1)]
     public GameObject obj_HoveredSkill;
     public Text txt_hoveredSkillName;
@@ -93,7 +95,26 @@ public class UIController : Singletion<UIController>
             {
                 img_hoveredUnitProgress.fillAmount = construct.progressValue;
             }
-        }else
+
+            foreach (var item in inventoryItems)
+            {
+                Destroy(item.gameObject);
+            }
+            inventoryItems.Clear();
+            for (int i = 0; i < obj.maxStorageSlot; i++)
+            {
+                var inv = Instantiate(inventoryItem, tsf_InventoryItemContainer);
+                inv.gameObject.SetActive(true);
+                inventoryItems.Add(inv);
+                ItemData newInv = new ItemData();
+                inv.UpdateInventory(newInv);
+            }
+            for (int i = 0; i < obj.inventory.Count; i++)
+            {
+                inventoryItems[i].UpdateInventory(obj.inventory[i]);
+            }
+        }
+        else
         {
             obj_hoveredUnit.SetActive(false);
         }

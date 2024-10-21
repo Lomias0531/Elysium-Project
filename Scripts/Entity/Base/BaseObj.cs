@@ -28,6 +28,9 @@ public abstract class BaseObj : MonoBehaviour
     public bool isAimedAtTarget = false;
     public BaseTile targetTile;
 
+    float recoilTime;
+    float recoilRadius;
+
     [HideInInspector]
     public MoveType[] moveType
     {
@@ -161,6 +164,19 @@ public abstract class BaseObj : MonoBehaviour
     public virtual void Update()
     {
         AimAtTarget();
+
+        if(tsf_Turret != null)
+        {
+            if(recoilTime > 0)
+            {
+                recoilTime -= Time.deltaTime;
+                tsf_Turret.localPosition = tsf_Turret.forward * recoilRadius * recoilTime;
+            }else
+            {
+                recoilTime = 0;
+                tsf_Turret.localPosition = Vector3.zero;
+            }
+        }
     }
     public virtual void InitThis()
     {
@@ -608,5 +624,10 @@ public abstract class BaseObj : MonoBehaviour
     public void SetTarget(BaseTile target)
     {
         targetTile = target;
+    }
+    public void Recoil()
+    {
+        recoilTime = 0.3f;
+        recoilRadius = 0.5f;
     }
 }

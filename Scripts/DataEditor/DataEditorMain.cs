@@ -814,6 +814,10 @@ public class DataEditorMain : MonoBehaviour
                     txt_FunctionValueDesc.text = "建造时间";
 
                     dpd_ConstructItemID.captionText.text = constructItemIDNamePair[func.functionStringVal[0].ToString()];
+                    var list = constructItemIDNamePair.Keys.ToList();
+                    var index = list.FindIndex(x=> x == func.functionStringVal[0]);
+                    dpd_ConstructItemID.value = index;
+
                     ipt_FunctionValue.text = func.functionFloatVal[0].ToString();
                     for(int i = 1;i<func.functionStringVal.Length;i++)
                     {
@@ -832,6 +836,10 @@ public class DataEditorMain : MonoBehaviour
                     txt_FunctionValueDesc.text = "建造时间";
 
                     dpd_BuildItemID.captionText.text = buildItemIDNamePair[func.functionStringVal[0].ToString()];
+                    var list = buildItemIDNamePair.Keys.ToList();
+                    var index = list.FindIndex(x => x == func.functionStringVal[0]);
+                    dpd_BuildItemID.value = index;
+
                     ipt_FunctionValue.text = func.functionFloatVal[0].ToString();
                     ipt_BuildRange.text = func.functionValue.ToString();
                     for (int i = 1; i < func.functionStringVal.Length; i++)
