@@ -903,10 +903,12 @@ public class DataEditorMain : MonoBehaviour
                     {
                         var pairItem = Instantiate(stringValuePairItem);
                         pairItem.gameObject.SetActive(true);
-                        pairItem.transform.SetParent(tsf_builderKeyValuePairContainer);
-                        StartCoroutine(pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionIntVal[i], this));
+                        pairItem.transform.SetParent(tsf_ResourcePairContainer);
+                        StartCoroutine(pairItem.InitThis(StringIndexType.Item, func.functionStringVal[i], func.functionIntVal[i], this));
                         KeyValuePairItems.Add(pairItem);
                     }
+
+                    StartCoroutine(RearrangePair(tsf_ResourcePairContainer));
                     break;
                 }
             case ComponentFunctionType.Production:
@@ -920,10 +922,12 @@ public class DataEditorMain : MonoBehaviour
                     {
                         var pairItem = Instantiate(stringValuePairItem);
                         pairItem.gameObject.SetActive(true);
-                        pairItem.transform.SetParent(tsf_builderKeyValuePairContainer);
+                        pairItem.transform.SetParent(tsf_ProductionKeyValuePairContainer);
                         StartCoroutine(pairItem.InitThis(StringIndexType.Item, func.functionStringVal[i], func.functionIntVal[i], this));
                         KeyValuePairItems.Add(pairItem);
                     }
+
+                    StartCoroutine(RearrangePair(tsf_ProductionKeyValuePairContainer));
                     break;
                 }
         }
