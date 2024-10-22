@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using static BaseObj;
 using static CompWeapon;
+using static UnityEngine.EventSystems.EventTrigger;
 using Random = UnityEngine.Random;
 
 public class CompFunction : BaseComponent
@@ -236,6 +237,8 @@ public class CompFunction : BaseComponent
                             data.stackCount = thisObj.Components[0].thisCompData.functions[0].functionIntVal[i];
                             ((BaseObj)obj[0]).ReceiveItem(data);
                         }
+
+                        GenerateParticle(thisObj);
                     }
                     break;
                 }
@@ -672,6 +675,17 @@ public class CompFunction : BaseComponent
             var laserBeam = ObjectPool.Instance.CreateObject("LaserBeam", laserInstance, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_LaerBeam>();
 
             laserBeam.TriggerThis(tsf_InstalledSlot.position, target.gameObject.transform.position, new Color(0, 0, 1, 0.75f));
+        }
+    }
+    #endregion
+    #region Resources
+    void GenerateParticle(BaseObj target)
+    {
+        var particle = (GameObject)Resources.Load("Prefabs/Particles/Sparkle");
+        if(particle != null)
+        {
+            var sparkle = ObjectPool.Instance.CreateObject("Sparkle", particle, target.gameObject.transform.position, Quaternion.identity);
+            ObjectPool.Instance.CollectObject(sparkle, 2f);
         }
     }
     #endregion
