@@ -229,11 +229,11 @@ public class CompFunction : BaseComponent
                 {
                     if (obj[0] is BaseObj)
                     {
-                        for (int i = 0; i < thisObj.curSelectedFunction.functionStringVal.Length; i++)
+                        for (int i = 0; i < thisObj.Components[0].thisCompData.functions[0].functionStringVal.Length; i++)
                         {
                             ItemData data = new ItemData();
-                            data.itemID = thisObj.curSelectedFunction.functionStringVal[i];
-                            data.stackCount = thisObj.curSelectedFunction.functionIntVal[i];
+                            data.itemID = thisObj.Components[0].thisCompData.functions[0].functionStringVal[i];
+                            data.stackCount = thisObj.Components[0].thisCompData.functions[0].functionIntVal[i];
                             ((BaseObj)obj[0]).ReceiveItem(data);
                         }
                     }

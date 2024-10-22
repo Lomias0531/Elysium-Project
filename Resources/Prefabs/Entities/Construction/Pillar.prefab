@@ -92,6 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8176451302631160666}
+  - component: {fileID: -2378867934820091262}
   m_Layer: 0
   m_Name: Pillar
   m_TagString: Untagged
@@ -115,6 +116,49 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2378867934820091262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110044546812186745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a35856893bec7844cb94a90eb2517bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pos: {x: 0, y: 0, z: 0}
+  EntityID: 
+  animator: {fileID: 0}
+  curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
+  WallBottomPoint: {fileID: 0}
+  WallTopPoint: {fileID: 0}
+  isAimedAtTarget: 0
+  targetTile: {fileID: 0}
+  objName: '?'
+  Faction: 
+  curSelectedComp: {fileID: 0}
+  curSelectedFunction:
+    functionType: 0
+    functionName: 
+    functionIconPath: 
+    functionIconIndex: 0
+    functionApplyTimeInterval: 0
+    functionValue: 0
+    functionConsume: 0
+    canBeAuto: 0
+    isAuto: 0
+    functionIntVal: 
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: 
 --- !u!1 &775911260361888416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1703,6 +1747,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2147985544539313008}
+  - component: {fileID: 8908380613305957804}
   m_Layer: 0
   m_Name: Pillar_1(Clone)
   m_TagString: Untagged
@@ -1772,6 +1817,23 @@ Transform:
   m_Father: {fileID: 8176451302631160666}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8908380613305957804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3317900732635244227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b4084d63c1d494eb7408c869fa9a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachType: 0
+  spotKey: 0
+  MaxInstalledComp: 1
+  InstalledCompCount: 0
+  thisSpotName: 
 --- !u!1 &3572191125448440350
 GameObject:
   m_ObjectHideFlags: 0

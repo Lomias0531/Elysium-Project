@@ -124,7 +124,9 @@ public class DataEditorMain : MonoBehaviour
     [Space(1)]
     [Header("Resources Components")]
     public CanvasGroup canvas_Resource;
-    public Dropdown dpd_RespurceType;
+    //public Dropdown dpd_RespurceType;
+    public Button btn_AddResourceAcquire;
+    public Transform tsf_ResourcePairContainer;
     [Space(1)]
     [Header("Production Components")]
     public CanvasGroup canvas_Product;
@@ -197,6 +199,7 @@ public class DataEditorMain : MonoBehaviour
         btn_AddProductKeyValuePair.onClick.AddListener(AddProductionStrValuePair);
         dpd_EntityType.onValueChanged.AddListener(OnEntityTypeChanged);
         btn_SelectCompIcon.onClick.AddListener(SelectCompIcon);
+        btn_AddResourceAcquire.onClick.AddListener(AddResourceAcquireStrValuePair);
     }
     void AddPages()
     {
@@ -697,13 +700,13 @@ public class DataEditorMain : MonoBehaviour
                 }
             case ComponentFunctionType.Resource:
                 {
-                    txt_FunctionValueDesc.text = "资源获取";
+                    txt_FunctionValueDesc.text = "无效参数";
 
-                    dpd_RespurceType.ClearOptions();
-                    foreach (var item in Enum.GetNames(typeof(BaseResource.ResourceType)))
-                    {
-                        dpd_RespurceType.options.Add(new Dropdown.OptionData() { text = item });
-                    }
+                    //dpd_RespurceType.ClearOptions();
+                    //foreach (var item in Enum.GetNames(typeof(BaseResource.ResourceType)))
+                    //{
+                    //    dpd_RespurceType.options.Add(new Dropdown.OptionData() { text = item });
+                    //}
                     break;
                 }
             case ComponentFunctionType.Production:
@@ -895,8 +898,15 @@ public class DataEditorMain : MonoBehaviour
                 {
                     txt_FunctionValueDesc.text = "资源获取";
 
-                    dpd_RespurceType.captionText.text = ((BaseResource.ResourceType)func.functionIntVal[0]).ToString();
-                    dpd_RespurceType.value = func.functionIntVal[0];
+                    if (func.functionStringVal == null) break;
+                    for(int i = 0;i<func.functionStringVal.Length;i++)
+                    {
+                        var pairItem = Instantiate(stringValuePairItem);
+                        pairItem.gameObject.SetActive(true);
+                        pairItem.transform.SetParent(tsf_builderKeyValuePairContainer);
+                        StartCoroutine(pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionIntVal[i], this));
+                        KeyValuePairItems.Add(pairItem);
+                    }
                     break;
                 }
             case ComponentFunctionType.Production:
@@ -1060,11 +1070,16 @@ public class DataEditorMain : MonoBehaviour
                 }
             case ComponentFunctionType.Resource:
                 {
-                    List<int> intList = new List<int>()
+                    List<string> strList = new List<string>();
+                    List<int> intList = new List<int>();
+                    foreach (var item in KeyValuePairItems)
                     {
-                        dpd_RespurceType.value,
-                    };
+                        var result = item.GetThisValue();
+                        strList.Add(result.str);
+                        intList.Add((int)result.val);
+                    }
 
+                    newFunction.functionStringVal = strList.ToArray();
                     newFunction.functionIntVal = intList.ToArray();
                     break;
                 }
@@ -1435,6 +1450,10 @@ public class DataEditorMain : MonoBehaviour
     void AddProductionStrValuePair()
     {
         AddStrValuePair(tsf_ProductionKeyValuePairContainer, StringIndexType.Item);
+    }
+    void AddResourceAcquireStrValuePair()
+    {
+        AddStrValuePair(tsf_ResourcePairContainer, StringIndexType.Item);
     }
     void AddStrValuePair(Transform tsf_Container, StringIndexType type)
     {
