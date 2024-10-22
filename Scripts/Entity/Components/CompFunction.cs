@@ -620,7 +620,7 @@ public class CompFunction : BaseComponent
         for (int i = 0; i < thisObj.curSelectedFunction.functionIntVal[4]; i++)
         {
             var targetTile = Random.Range(0, tilesWeight.Count);
-            Vector3 destination = tilesWeight[targetTile].transform.position;
+            var destination = tilesWeight[targetTile];
 
             var projectile = (GameObject)Resources.Load("Prefabs/Projectile/Ballistic");
             if (projectile != null)
