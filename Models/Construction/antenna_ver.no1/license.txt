@@ -1,0 +1,11 @@
+Model Information:
+* title:	Antenna ver.№1
+* source:	https://sketchfab.com/3d-models/antenna-verno1-6d630159e7b74337afd45c638fb0149f
+* author:	Dackmarr (https://sketchfab.com/Dackmarr)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Antenna ver.№1" (https://sketchfab.com/3d-models/antenna-verno1-6d630159e7b74337afd45c638fb0149f) by Dackmarr (https://sketchfab.com/Dackmarr) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

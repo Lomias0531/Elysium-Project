@@ -10,7 +10,7 @@ public class CompStorage : BaseComponent
     public override void OnApply(int index)
     {
         //PlayerController.Instance.GetInteractRange(InteractFunction.Store);
-        StartCoroutine(UIController.Instance.unitMenu.ShowEntityInventory());
+        //StartCoroutine(UIController.Instance.unitMenu.ShowEntityInventory());
     }
 
     public override void OnDestroyThis()

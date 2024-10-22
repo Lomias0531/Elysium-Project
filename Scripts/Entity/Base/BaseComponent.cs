@@ -10,6 +10,7 @@ public abstract class BaseComponent : MonoBehaviour
     public float MaxEP;
 
     public float functionTimeElapsed = 0;
+    public float functionTimeRequired = 0;
     public bool isAvailable = true;
 
     public ComponentData thisCompData;
@@ -43,6 +44,7 @@ public abstract class BaseComponent : MonoBehaviour
         thisObj.curSelectedComp = this;
         thisObj.curSelectedFunction = function;
         functionTimeElapsed = function.functionApplyTimeInterval;
+        functionTimeRequired = function.functionApplyTimeInterval;
         EP -= function.functionConsume;
     }
     public void InitThis()

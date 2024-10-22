@@ -106,8 +106,8 @@ public class DataEditorStringValuePair : MonoBehaviour
         if(curSelectedNames.ContainsKey(str))
         {
             var list = curSelectedNames.Keys.ToList();
-            dpd_String.value = list.FindIndex(x => x == str);
             dpd_String.captionText.text = curSelectedNames[str];
+            dpd_String.value = list.FindIndex(x => x == str);
         }
         ipt_Value.text = value.ToString();
     }

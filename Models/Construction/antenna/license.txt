@@ -1,0 +1,11 @@
+Model Information:
+* title:	Antenna
+* source:	https://sketchfab.com/3d-models/antenna-2727194ea8664d5fa5564b4313939763
+* author:	Vitalii Sushko (Zhick) (https://sketchfab.com/aspiresilence)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Antenna" (https://sketchfab.com/3d-models/antenna-2727194ea8664d5fa5564b4313939763) by Vitalii Sushko (Zhick) (https://sketchfab.com/aspiresilence) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

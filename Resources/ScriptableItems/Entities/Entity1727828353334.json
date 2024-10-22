@@ -1,1 +1,1 @@
-{"EntityID":"Entity1727828353334","EntityName":"发电厂","EntityIndex":"Generator","entityType":1,"EntityProductor":"","InstalledComponents":["Comp1723102942095"],"InstalledComponentsKey":[0]}
+{"EntityID":"Entity1727828353334","EntityName":"发电厂","EntityIndex":"Generator","entityType":1,"EntityProductor":"","InstalledComponents":["Comp1723102942095"],"InstalledComponentsKey":[0],"MaxInventoryCount":0,"TurretTurnRate":0.0}

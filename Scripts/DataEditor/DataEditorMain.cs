@@ -7,9 +7,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 using UnityEditor;
-using DG.Tweening.Plugins.Core.PathCore;
-using Unity.VisualScripting;
-using static UnityEditor.Progress;
 
 public class DataEditorMain : MonoBehaviour
 {
@@ -50,6 +47,8 @@ public class DataEditorMain : MonoBehaviour
     public InputField ipt_ComponentProductor;
     public Dropdown dpd_CompFuncType;
     public Dropdown dpd_CompAttachType;
+    public Button btn_SelectCompIcon;
+    public Image img_CompIcon;
     [Space(2)]
     [Header("FunctionsCommon")]
     public Button btn_ConfirmFunctionEdit;
@@ -76,6 +75,15 @@ public class DataEditorMain : MonoBehaviour
     //IconSelectorItem selectedIcon;
     string selectedIconPath = "";
     int selectedIconIndex = -1;
+    string selectedCompIconPath = "";
+    int selectedCompIconIndex = -1;
+    public IconSource curIconSource;
+    public enum IconSource
+    {
+        Component,
+        Function,
+        Items,
+    }
     List<IconSelectorItem> iconSelectorItems = new List<IconSelectorItem>();
     [Space(1)]
     [Header("Mobile Components")]
@@ -187,6 +195,8 @@ public class DataEditorMain : MonoBehaviour
         btn_AddPresetComponents.onClick.AddListener(AddPresetComponentsStrValuePair);
         btn_SelectItemIcon.onClick.AddListener(SelectComponentIcon);
         btn_AddProductKeyValuePair.onClick.AddListener(AddProductionStrValuePair);
+        dpd_EntityType.onValueChanged.AddListener(OnEntityTypeChanged);
+        btn_SelectCompIcon.onClick.AddListener(SelectCompIcon);
     }
     void AddPages()
     {
@@ -515,7 +525,11 @@ public class DataEditorMain : MonoBehaviour
         dpd_CompAttachType.value = (int)curEditComponent.attachType;
         dpd_CompAttachType.captionText.text = curEditComponent.attachType.ToString();
 
-        if(curEditComponent.functions != null)
+        img_CompIcon.sprite = Tools.GetIcon(curEditComponent.ComponentIconPath, curEditComponent.ComponentIconIndex);
+        selectedCompIconPath = curEditComponent.ComponentIconPath;
+        selectedCompIconIndex = curEditComponent.ComponentIconIndex;
+
+        if (curEditComponent.functions != null)
         {
             foreach (var function in curEditComponent.functions)
             {
@@ -543,6 +557,8 @@ public class DataEditorMain : MonoBehaviour
         newComponentData.ComponentProductor = ipt_ComponentProductor.text;
         newComponentData.thisCompType = (CompType)dpd_CompFuncType.value;
         newComponentData.attachType = (ComponentAttachType)dpd_CompAttachType.value;
+        newComponentData.ComponentIconPath = selectedCompIconPath;
+        newComponentData.ComponentIconIndex = selectedCompIconIndex;
         List<CompFunctionDetail> details = new List<CompFunctionDetail>();
         foreach (var func in compFunctionsItems)
         {
@@ -1075,6 +1091,10 @@ public class DataEditorMain : MonoBehaviour
         }
         curSelectedFunction.InitThis(newFunction);
     }
+    void SelectCompIcon()
+    {
+        TriggerSelectIcon(IconSource.Component);
+    }
     void CancelFunctionEdit()
     {
         OnComponentTypeChanged(0);
@@ -1104,15 +1124,43 @@ public class DataEditorMain : MonoBehaviour
         KeyValuePairItems.Clear();
 
         List<FileInfo> indexList = new List<FileInfo>();
-        var dicPath = Application.dataPath + "/Resources/Prefabs/Characters/";
-        var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList();
-        indexList.AddRange(folderInfo);
-        dicPath = Application.dataPath + "/Resources/Prefabs/Entities/Construction/";
-        indexList.AddRange(new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList());
-        dicPath = Application.dataPath + "/Resources/Prefabs/Entities/Nature/";
-        indexList.AddRange(new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList());
+
+        switch (data.entityType)
+        {
+            default:
+                {
+                    break;
+                }
+            case EntityType.Unit:
+                {
+                    var dicPath = Application.dataPath + "/Resources/Prefabs/Characters/";
+                    var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList();
+                    indexList.AddRange(folderInfo);
+                    break;
+                }
+            case EntityType.Construct:
+                {
+                    var dicPath = Application.dataPath + "/Resources/Prefabs/Entities/Construction/";
+                    indexList.AddRange(new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList());
+                    break;
+                }
+            case EntityType.Resource:
+                {
+
+                    var dicPath = Application.dataPath + "/Resources/Prefabs/Entities/Nature/";
+                    indexList.AddRange(new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList());
+                    break;
+                }
+        }
+
         dpd_EntityIndex.ClearOptions();
-        for(int i = 0;i<indexList.Count;i++)
+        for (int i = 0; i < indexList.Count; i++)
+        {
+            var name = indexList[i].Name.Split('.');
+            dpd_EntityIndex.options.Add(new Dropdown.OptionData() { text = name[0] });
+        }
+
+        for (int i = 0;i<indexList.Count;i++)
         {
             var name = indexList[i].Name.Split('.');
             dpd_EntityIndex.options.Add(new Dropdown.OptionData() { text = name[0] });
@@ -1178,6 +1226,45 @@ public class DataEditorMain : MonoBehaviour
 
         LoadData(curDic);
     }
+    void OnEntityTypeChanged(int value)
+    {
+        List<FileInfo> indexList = new List<FileInfo>();
+
+        switch ((EntityType)value)
+        {
+            default:
+                {
+                    break;
+                }
+            case EntityType.Unit:
+                {
+                    var dicPath = Application.dataPath + "/Resources/Prefabs/Characters/";
+                    var folderInfo = new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList();
+                    indexList.AddRange(folderInfo);
+                    break;
+                }
+            case EntityType.Construct:
+                {
+                    var dicPath = Application.dataPath + "/Resources/Prefabs/Entities/Construction/";
+                    indexList.AddRange(new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList());
+                    break;
+                }
+            case EntityType.Resource:
+                {
+
+                    var dicPath = Application.dataPath + "/Resources/Prefabs/Entities/Nature/";
+                    indexList.AddRange(new DirectoryInfo(dicPath).GetFiles("*.prefab").ToList());
+                    break;
+                }
+        }
+
+        dpd_EntityIndex.ClearOptions();
+        for (int i = 0; i < indexList.Count; i++)
+        {
+            var name = indexList[i].Name.Split('.');
+            dpd_EntityIndex.options.Add(new Dropdown.OptionData() { text = name[0] });
+        }
+    }
     #endregion
     #region Items
     void LoadItemsData(ItemDataEditor data)
@@ -1219,10 +1306,11 @@ public class DataEditorMain : MonoBehaviour
     #region Utilities
     void SelectComponentIcon()
     {
-        TriggerSelectIcon();
+        TriggerSelectIcon(IconSource.Function);
     }
-    void TriggerSelectIcon()
+    void TriggerSelectIcon(IconSource cource)
     {
+        curIconSource = cource;
         canvas_IconSelector.alpha = 1;
         canvas_IconSelector.blocksRaycasts = true;
         canvas_IconSelector.interactable = true;
@@ -1259,10 +1347,25 @@ public class DataEditorMain : MonoBehaviour
         canvas_IconSelector.blocksRaycasts = false;
         canvas_IconSelector.interactable = false;
 
-        if(!string.IsNullOrEmpty(selectedIconPath))
+        switch(curIconSource)
         {
-            img_Icon.sprite = Tools.GetIcon(selectedIconPath, selectedIconIndex);
-            img_ItemIcon.sprite = Tools.GetIcon(selectedIconPath, selectedIconIndex);
+            default:
+                {
+                    if (!string.IsNullOrEmpty(selectedIconPath))
+                    {
+                        img_Icon.sprite = Tools.GetIcon(selectedIconPath, selectedIconIndex);
+                        img_ItemIcon.sprite = Tools.GetIcon(selectedIconPath, selectedIconIndex);
+                    }
+                    break;
+                }
+            case IconSource.Component:
+                {
+                    if (!string.IsNullOrEmpty(selectedCompIconPath))
+                    {
+                        img_CompIcon.sprite = Tools.GetIcon(selectedCompIconPath, selectedCompIconIndex);
+                    }
+                    break;
+                }
         }
     }
     void OnCancelIcon()
@@ -1276,8 +1379,27 @@ public class DataEditorMain : MonoBehaviour
     }
     public void OnConfirmSelectIconItem(IconSelectorItem item)
     {
-        selectedIconPath = item.iconName;
-        selectedIconIndex = item.iconIndex;
+        switch(curIconSource)
+        {
+            default:
+                {
+                    selectedIconPath = item.iconName;
+                    selectedIconIndex = item.iconIndex;
+                    break;
+                }
+            case IconSource.Function:
+                {
+                    selectedIconPath = item.iconName;
+                    selectedIconIndex = item.iconIndex;
+                    break;
+                }
+            case IconSource.Component:
+                {
+                    selectedCompIconPath = item.iconName;
+                    selectedCompIconIndex = item.iconIndex;
+                    break;
+                }
+        }
 
         foreach (var iconItem in iconSelectorItems)
         {
@@ -1351,6 +1473,8 @@ public struct ComponentData
     public string ComponentProductor;
     public CompType thisCompType;
     public ComponentAttachType attachType;
+    public string ComponentIconPath;
+    public int ComponentIconIndex;
 }
 [Serializable]
 public struct CompFunctionDetail

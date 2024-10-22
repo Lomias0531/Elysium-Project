@@ -28,6 +28,15 @@ public class UIController : Singletion<UIController>
     public Image img_hoveredSkillIcon;
     public Text txt_countType;
     [Space(1)]
+    public GameObject obj_HoveredComponent;
+    public Text txt_hoveredCompName;
+    public Image img_hoveredCompIcon;
+    public Image img_hoveredCompHP;
+    public Image img_HoveredCompEP;
+    public Transform tsf_compFunctionContainer;
+    public Image img_compFunctionIconItem;
+    public List<Image> compFunctionIconItems;
+    [Space(1)]
     public GameObject obj_MaterialsMenu;
     public Text txt_organicAmount;
     public Text txt_constructAmount;
@@ -125,6 +134,7 @@ public class UIController : Singletion<UIController>
     public void DisplaySelectedUnitInfo(BaseObj obj)
     {
         unitMenu.OnSelectUnit(obj);
+        obj_HoveredComponent.SetActive(false);
     }
     public void ShowResourceAmount()
     {
@@ -161,6 +171,36 @@ public class UIController : Singletion<UIController>
     public void HideHoveredSkillInfo()
     {
         obj_HoveredSkill.SetActive(false);
+    }
+    public void DisplayHoveredCompInfo(BaseComponent thisComp)
+    {
+        obj_HoveredComponent.SetActive(true);
+        txt_hoveredCompName.text = thisComp.thisCompData.ComponentName;
+        img_hoveredCompIcon.sprite = Tools.GetIcon(thisComp.thisCompData.ComponentIconPath,thisComp.thisCompData.ComponentIconIndex);
+        img_hoveredCompHP.fillAmount = thisComp.HP / thisComp.MaxHP;
+        img_HoveredCompEP.fillAmount = thisComp.EP / thisComp.MaxEP;
+
+        foreach (var item in compFunctionIconItems)
+        {
+            Destroy(item.gameObject);
+        }
+        compFunctionIconItems.Clear();
+
+        if(thisComp.thisCompData.functions.Length > 0)
+        {
+            for(int i = 0;i<thisComp.thisCompData.functions.Length;i++)
+            {
+                var func = thisComp.thisCompData.functions[i];
+                var img = Instantiate(img_compFunctionIconItem, tsf_compFunctionContainer);
+                img.gameObject.SetActive(true);
+                img.sprite = Tools.GetIcon(func.functionIconPath, func.functionIconIndex);
+                compFunctionIconItems.Add(img);
+            }
+        }
+    }
+    public void HideHoveredCompInfo()
+    {
+        obj_HoveredComponent.SetActive(false);
     }
     public void CreateUnitIndicators()
     {

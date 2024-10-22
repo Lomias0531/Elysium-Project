@@ -15,6 +15,7 @@ public class UnitSelectMenu : MonoBehaviour
     public Image img_MP;
     public Image img_HP;
 
+    public CompTrigger compTrigger;
     public CompSkillTrigger skillTrigger;
     public CompItemTrigger itemTrigger;
     public Transform tsf_SkillTriggerContainer;
@@ -49,10 +50,6 @@ public class UnitSelectMenu : MonoBehaviour
         if (angle > 180) angle -= 180;
         if (angle < -180) angle += 180;
 
-        //if(Mathf.Abs(angle) > 10)
-        //{
-        //    Debug.Log(target + " " + self);
-        //}
         if(selectedObj != null)
         {
             this.transform.position = selectedObj.transform.position;
@@ -131,17 +128,7 @@ public class UnitSelectMenu : MonoBehaviour
 
             if (selectedObj.Faction == "Elysium")
             {
-                foreach (var comp in selectedObj.Components)
-                {
-                    if (comp.thisCompData.functions == null) continue;
-                    for (int i = 0; i < comp.thisCompData.functions.Length; i++)
-                    {
-                        var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
-                        trigger.gameObject.SetActive(true);
-                        skillTriggers.Add(trigger);
-                        trigger.InitThis(true, i, comp, this);
-                    }
-                }
+                StartCoroutine(ShowEntityComp());
             }
 
             expandRoutine = StartCoroutine(ExpandThis());
@@ -192,42 +179,7 @@ public class UnitSelectMenu : MonoBehaviour
         SetUIDegrees(1f);
         expandFinished = true;
     }
-    public IEnumerator ShowEntityInventory()
-    {
-        float iconExpandTime = 0f;
-        do
-        {
-            var val = 1f - iconExpandTime / 0.2f;
-            SetIconDegrees(val);
-            iconExpandTime += Time.deltaTime;
-            yield return null;
 
-        } while (iconExpandTime <= 0.2f);
-        foreach (var trigger in skillTriggers)
-        {
-            Destroy(trigger.gameObject);
-        }
-        skillTriggers.Clear();
-        var inv = selectedObj.GetDesiredComponent<CompStorage>();
-        if(inv != null)
-        {
-            for(int i = 0;i<inv.inventory.Count;i++)
-            {
-                var trigger = GameObject.Instantiate(itemTrigger, tsf_SkillTriggerContainer);
-                trigger.gameObject.SetActive(true);
-                skillTriggers.Add(trigger);
-                trigger.InitThis(inv, i, this);
-            }
-        }
-        iconExpandTime = 0f;
-        do
-        {
-            var val = iconExpandTime / 0.2f;
-            SetIconDegrees(val);
-            iconExpandTime += Time.deltaTime;
-            yield return null;
-        } while (iconExpandTime <= 0.2f);
-    }
     void SetUIDegrees(float val)
     {
         foreach (var item in HPBars)
@@ -345,5 +297,88 @@ public class UnitSelectMenu : MonoBehaviour
                 item.Value.transform.DOLocalMoveZ(0f, 0.2f);
             }
         }
+    }
+    public IEnumerator ShowEntityComp()
+    {
+        yield return null;
+        foreach (var comp in selectedObj.Components)
+        {
+            var trigger = GameObject.Instantiate(compTrigger, tsf_SkillTriggerContainer);
+            trigger.gameObject.SetActive(true);
+            skillTriggers.Add(trigger);
+            trigger.InitThis(comp, this);
+        }
+    }
+    public IEnumerator ShowCompFunction(BaseComponent comp)
+    {
+        if (comp.thisCompData.functions.Length <= 0) yield break;
+        float iconExpandTime = 0f;
+        do
+        {
+            var val = 1f - iconExpandTime / 0.2f;
+            SetIconDegrees(val);
+            iconExpandTime += Time.deltaTime;
+            yield return null;
+
+        } while (iconExpandTime <= 0.2f);
+        foreach (var trigger in skillTriggers)
+        {
+            Destroy(trigger.gameObject);
+        }
+        skillTriggers.Clear();
+
+        for(int i = 0;i<comp.thisCompData.functions.Length;i++)
+        {
+            var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
+            trigger.gameObject.SetActive(true);
+            skillTriggers.Add(trigger);
+            trigger.InitThis(true, i, comp, this);
+        }
+
+        iconExpandTime = 0f;
+        do
+        {
+            var val = iconExpandTime / 0.2f;
+            SetIconDegrees(val);
+            iconExpandTime += Time.deltaTime;
+            yield return null;
+        } while (iconExpandTime <= 0.2f);
+    }
+    public IEnumerator ShowEntityInventory()
+    {
+        if (selectedObj.maxStorageSlot <= 0) yield break;
+        float iconExpandTime = 0f;
+        do
+        {
+            var val = 1f - iconExpandTime / 0.2f;
+            SetIconDegrees(val);
+            iconExpandTime += Time.deltaTime;
+            yield return null;
+
+        } while (iconExpandTime <= 0.2f);
+        foreach (var trigger in skillTriggers)
+        {
+            Destroy(trigger.gameObject);
+        }
+        skillTriggers.Clear();
+        var inv = selectedObj.inventory;
+        if (inv != null)
+        {
+            for (int i = 0; i < inv.Count; i++)
+            {
+                var trigger = GameObject.Instantiate(itemTrigger, tsf_SkillTriggerContainer);
+                trigger.gameObject.SetActive(true);
+                skillTriggers.Add(trigger);
+                trigger.InitThis(selectedObj, i, this);
+            }
+        }
+        iconExpandTime = 0f;
+        do
+        {
+            var val = iconExpandTime / 0.2f;
+            SetIconDegrees(val);
+            iconExpandTime += Time.deltaTime;
+            yield return null;
+        } while (iconExpandTime <= 0.2f);
     }
 }

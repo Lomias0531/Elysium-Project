@@ -9,7 +9,7 @@ public class CompItemTrigger : BaseCompTrigger
 {
     public Text txt_itemCount;
 
-    CompStorage inv;
+    BaseObj inv;
     int index;
 
     UnitSelectMenu menu;
@@ -52,7 +52,7 @@ public class CompItemTrigger : BaseCompTrigger
         PlayerController.Instance.selectedObject.curSelectedFunction.functionIntVal[1] = index;
         PlayerController.Instance.GetInteractRange(ComponentFunctionType.Storage);
     }
-    public void InitThis(CompStorage storage, int _index, UnitSelectMenu _menu)
+    public void InitThis(BaseObj storage, int _index, UnitSelectMenu _menu)
     {
         inv = storage;
         index = _index;
