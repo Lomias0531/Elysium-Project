@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5094160742088781389}
-  - component: {fileID: -4932206636473239330}
+  - component: {fileID: 4741741315965686253}
   m_Layer: 0
   m_Name: ExtractTower
   m_TagString: Untagged
@@ -116,7 +116,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-4932206636473239330
+--- !u!114 &4741741315965686253
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,7 +125,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1352542082624836749}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a35856893bec7844cb94a90eb2517bf3, type: 3}
+  m_Script: {fileID: 11500000, guid: 65776914856f09d4391b3a895978d451, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Pos: {x: 0, y: 0, z: 0}
@@ -139,6 +139,8 @@ MonoBehaviour:
   componentBasements: []
   WallBottomPoint: {fileID: 0}
   WallTopPoint: {fileID: 0}
+  isAimedAtTarget: 0
+  targetTile: {fileID: 0}
   objName: "\u8D44\u6E90\u91C7\u96C6\u5854"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -157,6 +159,8 @@ MonoBehaviour:
     functionBoolVal: 
     functionStringVal: []
     functionDescription: 
+  EnergyConsumed: 0
+  BuildProgress: 0
 --- !u!1 &5729004104205143328
 GameObject:
   m_ObjectHideFlags: 0

@@ -135,6 +135,9 @@ public class DataEditorMain : MonoBehaviour
     public Button btn_AddProductKeyValuePair;
     Dictionary<string, string> productItemIDNamePair = new Dictionary<string, string>();
     [Space(1)]
+    [Header("Logistics Components")]
+    public CanvasGroup canvas_Logistics;
+    [Space(1)]
     [Header("Entities")]
     public CanvasGroup canvas_Entities;
     public InputField ipt_EneityID;
@@ -1531,6 +1534,7 @@ public enum ComponentFunctionType
     Storage,
     Resource,
     Production,
+    Logistics,
 }
 public enum CompType
 {

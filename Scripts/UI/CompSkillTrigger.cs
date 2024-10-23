@@ -11,6 +11,7 @@ public class CompSkillTrigger : BaseCompTrigger
     public Button btn_Click;
     public Image img_FunctionMask;
     public Image img_PowerOff;
+    public Image img_Auto;
 
     UnitSelectMenu menu;
 
@@ -34,11 +35,13 @@ public class CompSkillTrigger : BaseCompTrigger
         skillIndex = _skillIndex;
         if (thisComp.thisCompData.functions[skillIndex].functionIconPath != null)
             img_Icon.sprite = Tools.GetIcon(thisComp.thisCompData.functions[skillIndex].functionIconPath, thisComp.thisCompData.functions[skillIndex].functionIconIndex);
+
+        img_Auto.gameObject.SetActive(thisComp.thisCompData.functions[skillIndex].isAuto);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        UIController.Instance.DisplayHoveredSkillInfo(thisComp.thisCompData.functions[skillIndex], UIController.DisplayInfoType.skill);
+        UIController.Instance.DisplayHoveredSkillInfo(thisComp.thisCompData.functions[skillIndex], UIController.DisplayInfoType.skill, thisComp.thisCompData.ComponentName);
         menu.HoveringComponent(thisComp);
     }
 
@@ -50,6 +53,14 @@ public class CompSkillTrigger : BaseCompTrigger
     public override void OnPointerClick(PointerEventData eventData)
     {
         //ApplySkill();
+        if(eventData.button == PointerEventData.InputButton.Right)
+        {
+            if(thisComp.thisCompData.functions[skillIndex].canBeAuto)
+            {
+                thisComp.thisCompData.functions[skillIndex].isAuto = !thisComp.thisCompData.functions[skillIndex].isAuto;
+                img_Auto.gameObject.SetActive(thisComp.thisCompData.functions[skillIndex].isAuto);
+            }
+        }
     }
     void ApplySkill()
     {

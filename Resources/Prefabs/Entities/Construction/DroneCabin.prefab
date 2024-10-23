@@ -923,6 +923,7 @@ GameObject:
   m_Component:
   - component: {fileID: 903256355359833061}
   - component: {fileID: -188832587102631275}
+  - component: {fileID: 8193607469837198470}
   m_Layer: 0
   m_Name: DroneCabin
   m_TagString: Untagged
@@ -994,6 +995,8 @@ MonoBehaviour:
   componentBasements: []
   WallBottomPoint: {fileID: 0}
   WallTopPoint: {fileID: 0}
+  isAimedAtTarget: 0
+  targetTile: {fileID: 0}
   objName: "\u5EFA\u9020\u5DE5\u5382"
   Faction: 
   curSelectedComp: {fileID: 0}
@@ -1014,6 +1017,23 @@ MonoBehaviour:
     functionDescription: 
   EnergyConsumed: 5
   BuildProgress: 0
+--- !u!114 &8193607469837198470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4062118270494293312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b4084d63c1d494eb7408c869fa9a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachType: 0
+  spotKey: 0
+  MaxInstalledComp: 1
+  InstalledCompCount: 0
+  thisSpotName: 
 --- !u!1 &4400134669909634348
 GameObject:
   m_ObjectHideFlags: 0
@@ -2021,7 +2041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2060014403832098901
 RectTransform:
   m_ObjectHideFlags: 0

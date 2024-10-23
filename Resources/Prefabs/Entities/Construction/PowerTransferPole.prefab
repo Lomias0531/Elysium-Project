@@ -23283,6 +23283,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7978688807193857487}
+  - component: {fileID: 3328269667601002434}
   m_Layer: 0
   m_Name: antenna(Clone)
   m_TagString: Untagged
@@ -23298,7 +23299,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7578177493144424905}
   m_LocalRotation: {x: 1, y: -0, z: -0, w: 0.0000000754979}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.188, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23306,6 +23307,23 @@ Transform:
   m_Father: {fileID: 3217302084761496064}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3328269667601002434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7578177493144424905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b4084d63c1d494eb7408c869fa9a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachType: 0
+  spotKey: 0
+  MaxInstalledComp: 1
+  InstalledCompCount: 0
+  thisSpotName: 
 --- !u!1 &7583491245828599878
 GameObject:
   m_ObjectHideFlags: 0
@@ -27636,6 +27654,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3217302084761496064}
+  - component: {fileID: -6135910526734680714}
   m_Layer: 0
   m_Name: PowerTransferPole
   m_TagString: Untagged
@@ -27659,6 +27678,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6135910526734680714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9040320354366351077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65776914856f09d4391b3a895978d451, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pos: {x: 0, y: 0, z: 0}
+  EntityID: 
+  animator: {fileID: 0}
+  curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
+  WallBottomPoint: {fileID: 0}
+  WallTopPoint: {fileID: 0}
+  isAimedAtTarget: 0
+  targetTile: {fileID: 0}
+  objName: "\u80FD\u91CF\u4F20\u8F93\u5854"
+  Faction: 
+  curSelectedComp: {fileID: 0}
+  curSelectedFunction:
+    functionType: 0
+    functionName: 
+    functionIconPath: 
+    functionIconIndex: 0
+    functionApplyTimeInterval: 0
+    functionValue: 0
+    functionConsume: 0
+    canBeAuto: 0
+    isAuto: 0
+    functionIntVal: 
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: 
+  EnergyConsumed: 0
+  BuildProgress: 0
 --- !u!1 &9056433897271639573
 GameObject:
   m_ObjectHideFlags: 0

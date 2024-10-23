@@ -621,6 +621,7 @@ public class PlayerController : Singletion<PlayerController>
     {
         powerGridIndicator.Clear();
         List<BaseTile> tempGrid = new List<BaseTile>();
+
         foreach (var construct in PlayerDataManager.Instance.myConstructions)
         {
             var generator = construct.GetFunctionComponent(ComponentFunctionType.PowerDispatcher);
@@ -631,7 +632,7 @@ public class PlayerController : Singletion<PlayerController>
                 {
                     if(func.functionType == ComponentFunctionType.PowerDispatcher)
                     {
-                        radRange = func.functionFloatVal[0];
+                        radRange = func.functionValue;
                     }
                 }
                 if (radRange <= 0f) return;

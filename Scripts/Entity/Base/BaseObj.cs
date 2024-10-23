@@ -31,6 +31,8 @@ public abstract class BaseObj : MonoBehaviour
     float recoilTime;
     float recoilRadius;
 
+    public List<ItemData> itemsRequested = new List<ItemData>();
+
     [HideInInspector]
     public MoveType[] moveType
     {
@@ -186,6 +188,7 @@ public abstract class BaseObj : MonoBehaviour
         var attachments = this.gameObject.GetComponentsInChildren<BaseUnitSpot>();
         componentBasements = attachments.ToList();
 
+        objName = thisEntityData.EntityName;
         maxStorageSlot = thisEntityData.MaxInventoryCount;
         turretTurnRate = thisEntityData.TurretTurnRate;
 
@@ -203,21 +206,25 @@ public abstract class BaseObj : MonoBehaviour
             {
                 Transform tsf_Target = null;
                 bool isAvailable = true;
-                foreach (var basement in componentBasements)
+                if(componentBasements.Count > 0)
                 {
-                    if (basement.spotKey == thisEntityData.InstalledComponentsKey[i])
+                    foreach (var basement in componentBasements)
                     {
-                        if(basement.InstalledCompCount < basement.MaxInstalledComp)
+                        if (basement.spotKey == thisEntityData.InstalledComponentsKey[i])
                         {
-                            tsf_Target = basement.gameObject.transform;
-                            basement.InstalledCompCount += 1;
-                        }else
-                        {
-                            isAvailable = false;
+                            if (basement.InstalledCompCount < basement.MaxInstalledComp)
+                            {
+                                tsf_Target = basement.gameObject.transform;
+                                basement.InstalledCompCount += 1;
+                            }
+                            else
+                            {
+                                isAvailable = false;
+                            }
                         }
                     }
+                    if (!isAvailable) continue;
                 }
-                if (!isAvailable) continue;
 
                 var compData = DataController.Instance.GetComponentData(thisEntityData.InstalledComponents[i]);
 

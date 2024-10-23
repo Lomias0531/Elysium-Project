@@ -249,6 +249,10 @@ public class CompFunction : BaseComponent
     public override void Start()
     {
         base.Start();
+        for(int i = 0;i<thisCompData.functions.Length;i++)
+        {
+            thisCompData.functions[i].isAuto = thisCompData.functions[i].canBeAuto;
+        }
     }
 
     // Update is called once per frame
@@ -268,6 +272,7 @@ public class CompFunction : BaseComponent
             }
             if(func.functionType == ComponentFunctionType.PowerDispatcher)
             {
+                if(!func.isAuto) continue;
                 if(this.functionTimeElapsed <= 0)
                 {
                     var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
@@ -313,6 +318,7 @@ public class CompFunction : BaseComponent
             }
             if(func.functionType == ComponentFunctionType.Harvest)
             {
+                if (!func.isAuto) continue;
                 if (this.functionTimeElapsed <= 0)
                 {
                     var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
@@ -333,7 +339,7 @@ public class CompFunction : BaseComponent
             }
             if(func.functionType == ComponentFunctionType.Weapon)
             {
-                if(this.functionTimeElapsed <= 0)
+                if (this.functionTimeElapsed <= 0)
                 {
                     if(thisObj.isAimedAtTarget)
                     {

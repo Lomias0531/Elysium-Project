@@ -424,11 +424,9 @@ public class MapController : Singletion<MapController>
 
         UIController.Instance.CreateUnitIndicators();
 
-        if(PlayerDataManager.Instance.myConstructions.Count > 0)
-        {
-            var myConstruct = PlayerDataManager.Instance.myConstructions.FirstOrDefault();
-            CameraController.Instance.MoveCamTo(myConstruct.Pos);
-        }
+        var myConstruct = PlayerDataManager.Instance.myUnits.FirstOrDefault();
+        CameraController.Instance.MoveCamTo(myConstruct.Pos);
+
     }
     public void RegisterObject(BaseObj obj)
     {

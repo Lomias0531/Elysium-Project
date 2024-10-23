@@ -143,10 +143,10 @@ public class UIController : Singletion<UIController>
         txt_metalAmount.text = PlayerDataManager.Instance.MetalAmount.ToString("F0") + "/" + PlayerDataManager.Instance.MetalMaxAmount.ToString("F0");
         txt_energyLevel.text = PlayerDataManager.Instance.EnergyConsumed.ToString("F0") + "/" + PlayerDataManager.Instance.EnergyProduced.ToString("F0");
     }
-    public void DisplayHoveredSkillInfo(CompFunctionDetail info, DisplayInfoType type)
+    public void DisplayHoveredSkillInfo(CompFunctionDetail info, DisplayInfoType type, string compName = "")
     {
         obj_HoveredSkill.SetActive(true);
-        txt_hoveredSkillName.text = info.functionName;
+        txt_hoveredSkillName.text = string.IsNullOrEmpty(compName) ? "" : compName + "->" + info.functionName;
         txt_hoveredSkillCost.text = info.functionConsume.ToString();
         txt_hoveredSkillDesc.text = info.functionDescription;
         img_hoveredSkillIcon.sprite = Tools.GetIcon(info.functionIconPath, info.functionIconIndex);

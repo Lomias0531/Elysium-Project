@@ -53,7 +53,7 @@ public class BaseUnit : BaseObj
         if(lookAtCam && animator != null)
         {
             animator.SetLookAtPosition(Camera.main.transform.position);
-            animator.SetLookAtWeight(1f);
+            animator.SetLookAtWeight(1f, 0.1f, 0.3f, 1f, 0.4f);
         }else
         {
             animator.SetLookAtPosition(this.transform.position + this.transform.forward);

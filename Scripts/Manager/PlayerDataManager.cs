@@ -48,10 +48,10 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
         get
         {
             float value = 0;
-            foreach (var construct in myConstructions)
-            {
-                value += construct.EnergyProduced;
-            }
+            //foreach (var construct in myConstructions)
+            //{
+            //    value += construct.EnergyProduced;
+            //}
             //foreach (var unit in myUnits)
             //{
             //    value += unit.EP;
@@ -64,30 +64,34 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
         get
         {
             float value = 0;
-            foreach (var construct in myConstructions)
-            {
-                value += construct.EnergyConsumed;
-            }
-            foreach (var unit in myUnits)
-            {
-                value += unit.EPMax - unit.EP;
-            }
+            //foreach (var construct in myConstructions)
+            //{
+            //    value += construct.EnergyConsumed;
+            //}
+            //foreach (var unit in myUnits)
+            //{
+            //    value += unit.EPMax - unit.EP;
+            //}
             return value;
         }
     }
 
-    public List<BaseConstruction> myConstructions
+    public List<BaseObj> myConstructions
     {
         get
         {
-            var list = new List<BaseConstruction>();
+            var list = new List<BaseObj>();
             foreach (var entity in MapController.Instance.entityDic)
             {
                 if(entity.Value.Faction == "Elysium")
                 {
-                    if(entity.Value.GetDesiredComponent<CompBase>() != null)
+                    if (entity.Value.thisEntityData.entityType == EntityType.Construct)
                     {
-                        list.Add((BaseConstruction)entity.Value);
+                        list.Add(entity.Value);
+                    }
+                    if (entity.Value.GetDesiredComponent<CompBase>() != null)
+                    {
+                        list.Add(entity.Value);
                     }
                 }
             }
@@ -103,6 +107,10 @@ public class PlayerDataManager : Singletion<PlayerDataManager>
             {
                 if (entity.Value.Faction == "Elysium")
                 {
+                    if (entity.Value.thisEntityData.entityType == EntityType.Unit)
+                    {
+                        list.Add(entity.Value);
+                    }
                     if (entity.Value.GetDesiredComponent<CompBase>() == null)
                     {
                         list.Add(entity.Value);

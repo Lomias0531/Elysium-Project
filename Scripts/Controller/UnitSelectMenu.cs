@@ -303,10 +303,19 @@ public class UnitSelectMenu : MonoBehaviour
         yield return null;
         foreach (var comp in selectedObj.Components)
         {
-            var trigger = GameObject.Instantiate(compTrigger, tsf_SkillTriggerContainer);
-            trigger.gameObject.SetActive(true);
-            skillTriggers.Add(trigger);
-            trigger.InitThis(comp, this);
+            if(comp.thisCompData.functions.Length  == 1)
+            {
+                var trigger = GameObject.Instantiate(skillTrigger, tsf_SkillTriggerContainer);
+                trigger.gameObject.SetActive(true);
+                skillTriggers.Add(trigger);
+                trigger.InitThis(true, 0, comp, this);
+            }else
+            {
+                var trigger = GameObject.Instantiate(compTrigger, tsf_SkillTriggerContainer);
+                trigger.gameObject.SetActive(true);
+                skillTriggers.Add(trigger);
+                trigger.InitThis(comp, this);
+            }
         }
     }
     public IEnumerator ShowCompFunction(BaseComponent comp)
