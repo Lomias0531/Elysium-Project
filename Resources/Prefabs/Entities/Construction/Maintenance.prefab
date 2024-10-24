@@ -4159,6 +4159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2772345864028532637}
+  - component: {fileID: -6623301046676522472}
   m_Layer: 0
   m_Name: Maintenance
   m_TagString: Untagged
@@ -4235,6 +4236,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 120, z: 0}
+--- !u!114 &-6623301046676522472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8107033185381671867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65776914856f09d4391b3a895978d451, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pos: {x: 0, y: 0, z: 0}
+  EntityID: 
+  animator: {fileID: 0}
+  curTile: {fileID: 0}
+  tsf_Turret: {fileID: 0}
+  turretTurnRate: 0
+  maxStorageSlot: 0
+  inventory: []
+  componentBasements: []
+  WallBottomPoint: {fileID: 0}
+  WallTopPoint: {fileID: 0}
+  isAimedAtTarget: 0
+  targetTile: {fileID: 0}
+  objName: 
+  Faction: 
+  curSelectedComp: {fileID: 0}
+  curSelectedFunction:
+    functionType: 0
+    functionName: 
+    functionIconPath: 
+    functionIconIndex: 0
+    functionApplyTimeInterval: 0
+    functionValue: 0
+    functionConsume: 0
+    canBeAuto: 0
+    isAuto: 0
+    functionIntVal: 
+    functionFloatVal: []
+    functionBoolVal: 
+    functionStringVal: []
+    functionDescription: 
+  EnergyConsumed: 0
+  BuildProgress: 0
 --- !u!1 &8190554129375761389
 GameObject:
   m_ObjectHideFlags: 0

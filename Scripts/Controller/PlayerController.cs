@@ -31,6 +31,8 @@ public class PlayerController : Singletion<PlayerController>
     public Color col_Build;
     List<BaseTile> buildIndicator = new List<BaseTile>();
     BaseObj obj_Build;
+    List<BaseTile> LogisticsIndicator = new List<BaseTile>();
+    public Color col_Logistics;
 
     Dictionary<string, GameObject> rangeIndicators = new Dictionary<string, GameObject>();
     public Material indicatorCenterMat;
@@ -166,6 +168,7 @@ public class PlayerController : Singletion<PlayerController>
                         obj_Build.transform.position = selectedTile.transform.position;
 
                         GetPowerGridRange();
+                        GetLogisticsRange();
                     }
 
                     if (attackRangeIndicators.Contains(selectedTile))
@@ -220,45 +223,45 @@ public class PlayerController : Singletion<PlayerController>
 
                         CameraController.Instance.ResetViewPoint();
                     }
-                    if(interactIndicators.Contains(hoveredTile))
-                    {
-                        selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
+                    //if(interactIndicators.Contains(hoveredTile))
+                    //{
+                    //    selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
 
-                        var res = hoveredTile.GetEntitynThisTile();
-                        switch(selectedObject.curSelectedFunction.functionIntVal[0])
-                        {
-                            default:
-                                {
-                                    break;
-                                }
-                            case 0:
-                                {
-                                    if (res != null)
-                                    {
-                                        var resource = res.GetFunctionComponent(ComponentFunctionType.Resource);
+                    //    var res = hoveredTile.GetEntitynThisTile();
+                    //    switch(selectedObject.curSelectedFunction.functionIntVal[0])
+                    //    {
+                    //        default:
+                    //            {
+                    //                break;
+                    //            }
+                    //        case 0:
+                    //            {
+                    //                if (res != null)
+                    //                {
+                    //                    var resource = res.GetFunctionComponent(ComponentFunctionType.Resource);
 
-                                        resource.OnTriggerFunction( ComponentFunctionType.Resource, selectedObject);
-                                    }
+                    //                    resource.OnTriggerFunction( ComponentFunctionType.Resource, selectedObject);
+                    //                }
 
-                                    break;
-                                }
-                            case 1:
-                                {
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    var storage = res.GetFunctionComponent(ComponentFunctionType.Storage);
-                                    var ees = selectedObject.GetFunctionComponent(ComponentFunctionType.Storage);
-                                    var item = ees.thisObj.inventory[selectedObject.curSelectedFunction.functionIntVal[1]];
-                                    //ees.TransferItem(storage, item);
-                                    ees.OnTriggerFunction(ComponentFunctionType.Storage, storage, item);
-                                    break;
-                                }
-                        }
+                    //                break;
+                    //            }
+                    //        case 1:
+                    //            {
+                    //                break;
+                    //            }
+                    //        case 2:
+                    //            {
+                    //                var storage = res.GetFunctionComponent(ComponentFunctionType.Storage);
+                    //                var ees = selectedObject.GetFunctionComponent(ComponentFunctionType.Storage);
+                    //                var item = ees.thisObj.inventory[selectedObject.curSelectedFunction.functionIntVal[1]];
+                    //                //ees.TransferItem(storage, item);
+                    //                ees.OnTriggerFunction(ComponentFunctionType.Storage, storage, item);
+                    //                break;
+                    //            }
+                    //    }
 
-                        CancelAllOperations();
-                    }
+                    //    CancelAllOperations();
+                    //}
                     if(buildIndicator.Contains(hoveredTile))
                     {
                         selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
@@ -675,8 +678,6 @@ public class PlayerController : Singletion<PlayerController>
             }
         }
 
-        Color tempGridColor = col_PowerGrid;
-        tempGridColor.a /= 2;
         DrawRangeIndicator(powerGridIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "PowerGridIndicator", col_PowerGrid, 2f);
         DrawRangeIndicator(tempGrid, MapController.Instance.mapTiles.FirstOrDefault().Value, "TempPowerGridIndicator", col_PowerGrid, 3f);
     }
@@ -741,6 +742,69 @@ public class PlayerController : Singletion<PlayerController>
         attackRangeIndicators = attackRangeMax;
 
         DrawRangeIndicator(attackRangeIndicators, selectedObject.GetTileWhereUnitIs(), "AttackRangeIndicator", col_AttackRange, 2f);
+    }
+    public void GetLogisticsRange()
+    {
+        LogisticsIndicator.Clear();
+
+        List<BaseTile> tempGrid = new List<BaseTile>();
+
+        foreach (var construct in PlayerDataManager.Instance.myConstructions)
+        {
+            var generator = construct.GetFunctionComponent(ComponentFunctionType.Logistics);
+            if (generator != null)
+            {
+                var radRange = 0f;
+                foreach (var func in generator.thisCompData.functions)
+                {
+                    if (func.functionType == ComponentFunctionType.Logistics)
+                    {
+                        radRange = func.functionValue;
+                    }
+                }
+                if (radRange <= 0f) return;
+                var constructTemp = construct.GetDesiredComponent<CompConstructTemp>();
+                if (!construct.isUniderConstruction)
+                {
+                    var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), (int)radRange, Tools.IgnoreType.All);
+                    foreach (var tile in gridList)
+                    {
+                        if (!LogisticsIndicator.Contains(tile))
+                        {
+                            LogisticsIndicator.Add(tile);
+                        }
+                    }
+                }
+                else
+                {
+                    if (constructTemp.buildProgress > 0)
+                    {
+                        var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), (int)radRange, Tools.IgnoreType.All);
+                        foreach (var tile in gridList)
+                        {
+                            if (!tempGrid.Contains(tile))
+                            {
+                                tempGrid.Add(tile);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var gridList = Tools.GetTileWithinRange(hoveredTile, (int)radRange, Tools.IgnoreType.All);
+                        foreach (var tile in gridList)
+                        {
+                            if (!tempGrid.Contains(tile))
+                            {
+                                tempGrid.Add(tile);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        DrawRangeIndicator(LogisticsIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "LogisticsIndicator", col_Logistics, 2f);
+        DrawRangeIndicator(tempGrid, MapController.Instance.mapTiles.FirstOrDefault().Value, "TempLogisticsIndicator", col_Logistics, 3f);
     }
     void GetAOERange()
     {

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cybernetic Factory
+* source:	https://sketchfab.com/3d-models/cybernetic-factory-daae55c1f49a4911925e20a4779796e2
+* author:	MRowa (https://sketchfab.com/MRowa)
+
+Model License:
+* license type:	CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+* requirements:	Author must be credited. Modified versions must have the same license. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cybernetic Factory" (https://sketchfab.com/3d-models/cybernetic-factory-daae55c1f49a4911925e20a4779796e2) by MRowa (https://sketchfab.com/MRowa) licensed under CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)

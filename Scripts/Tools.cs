@@ -450,6 +450,16 @@ public static class Tools
             return null;
         }
     }
+    public static void GetParticle(string partName, Transform tsf_Target)
+    {
+        var particle = (GameObject)Resources.Load("Prefabs/Particles/" + partName);
+        if (particle != null)
+        {
+            var sparkle = ObjectPool.Instance.CreateObject(partName, particle, tsf_Target.position, tsf_Target.rotation);
+            sparkle.transform.SetParent(MapController.Instance.tsf_ParticlesConatiner);
+            ObjectPool.Instance.CollectObject(sparkle, 2f);
+        }
+    }
 }
 public static class ToolsUtility
 {

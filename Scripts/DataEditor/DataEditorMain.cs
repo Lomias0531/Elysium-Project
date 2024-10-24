@@ -137,6 +137,7 @@ public class DataEditorMain : MonoBehaviour
     [Space(1)]
     [Header("Logistics Components")]
     public CanvasGroup canvas_Logistics;
+    public InputField ipt_LogisticsPowerUsage;
     [Space(1)]
     [Header("Entities")]
     public CanvasGroup canvas_Entities;
@@ -214,6 +215,7 @@ public class DataEditorMain : MonoBehaviour
         functionPages.Add(ComponentFunctionType.PowerDispatcher, canvas_PowerDispatcher);
         functionPages.Add(ComponentFunctionType.Resource, canvas_Resource);
         functionPages.Add(ComponentFunctionType.Production, canvas_Product);
+        functionPages.Add(ComponentFunctionType.Logistics, canvas_Logistics);
 
         editorPages.Add(EditorPage.Entities, canvas_Entities);
 
@@ -733,6 +735,11 @@ public class DataEditorMain : MonoBehaviour
                     }
                     break;
                 }
+            case ComponentFunctionType.Logistics:
+                {
+                    txt_FunctionValueDesc.text = "∑÷≈‰∑∂Œß";
+                    break;
+                }
         }
     }
     public void LoadCompFunctionDetail(CompFunctionsItem function)
@@ -828,6 +835,8 @@ public class DataEditorMain : MonoBehaviour
                     ipt_BulletsCount.text = func.functionIntVal[4].ToString();
                     ipt_BulletsInterval.text = func.functionFloatVal[0].ToString();
                     ipt_BulletSpeed.text = func.functionFloatVal[1].ToString();
+                    ipt_BlastParticle.text = func.functionStringVal[0];
+                    ipt_TrailParticle.text = func.functionStringVal[1];
 
                     break;
                 }
@@ -933,6 +942,14 @@ public class DataEditorMain : MonoBehaviour
                     StartCoroutine(RearrangePair(tsf_ProductionKeyValuePairContainer));
                     break;
                 }
+            case ComponentFunctionType.Logistics:
+                {
+                    txt_FunctionValueDesc.text = "∑÷≈‰∑∂Œß";
+
+                    ipt_FunctionValue.text = func.functionValue.ToString();
+                    ipt_LogisticsPowerUsage.text = func.functionFloatVal[0].ToString();
+                    break;
+                }
         }
 
         btn_ConfirmFunctionEdit.interactable = true;
@@ -1010,6 +1027,11 @@ public class DataEditorMain : MonoBehaviour
                     {
                         float.Parse(ipt_BulletsInterval.text),
                         float.Parse(ipt_BulletSpeed.text),
+                    };
+                    newFunction.functionStringVal = new string[2]
+                    {
+                        ipt_BlastParticle.text,
+                        ipt_TrailParticle.text,
                     };
                     break;
                 }
@@ -1108,6 +1130,15 @@ public class DataEditorMain : MonoBehaviour
                     newFunction.functionStringVal = strList.ToArray();
                     newFunction.functionIntVal = intList.ToArray();
                     newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
+                    break;
+                }
+            case ComponentFunctionType.Logistics:
+                {
+                    newFunction.functionValue = float.Parse(ipt_FunctionValue.text);
+                    newFunction.functionFloatVal = new float[1]
+                    {
+                        float.Parse(ipt_LogisticsPowerUsage.text),
+                    };
                     break;
                 }
         }

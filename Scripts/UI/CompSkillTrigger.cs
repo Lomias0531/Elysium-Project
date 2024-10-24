@@ -86,16 +86,23 @@ public class CompSkillTrigger : BaseCompTrigger
             isPowerSufficent = thisBase.isPowerSufficent;
         }
 
-        if (thisComp.EP < thisComp.thisCompData.functions[skillIndex].functionConsume || thisComp.HP <= 0 || !thisComp.isAvailable || !isPowerSufficent)
+        if (thisComp.HP <= 0 || !thisComp.isAvailable)
         {
             isAvailable = false;
-            btn_Click.interactable = false;
-            img_PowerOff.gameObject.SetActive(true);
         }else
         {
             isAvailable = true;
-            btn_Click.interactable = true;
+        }
+
+        if(thisComp.EP < thisComp.thisCompData.functions[skillIndex].functionConsume || !isPowerSufficent)
+        {
+            img_PowerOff.gameObject.SetActive(true);
+            isAvailable = false;
+        }else
+        {
             img_PowerOff.gameObject.SetActive(false);
         }
+
+        btn_Click.interactable = isAvailable;
     }
 }

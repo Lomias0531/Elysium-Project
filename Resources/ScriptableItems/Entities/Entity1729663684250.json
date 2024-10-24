@@ -1,1 +1,1 @@
-{"EntityID":"Entity1729663684250","EntityName":"资源分配站","EntityIndex":"LogisticsTower","entityType":1,"EntityProductor":"","InstalledComponents":[],"InstalledComponentsKey":[],"MaxInventoryCount":10,"TurretTurnRate":0.0}
+{"EntityID":"Entity1729663684250","EntityName":"资源分配站","EntityIndex":"LogisticsTower","entityType":1,"EntityProductor":"","InstalledComponents":["Comp1729733596800"],"InstalledComponentsKey":[0],"MaxInventoryCount":20,"TurretTurnRate":0.0}

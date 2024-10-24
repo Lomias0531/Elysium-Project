@@ -45,6 +45,7 @@ public class BaseConstruction : BaseObj
     public override void OnSelected()
     {
         PlayerController.Instance.GetPowerGridRange();
+        PlayerController.Instance.GetLogisticsRange();
     }
 
     public override void OnUnselected()

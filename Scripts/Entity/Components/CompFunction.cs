@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using static BaseObj;
 using static CompWeapon;
@@ -34,6 +35,7 @@ public class CompFunction : BaseComponent
     public override void OnApply(int index)
     {
         if (isFunctionProgressing) return;
+        var func = thisCompData.functions[index];
         switch(thisCompData.functions[index].functionType)
         {
             default:
@@ -42,9 +44,9 @@ public class CompFunction : BaseComponent
                 }
             case ComponentFunctionType.Mobile:
                 {
-                    var moveType = (BaseObj.MoveType)thisCompData.functions[index].functionIntVal[0];
-                    var moveStyle = (BaseObj.MoveStyle)thisCompData.functions[index].functionIntVal[1];
-                    var mobility = (int)thisCompData.functions[index].functionValue;
+                    var moveType = (BaseObj.MoveType)func.functionIntVal[0];
+                    var moveStyle = (BaseObj.MoveStyle)func.functionIntVal[1];
+                    var mobility = (int)func.functionValue;
 
                     PlayerController.Instance.GetMoveRange(Tools.GetMobileRange(thisObj, moveType, moveStyle, mobility));
 
@@ -57,8 +59,7 @@ public class CompFunction : BaseComponent
                 }
             case ComponentFunctionType.Harvest:
                 {
-                    //PlayerController.Instance.GetInteractRange(ComponentFunctionType.Harvest);
-                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)thisCompData.functions[index].functionValue, Tools.IgnoreType.All);
+                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
                     foreach (var tile in tiles)
                     {
                         var entity = tile.curObj;
@@ -75,19 +76,18 @@ public class CompFunction : BaseComponent
                 }
             case ComponentFunctionType.Construct:
                 {
-                    if (isFunctionProgressing) return;
                     bool checkResources = true;
 
-                    for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                    for (int i = 1; i < func.functionStringVal.Length; i++)
                     {
-                        if (thisObj.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
+                        if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionFloatVal[i])
                         {
                             checkResources = false;
                         }
                     }
 
                     int availableTileCount = 0;
-                    var obj = DataController.Instance.GetEntityData(thisCompData.functions[index].functionStringVal[0]);
+                    var obj = DataController.Instance.GetEntityData(func.functionStringVal[0]);
                     foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles)
                     {
                         if (obj.CheckIsTileSuitableForUnit(adjTile.Value))
@@ -104,27 +104,26 @@ public class CompFunction : BaseComponent
                     {
                         curSelectedIndex = index;
                         isFunctionProgressing = true;
-                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        for (int i = 1; i < func.functionStringVal.Length; i++)
                         {
                             ItemData item = new ItemData();
-                            item.itemID = thisCompData.functions[index].functionStringVal[i];
-                            item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
+                            item.itemID = func.functionStringVal[i];
+                            item.stackCount = (int)func.functionFloatVal[i];
 
                             thisObj.RemoveItem(item);
                         }
                         valueTimeElapsed = 0;
-                        valueTimeRequired = thisCompData.functions[index].functionFloatVal[0];
+                        valueTimeRequired = func.functionFloatVal[0];
                     }
                     break;
                 }
             case ComponentFunctionType.Build:
                 {
-                    if (isFunctionProgressing) return;
                     bool checkResources = true;
 
-                    for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                    for (int i = 1; i < func.functionStringVal.Length; i++)
                     {
-                        if (thisObj.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionFloatVal[i])
+                        if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionFloatVal[i])
                         {
                             checkResources = false;
                         }
@@ -132,11 +131,11 @@ public class CompFunction : BaseComponent
 
                     if (checkResources)
                     {
-                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        for (int i = 1; i < func.functionStringVal.Length; i++)
                         {
                             ItemData item = new ItemData();
-                            item.itemID = thisCompData.functions[index].functionStringVal[i];
-                            item.stackCount = (int)thisCompData.functions[index].functionFloatVal[i];
+                            item.itemID = func.functionStringVal[i];
+                            item.stackCount = (int)func.functionFloatVal[i];
 
                             thisObj.RemoveItem(item);
                         }
@@ -147,12 +146,10 @@ public class CompFunction : BaseComponent
                 }
             case ComponentFunctionType.Production:
                 {
-                    if (isFunctionProgressing) return;
-
                     bool checkResources = true;
-                    for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                    for (int i = 1; i < func.functionStringVal.Length; i++)
                     {
-                        if (thisObj.GetItemCount(thisCompData.functions[index].functionStringVal[i]) < thisCompData.functions[index].functionIntVal[i])
+                        if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionIntVal[i])
                         {
                             checkResources = false;
                         }
@@ -162,16 +159,69 @@ public class CompFunction : BaseComponent
                     {
                         curSelectedIndex = index;
                         isFunctionProgressing = true;
-                        for (int i = 1; i < thisCompData.functions[index].functionStringVal.Length; i++)
+                        for (int i = 1; i < func.functionStringVal.Length; i++)
                         {
                             ItemData item = new ItemData();
-                            item.itemID = thisCompData.functions[index].functionStringVal[i];
-                            item.stackCount = thisCompData.functions[index].functionIntVal[i];
+                            item.itemID = func.functionStringVal[i];
+                            item.stackCount = func.functionIntVal[i];
 
                             thisObj.RemoveItem(item);
                         }
                         valueTimeElapsed = 0;
-                        valueTimeRequired = thisCompData.functions[index].functionValue;
+                        valueTimeRequired = func.functionValue;
+                    }
+                    break;
+                }
+            case ComponentFunctionType.PowerDispatcher:
+                {
+                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
+                    List<BaseComponent> targetComp = new List<BaseComponent>();
+                    foreach (var tile in tiles)
+                    {
+                        if (tile.curObj != null)
+                        {
+                            foreach (var comp in tile.curObj.Components)
+                            {
+                                if (comp.EP / comp.MaxEP < 0.75)
+                                {
+                                    targetComp.Add(comp);
+                                }
+                            }
+                        }
+                    }
+                    if (targetComp.Count > 0)
+                    {
+                        targetComp.Sort((a, b) => (a.EP / a.MaxEP).CompareTo(b.EP / b.MaxEP));
+                        float powerDispatchable = func.functionFloatVal[0];
+                        if (powerDispatchable > this.EP) powerDispatchable = this.EP;
+                        do
+                        {
+                            var powerDiv = targetComp[0].MaxEP - targetComp[0].EP;
+                            if (powerDiv > powerDispatchable)
+                            {
+                                targetComp[0].EP += powerDispatchable;
+                                this.EP -= powerDispatchable;
+                                powerDispatchable = 0;
+                            }
+                            else
+                            {
+                                powerDispatchable -= powerDiv;
+                                targetComp[0].EP += powerDiv;
+                                this.EP -= powerDiv;
+                            }
+                            DisplayPowerDispatcher(targetComp[0].thisObj);
+                            targetComp.RemoveAt(0);
+                        } while (powerDispatchable > 0 && targetComp.Count > 0);
+                    }
+                    break;
+                }
+            case ComponentFunctionType.Logistics:
+                {
+                    if (func.functionStringVal == null) break;
+                    if (func.functionStringVal.Length <= 0) break;
+                    for (int i = 0; i < func.functionStringVal.Length; i += 2)
+                    {
+
                     }
                     break;
                 }
@@ -260,88 +310,30 @@ public class CompFunction : BaseComponent
     {
         base.Update();
         if (thisObj.isUniderConstruction) return;
-
-        foreach (var func in thisCompData.functions)
+        
+        for(int i = 0;i<thisCompData.functions.Length;i++)
         {
-            if(func.functionType == ComponentFunctionType.Generator)
+            var func = thisCompData.functions[i];
+            if(func.isAuto)
+            {
+                if(this.functionTimeElapsed <= 0)
+                {
+                    OnApply(i);
+                    FunctionTriggered(func);
+                }
+            }
+            if (func.functionType == ComponentFunctionType.Generator)
             {
                 foreach (var comp in thisObj.Components)
                 {
                     comp.EP += func.functionValue * Time.deltaTime;
                 }
             }
-            if(func.functionType == ComponentFunctionType.PowerDispatcher)
-            {
-                if(!func.isAuto) continue;
-                if(this.functionTimeElapsed <= 0)
-                {
-                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
-                    List<BaseComponent> targetComp = new List<BaseComponent>();
-                    foreach (var tile in tiles)
-                    {
-                        if(tile.curObj != null)
-                        {
-                            foreach (var comp in tile.curObj.Components)
-                            {
-                                if(comp.EP / comp.MaxEP < 0.75)
-                                {
-                                    targetComp.Add(comp);
-                                }
-                            }
-                        }
-                    }
-                    if(targetComp.Count > 0)
-                    {
-                        targetComp.Sort((a,b) => (a.EP/a.MaxEP).CompareTo(b.EP / b.MaxEP));
-                        float powerDispatchable = func.functionFloatVal[0];
-                        if(powerDispatchable > this.EP) powerDispatchable = this.EP;
-                        do
-                        {
-                            var powerDiv = targetComp[0].MaxEP - targetComp[0].EP;
-                            if(powerDiv > powerDispatchable)
-                            {
-                                targetComp[0].EP += powerDispatchable;
-                                this.EP -= powerDispatchable;
-                                powerDispatchable = 0;
-                            }else
-                            {
-                                powerDispatchable -= powerDiv;
-                                targetComp[0].EP += powerDiv;
-                                this.EP -= powerDiv;
-                            }
-                            DisplayPowerDispatcher(targetComp[0].thisObj);
-                            targetComp.RemoveAt(0);
-                        } while (powerDispatchable > 0 && targetComp.Count > 0);
-                    }
-                    FunctionTriggered(func);
-                }
-            }
-            if(func.functionType == ComponentFunctionType.Harvest)
-            {
-                if (!func.isAuto) continue;
-                if (this.functionTimeElapsed <= 0)
-                {
-                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
-                    foreach (var tile in tiles)
-                    {
-                        var entity = tile.curObj;
-                        if (entity != null)
-                        {
-                            var resource = entity.GetFunctionComponent(ComponentFunctionType.Resource);
-                            if (resource != null)
-                            {
-                                resource.OnTriggerFunction(ComponentFunctionType.Resource, thisObj);
-                            }
-                        }
-                    }
-                    FunctionTriggered(func);
-                }
-            }
-            if(func.functionType == ComponentFunctionType.Weapon)
+            if (func.functionType == ComponentFunctionType.Weapon)
             {
                 if (this.functionTimeElapsed <= 0)
                 {
-                    if(thisObj.isAimedAtTarget)
+                    if (thisObj.isAimedAtTarget)
                     {
                         CommenceAttack(attackTile);
                     }
@@ -687,12 +679,13 @@ public class CompFunction : BaseComponent
     #region Resources
     void GenerateParticle(BaseObj target)
     {
-        var particle = (GameObject)Resources.Load("Prefabs/Particles/Sparkle");
-        if(particle != null)
-        {
-            var sparkle = ObjectPool.Instance.CreateObject("Sparkle", particle, target.gameObject.transform.position, Quaternion.identity);
-            ObjectPool.Instance.CollectObject(sparkle, 2f);
-        }
+        //var particle = (GameObject)Resources.Load("Prefabs/Particles/Sparkle");
+        //if(particle != null)
+        //{
+        //    var sparkle = ObjectPool.Instance.CreateObject("Sparkle", particle, target.gameObject.transform.position, Quaternion.identity);
+        //    ObjectPool.Instance.CollectObject(sparkle, 2f);
+        //}
+        Tools.GetParticle("Sparkle", target.gameObject.transform);
     }
     #endregion
     #endregion

@@ -31,7 +31,7 @@ public abstract class BaseObj : MonoBehaviour
     float recoilTime;
     float recoilRadius;
 
-    public List<ItemData> itemsRequested = new List<ItemData>();
+    public List<LogisticsRequestModel> itemsRequested = new List<LogisticsRequestModel>();
 
     [HideInInspector]
     public MoveType[] moveType
@@ -503,7 +503,7 @@ public abstract class BaseObj : MonoBehaviour
 
         return receivedItem;
     }
-    public ItemData TransferItem(CompStorage targetStorage, ItemData transferedItem)
+    public ItemData TransferItem(BaseObj targetStorage, ItemData transferedItem)
     {
         for (int i = inventory.Count - 1; i >= 0; i--)
         {
@@ -637,4 +637,9 @@ public abstract class BaseObj : MonoBehaviour
         recoilTime = 0.3f;
         recoilRadius = 0.5f;
     }
+}
+public struct LogisticsRequestModel
+{
+    public string RequestID;
+    public List<ItemData> RequestedItems;
 }

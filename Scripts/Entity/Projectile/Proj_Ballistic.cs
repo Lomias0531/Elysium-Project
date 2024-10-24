@@ -95,11 +95,7 @@ public class Proj_Ballistic : MonoBehaviour
                     entity.TakeDamage(damage, CompWeapon.WeaponAttackType.Blast);
                 }
 
-                var spark = ObjectPool.Instance.CreateObject("Blast", blast, tile.gameObject.transform.position, tile.gameObject.transform.rotation);
-                spark.transform.SetParent(MapController.Instance.tsf_ParticlesConatiner, true);
-                var particle = spark.GetComponent<ParticleSystem>();
-                if (particle != null) particle.Play();
-                ObjectPool.Instance.CollectObject(spark, 2f);
+                Tools.GetParticle("Blast", tile.gameObject.transform);
             }
         }
         //trails.emitting = false;
