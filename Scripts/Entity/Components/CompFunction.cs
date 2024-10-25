@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -219,9 +220,16 @@ public class CompFunction : BaseComponent
                 {
                     if (func.functionStringVal == null) break;
                     if (func.functionStringVal.Length <= 0) break;
-                    for (int i = 0; i < func.functionStringVal.Length; i += 2)
+                    for (int i = 0; i < func.functionStringVal.Length; i ++)
                     {
+                        var logisticsModel = JsonConvert.DeserializeObject<LogisticsDetailModel>(func.functionStringVal[i]);
+                        if(logisticsModel.TransferItems.Count > 0)
+                        {
+                            if(MapController.Instance.entityDic.ContainsKey(logisticsModel.FromID) && MapController.Instance.entityDic.ContainsKey(logisticsModel.ToID))
+                            {
 
+                            }
+                        }
                     }
                     break;
                 }
@@ -689,4 +697,10 @@ public class CompFunction : BaseComponent
     }
     #endregion
     #endregion
+}
+public struct LogisticsDetailModel
+{
+    public string FromID;
+    public string ToID;
+    public List<string> TransferItems;
 }
