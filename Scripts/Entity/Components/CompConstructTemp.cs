@@ -45,7 +45,7 @@ public class CompConstructTemp : BaseComponent
             matDic.Add(meshRenderer, thisMaterial);
         }
     }
-    public void InitConstruct()
+    public void InitConstruct(List<ItemData> itemRequested, CompFunctionDetail func)
     {
         this.EP = 20;
         this.MaxEP = 20;
@@ -60,6 +60,25 @@ public class CompConstructTemp : BaseComponent
             List<Material> mat = meshRenderer.materials.ToList();
             matDic.Add(meshRenderer, mat.LastOrDefault());
         }
+
+        StartCoroutine(WaitForConstructMaterial(itemRequested, func));
+    }
+    IEnumerator WaitForConstructMaterial(List<ItemData> itemRequested, CompFunctionDetail func)
+    {
+        bool checkResources;
+        thisObj.SetRequest(itemRequested);
+        do
+        {
+            checkResources = true;
+            for (int i = 1; i < func.functionStringVal.Length; i++)
+            {
+                if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionFloatVal[i])
+                {
+                    checkResources = false;
+                }
+            }
+            yield return null;
+        } while (!checkResources);
 
         startConstruct = true;
     }

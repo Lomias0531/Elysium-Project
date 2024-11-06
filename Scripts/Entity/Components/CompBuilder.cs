@@ -7,7 +7,7 @@ public class CompBuilder : BaseComponent
     public int buildRange;
     public override void OnApply(int index)
     {
-        PlayerController.Instance.GetBuildRange();
+        //PlayerController.Instance.GetBuildRange();
     }
 
     public override void OnDestroyThis()

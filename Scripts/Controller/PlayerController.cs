@@ -264,26 +264,29 @@ public class PlayerController : Singletion<PlayerController>
                     //}
                     if(buildIndicator.Contains(hoveredTile))
                     {
-                        selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
+                        //selectedObject.curSelectedComp.FunctionTriggered(selectedObject.curSelectedFunction);
 
-                        var obj = DataController.Instance.GetConstructData(selectedObject.curSelectedFunction.functionStringVal[0]);
-                        var newConstruct = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
-                        newConstruct.transform.eulerAngles = obj_Build.transform.eulerAngles;
-                        newConstruct.Faction = "Elysium";
-                        newConstruct.thisEntityData = obj_Build.thisEntityData;
-                        newConstruct.InitThis();
-                        MapController.Instance.RegisterObject(newConstruct);
-                        newConstruct.Pos = hoveredTile.Pos;
-                        newConstruct.transform.position = hoveredTile.gameObject.transform.position;
-                        newConstruct.curTile = hoveredTile;
-                        hoveredTile.curObj = newConstruct;
+                        //var obj = DataController.Instance.GetConstructData(selectedObject.curSelectedFunction.functionStringVal[0]);
+                        //var newConstruct = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
+                        //newConstruct.transform.eulerAngles = obj_Build.transform.eulerAngles;
+                        //newConstruct.Faction = "Elysium";
+                        //newConstruct.thisEntityData = obj_Build.thisEntityData;
+                        //newConstruct.InitThis();
+                        //MapController.Instance.RegisterObject(newConstruct);
+                        //newConstruct.Pos = hoveredTile.Pos;
+                        //newConstruct.transform.position = hoveredTile.gameObject.transform.position;
+                        //newConstruct.curTile = hoveredTile;
+                        //hoveredTile.curObj = newConstruct;
 
-                        var compBuild = newConstruct.AddComponent<CompConstructTemp>();
-                        newConstruct.Components.Add(compBuild);
-                        compBuild.thisObj = newConstruct;
-                        compBuild.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
-                        compBuild.SimBuild();
-                        compBuild.InitConstruct();
+                        //var compBuild = newConstruct.AddComponent<CompConstructTemp>();
+                        //newConstruct.Components.Add(compBuild);
+                        //compBuild.thisObj = newConstruct;
+                        //compBuild.buildTime = selectedObject.curSelectedFunction.functionFloatVal[0];
+                        //compBuild.SimBuild();
+                        //compBuild.InitConstruct();
+                        Vector3 pos = obj_Build.gameObject.transform.position;
+                        Vector3 euler = obj_Build.gameObject.transform.eulerAngles;
+                        StartCoroutine(((CompFunction)curBuildingComp).WaitForBuildMaterial(curBuildingComp.thisCompData.functions[curBuildingFuncIndex], hoveredTile, pos, euler, obj_Build.thisEntityData));
 
                         CancelAllOperations();
                     }
@@ -681,8 +684,14 @@ public class PlayerController : Singletion<PlayerController>
         DrawRangeIndicator(powerGridIndicator, MapController.Instance.mapTiles.FirstOrDefault().Value, "PowerGridIndicator", col_PowerGrid, 2f);
         DrawRangeIndicator(tempGrid, MapController.Instance.mapTiles.FirstOrDefault().Value, "TempPowerGridIndicator", col_PowerGrid, 3f);
     }
-    public void GetBuildRange()
+
+    BaseComponent curBuildingComp;
+    int curBuildingFuncIndex;
+    public void GetBuildRange(BaseComponent _comp, int index)
     {
+        curBuildingComp = _comp;
+        curBuildingFuncIndex = index;
+
         buildIndicator.Clear();
         obj_Build = null;
 

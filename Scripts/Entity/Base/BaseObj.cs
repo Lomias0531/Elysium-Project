@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static MagicaCloth2.TeamManager;
+using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 public abstract class BaseObj : MonoBehaviour
@@ -31,7 +33,7 @@ public abstract class BaseObj : MonoBehaviour
     float recoilTime;
     float recoilRadius;
 
-    public List<LogisticsRequestModel> itemsRequested = new List<LogisticsRequestModel>();
+    public Dictionary<string,LogisticsRequestModel> itemsRequested = new Dictionary<string, LogisticsRequestModel>();
 
     [HideInInspector]
     public MoveType[] moveType
@@ -189,7 +191,7 @@ public abstract class BaseObj : MonoBehaviour
         componentBasements = attachments.ToList();
 
         objName = thisEntityData.EntityName;
-        maxStorageSlot = thisEntityData.MaxInventoryCount;
+        maxStorageSlot = thisEntityData.MaxInventoryCount < 3 ? 3 : thisEntityData.MaxInventoryCount;
         turretTurnRate = thisEntityData.TurretTurnRate;
 
         components = new List<BaseComponent>();
@@ -591,6 +593,182 @@ public abstract class BaseObj : MonoBehaviour
         temp.stackCount = count;
         inventory[index] = temp;
     }
+    public ItemData ReceiveItem(string itemID, int Count)
+    {
+        ItemData data = new ItemData(itemID, Count);
+
+        var itemInfo = DataController.Instance.GetItemData(itemID);
+
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            if (inventory[i].itemID == itemID)
+            {
+                if (inventory[i].stackCount + Count <= itemInfo.maxStackCount)
+                {
+                    SetInvCount(i, inventory[i].stackCount + Count);
+                    data.stackCount = 0;
+                    FulfillRequest(itemID, Count);
+                }
+                else
+                {
+                    var stackDiv = itemInfo.maxStackCount - inventory[i].stackCount;
+                    SetInvCount(i, itemInfo.maxStackCount);
+                    data.stackCount -= stackDiv;
+                    FulfillRequest(itemID, stackDiv);
+                }
+            }
+        }
+        if (data.stackCount > 0)
+        {
+            if (inventory.Count < maxStorageSlot)
+            {
+                inventory.Add(data);
+                FulfillRequest(itemID, data.stackCount);
+                return new ItemData(itemID, 0);
+            }
+        }
+
+        return data;
+    }
+    public ItemData RemoveItem(string itemID,int Count)
+    {
+        ItemData data = new ItemData(itemID, Count);
+
+        for(int i = 0;i<inventory.Count;i++)
+        {
+            if (inventory[i].itemID == itemID)
+            {
+                if (inventory[i].stackCount <= Count)
+                {
+                    ItemData dataTemp = new ItemData();
+                    dataTemp.itemID = inventory[i].itemID;
+                    dataTemp.stackCount = inventory[i].stackCount;
+
+                    Count -= inventory[i].stackCount;
+                    SetInvCount(i, 0);
+                }
+                else
+                {
+                    SetInvCount(i, inventory[i].stackCount - Count);
+                    Count = 0;
+                }
+            }
+        }
+
+        ReOrganizeInventory();
+
+        return data;
+    }
+    public ItemData TransferItem(BaseObj target, string id, int count)
+    {
+        for(int i = 0;i< inventory.Count;i++)
+        {
+            if (inventory[i].itemID == id)
+            {
+                if (inventory[i].stackCount >= count)
+                {
+                    var result = target.ReceiveItem(id, count);
+                    if(result.stackCount > 0)
+                    {
+                        var dis = inventory[i].stackCount - result.stackCount;
+                        SetInvCount(i, dis);
+                        count -= dis;
+                        return new ItemData(id, count);
+                    }else
+                    {
+                        var dis = inventory[i].stackCount - count;
+                        SetInvCount(i, dis);
+                        count = 0;
+                        return new ItemData(id, 0);
+                    }
+                }else
+                {
+                    var result = target.ReceiveItem(id, inventory[i].stackCount);
+                    if(result.stackCount > 0)
+                    {
+                        var dis = inventory[i].stackCount - result.stackCount;
+                        SetInvCount(i, dis);
+                        count -= dis;
+                        return new ItemData(id, count);
+                    }else
+                    {
+                        SetInvCount(i, 0);
+                        count -= inventory[i].stackCount;
+                    }
+                }
+            }
+        }
+
+        ItemData data = new ItemData(id, count);
+
+        return data;
+    }
+    void ReOrganizeInventory()
+    {
+        List<ItemData> dataToRemove = new List<ItemData>();
+        foreach (var item in inventory)
+        {
+            if(item.stackCount <= 0)
+            {
+                dataToRemove.Add(item);
+            }
+        }
+        foreach (var item in dataToRemove)
+        {
+            inventory.Remove(item);
+        }
+    }
+    void FulfillRequest(string id, int count)
+    {
+        foreach (var request in itemsRequested.Values)
+        {
+            List<ItemData> itemsToRemove = new List<ItemData>();
+            for(int i = 0;i<request.RequestedItems.Count;i++)
+            {
+                if (request.RequestedItems[i].itemID == id)
+                {
+                    int newCount = request.RequestedItems[i].stackCount - count;
+                    request.RequestedItems[i] = new ItemData(id, newCount);
+                    if (request.RequestedItems[i].stackCount <= 0)
+                    {
+                        itemsToRemove.Add(request.RequestedItems[i]);
+                    }
+                }
+            }
+            foreach (var item in itemsToRemove)
+            {
+                request.RequestedItems.Remove(item);
+            }
+        }
+    }
+    public void SetRequest(List<ItemData> items, string id = "")
+    {
+        if(string.IsNullOrEmpty(id))
+        {
+            id = this.EntityID;
+        }
+        LogisticsRequestModel model = new LogisticsRequestModel();
+        model.RequestID = id;
+        model.RequestedItems = new List<ItemData>();
+
+        foreach (var item in items)
+        {
+            ItemData thisItem = new ItemData();
+            thisItem.itemID = item.itemID;
+            int count = GetItemCount(id);
+            thisItem.stackCount = item.stackCount - count;
+
+            model.RequestedItems.Add(thisItem);
+        }
+
+        if(itemsRequested.ContainsKey(id))
+        {
+            itemsRequested[id] = model;
+        }else
+        {
+            itemsRequested.Add(id, model);
+        }
+    }
     #endregion
     void AimAtTarget()
     {
@@ -642,4 +820,15 @@ public struct LogisticsRequestModel
 {
     public string RequestID;
     public List<ItemData> RequestedItems;
+}
+[Serializable]
+public struct ItemData
+{
+    public string itemID;
+    public int stackCount;
+    public ItemData(string itemID, int stackCount)
+    {
+        this.itemID = itemID;
+        this.stackCount = stackCount;
+    }
 }

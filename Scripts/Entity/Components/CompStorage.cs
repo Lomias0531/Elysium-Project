@@ -203,9 +203,3 @@ public class CompStorage : BaseComponent
     //    }
     //}
 }
-[Serializable]
-public struct ItemData
-{
-    public string itemID;
-    public int stackCount;
-}

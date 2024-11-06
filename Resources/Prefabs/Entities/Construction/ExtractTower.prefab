@@ -240,7 +240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachType: 0
   spotKey: 0
-  MaxInstalledComp: 1
+  MaxInstalledComp: 2
   InstalledCompCount: 0
   thisSpotName: 
 --- !u!1 &7502656956773175162

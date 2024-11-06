@@ -855,7 +855,7 @@ public class DataEditorMain : MonoBehaviour
                         var pairItem = Instantiate(stringValuePairItem);
                         pairItem.gameObject.SetActive(true);
                         pairItem.transform.SetParent(tsf_constructorKeyValuePairContainer);
-                        StartCoroutine(pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionFloatVal[i], this));
+                        StartCoroutine(pairItem.InitThis(StringIndexType.Item, func.functionStringVal[i], func.functionFloatVal[i], this));
                         KeyValuePairItems.Add(pairItem);
                     }
 
@@ -878,7 +878,7 @@ public class DataEditorMain : MonoBehaviour
                         var pairItem = Instantiate(stringValuePairItem);
                         pairItem.gameObject.SetActive(true);
                         pairItem.transform.SetParent(tsf_builderKeyValuePairContainer);
-                        StartCoroutine(pairItem.InitThis(StringIndexType.Entity, func.functionStringVal[i], func.functionFloatVal[i], this));
+                        StartCoroutine(pairItem.InitThis(StringIndexType.Item, func.functionStringVal[i], func.functionFloatVal[i], this));
                         KeyValuePairItems.Add(pairItem);
                     }
 
@@ -1475,11 +1475,11 @@ public class DataEditorMain : MonoBehaviour
     }
     void AddConstructorStrValuePair()
     {
-        AddStrValuePair(tsf_constructorKeyValuePairContainer, StringIndexType.Entity);
+        AddStrValuePair(tsf_constructorKeyValuePairContainer, StringIndexType.Item);
     }
     void AddBuilderStrValuePair()
     {
-        AddStrValuePair(tsf_builderKeyValuePairContainer, StringIndexType.Entity);
+        AddStrValuePair(tsf_builderKeyValuePairContainer, StringIndexType.Item);
     }
     void AddPresetComponentsStrValuePair()
     {

@@ -4,9 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using static BaseObj;
 using static CompWeapon;
+using static UnityEditor.Progress;
 using static UnityEngine.EventSystems.EventTrigger;
 using Random = UnityEngine.Random;
 
@@ -77,100 +79,30 @@ public class CompFunction : BaseComponent
                 }
             case ComponentFunctionType.Construct:
                 {
-                    bool checkResources = true;
-
+                    List<ItemData> itemsRequested = new List<ItemData>();
                     for (int i = 1; i < func.functionStringVal.Length; i++)
                     {
-                        if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionFloatVal[i])
-                        {
-                            checkResources = false;
-                        }
+                        ItemData item = new ItemData(func.functionStringVal[i], (int)func.functionFloatVal[i]);
+                        itemsRequested.Add(item);
                     }
-
-                    int availableTileCount = 0;
-                    var obj = DataController.Instance.GetEntityData(func.functionStringVal[0]);
-                    foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles)
-                    {
-                        if (obj.CheckIsTileSuitableForUnit(adjTile.Value))
-                        {
-                            availableTileCount += 1;
-                        }
-                    }
-                    if (availableTileCount <= 0)
-                    {
-                        checkResources = false;
-                    }
-
-                    if (checkResources)
-                    {
-                        curSelectedIndex = index;
-                        isFunctionProgressing = true;
-                        for (int i = 1; i < func.functionStringVal.Length; i++)
-                        {
-                            ItemData item = new ItemData();
-                            item.itemID = func.functionStringVal[i];
-                            item.stackCount = (int)func.functionFloatVal[i];
-
-                            thisObj.RemoveItem(item);
-                        }
-                        valueTimeElapsed = 0;
-                        valueTimeRequired = func.functionFloatVal[0];
-                    }
+                    StartCoroutine(WaitForConstructMaterial(itemsRequested, func, index));
                     break;
                 }
             case ComponentFunctionType.Build:
                 {
-                    bool checkResources = true;
-
-                    for (int i = 1; i < func.functionStringVal.Length; i++)
-                    {
-                        if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionFloatVal[i])
-                        {
-                            checkResources = false;
-                        }
-                    }
-
-                    if (checkResources)
-                    {
-                        for (int i = 1; i < func.functionStringVal.Length; i++)
-                        {
-                            ItemData item = new ItemData();
-                            item.itemID = func.functionStringVal[i];
-                            item.stackCount = (int)func.functionFloatVal[i];
-
-                            thisObj.RemoveItem(item);
-                        }
-                        PlayerController.Instance.GetBuildRange();
-                    }
+                    PlayerController.Instance.GetBuildRange(this, index);
 
                     break;
                 }
             case ComponentFunctionType.Production:
                 {
-                    bool checkResources = true;
+                    List<ItemData> itemsRequested = new List<ItemData>();
                     for (int i = 1; i < func.functionStringVal.Length; i++)
                     {
-                        if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionIntVal[i])
-                        {
-                            checkResources = false;
-                        }
+                        ItemData item = new ItemData(func.functionStringVal[i], func.functionIntVal[i]);
+                        itemsRequested.Add(item);
                     }
-
-                    if (checkResources)
-                    {
-                        curSelectedIndex = index;
-                        isFunctionProgressing = true;
-                        for (int i = 1; i < func.functionStringVal.Length; i++)
-                        {
-                            ItemData item = new ItemData();
-                            item.itemID = func.functionStringVal[i];
-                            item.stackCount = func.functionIntVal[i];
-
-                            thisObj.RemoveItem(item);
-                        }
-                        valueTimeElapsed = 0;
-                        valueTimeRequired = func.functionValue;
-                    }
+                    StartCoroutine(WaitForProductMaterial(itemsRequested, func, index));
                     break;
                 }
             case ComponentFunctionType.PowerDispatcher:
@@ -218,21 +150,154 @@ public class CompFunction : BaseComponent
                 }
             case ComponentFunctionType.Logistics:
                 {
-                    if (func.functionStringVal == null) break;
-                    if (func.functionStringVal.Length <= 0) break;
-                    for (int i = 0; i < func.functionStringVal.Length; i ++)
+                    var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
+                    foreach (var tile in tiles)
                     {
-                        var logisticsModel = JsonConvert.DeserializeObject<LogisticsDetailModel>(func.functionStringVal[i]);
-                        if(logisticsModel.TransferItems.Count > 0)
+                        var obj = tile.curObj;
+                        if(obj != null)
                         {
-                            if(MapController.Instance.entityDic.ContainsKey(logisticsModel.FromID) && MapController.Instance.entityDic.ContainsKey(logisticsModel.ToID))
+                            if(obj.itemsRequested.Count > 0)
                             {
-
+                                List<string> list = obj.itemsRequested.Keys.ToList();
+                                for(int t = 0;t< list.Count;t++)
+                                {
+                                    bool itemTransfered = false;
+                                    for (int i = 0; i < obj.itemsRequested[list[t]].RequestedItems.Count; i++)
+                                    {
+                                        if (thisObj.GetItemCount(obj.itemsRequested[list[t]].RequestedItems[i].itemID) > 0)
+                                        {
+                                            if (this.EP < func.functionFloatVal[0]) break;
+                                            thisObj.TransferItem(obj, obj.itemsRequested[list[t]].RequestedItems[i].itemID, 1);
+                                            this.EP -= func.functionFloatVal[0];
+                                            itemTransfered = true;
+                                        }
+                                    }
+                                    if(itemTransfered)
+                                    {
+                                        DisplayLogisticLine(obj);
+                                    }
+                                    thisObj.SetRequest(obj.itemsRequested[list[t]].RequestedItems, obj.EntityID);
+                                }
                             }
                         }
                     }
                     break;
                 }
+        }
+    }
+
+    IEnumerator WaitForConstructMaterial(List<ItemData> itemRequested, CompFunctionDetail func, int index)
+    {
+        bool checkResources;
+
+        thisObj.SetRequest(itemRequested);
+        do
+        {
+            checkResources = true;
+            for (int i = 1; i < func.functionStringVal.Length; i++)
+            {
+                if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionFloatVal[i])
+                {
+                    checkResources = false;
+                }
+            }
+            yield return null;
+        } while (!checkResources);
+
+        int availableTileCount = 0;
+        var obj = DataController.Instance.GetEntityData(func.functionStringVal[0]);
+        foreach (var adjTile in thisObj.GetTileWhereUnitIs().adjacentTiles)
+        {
+            if (obj.CheckIsTileSuitableForUnit(adjTile.Value))
+            {
+                availableTileCount += 1;
+            }
+        }
+        if (availableTileCount <= 0)
+        {
+            checkResources = false;
+        }
+
+        if (checkResources)
+        {
+            curSelectedIndex = index;
+            isFunctionProgressing = true;
+            for (int i = 1; i < func.functionStringVal.Length; i++)
+            {
+                ItemData item = new ItemData();
+                item.itemID = func.functionStringVal[i];
+                item.stackCount = (int)func.functionFloatVal[i];
+
+                thisObj.RemoveItem(item);
+            }
+            valueTimeElapsed = 0;
+            valueTimeRequired = func.functionFloatVal[0];
+        }
+    }
+    public IEnumerator WaitForBuildMaterial(CompFunctionDetail func, BaseTile selectedTile, Vector3 pos, Vector3 euler, EntityData entityData)
+    {
+        List<ItemData> itemRequested = new List<ItemData>();
+        for (int i = 1; i < func.functionStringVal.Length; i++)
+        {
+            ItemData item = new ItemData(func.functionStringVal[i], (int)func.functionFloatVal[i]);
+            itemRequested.Add(item);
+        }
+
+        yield return null;
+
+        FunctionTriggered(func);
+
+        var obj = DataController.Instance.GetConstructData(func.functionStringVal[0]);
+        var newConstruct = GameObject.Instantiate(obj, MapController.Instance.entityContainer);
+        newConstruct.transform.eulerAngles = euler;
+        newConstruct.Faction = "Elysium";
+        newConstruct.thisEntityData = entityData;
+        newConstruct.InitThis();
+        MapController.Instance.RegisterObject(newConstruct);
+        newConstruct.Pos = selectedTile.Pos;
+        newConstruct.transform.position = pos;
+        newConstruct.curTile = selectedTile;
+        selectedTile.curObj = newConstruct;
+
+        var compBuild = newConstruct.AddComponent<CompConstructTemp>();
+        newConstruct.Components.Add(compBuild);
+        compBuild.thisObj = newConstruct;
+        compBuild.buildTime = func.functionFloatVal[0];
+        compBuild.SimBuild();
+        compBuild.InitConstruct(itemRequested, func);
+    }
+    IEnumerator WaitForProductMaterial(List<ItemData> itemRequested, CompFunctionDetail func, int index)
+    {
+        bool checkResources;
+
+        thisObj.SetRequest(itemRequested);
+        do
+        {
+            checkResources = true;
+            for (int i = 1; i < func.functionStringVal.Length; i++)
+            {
+                if (thisObj.GetItemCount(func.functionStringVal[i]) < func.functionIntVal[i])
+                {
+                    checkResources = false;
+                }
+            }
+            yield return null;
+        } while (!checkResources);
+
+        if (checkResources)
+        {
+            curSelectedIndex = index;
+            isFunctionProgressing = true;
+            for (int i = 1; i < func.functionStringVal.Length; i++)
+            {
+                ItemData item = new ItemData();
+                item.itemID = func.functionStringVal[i];
+                item.stackCount = func.functionIntVal[i];
+
+                thisObj.RemoveItem(item);
+            }
+            valueTimeElapsed = 0;
+            valueTimeRequired = func.functionValue;
         }
     }
 
@@ -687,15 +752,21 @@ public class CompFunction : BaseComponent
     #region Resources
     void GenerateParticle(BaseObj target)
     {
-        //var particle = (GameObject)Resources.Load("Prefabs/Particles/Sparkle");
-        //if(particle != null)
-        //{
-        //    var sparkle = ObjectPool.Instance.CreateObject("Sparkle", particle, target.gameObject.transform.position, Quaternion.identity);
-        //    ObjectPool.Instance.CollectObject(sparkle, 2f);
-        //}
         Tools.GetParticle("Sparkle", target.gameObject.transform);
     }
     #endregion
+    #endregion
+    #region Logistics
+    void DisplayLogisticLine(BaseObj target)
+    {
+        var laserInstance = (GameObject)Resources.Load("Prefabs/Projectile/LaserBeam");
+        if (laserInstance != null)
+        {
+            var laserBeam = ObjectPool.Instance.CreateObject("LaserBeam", laserInstance, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_LaerBeam>();
+
+            laserBeam.TriggerThis(tsf_InstalledSlot.position, target.gameObject.transform.position, new Color(0.4156f, 0.7019f, 0, 0.75f));
+        }
+    }
     #endregion
 }
 public struct LogisticsDetailModel
