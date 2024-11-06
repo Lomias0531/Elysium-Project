@@ -443,7 +443,7 @@ public class CompFunction : BaseComponent
                         {
                             ItemData item = new ItemData();
                             item.itemID = thisCompData.functions[curSelectedIndex].functionStringVal[0];
-                            item.stackCount = (int)thisCompData.functions[curSelectedIndex].functionFloatVal[0];
+                            item.stackCount = (int)thisCompData.functions[curSelectedIndex].functionIntVal[0];
 
                             thisObj.ReceiveItem(item);
                             break;
