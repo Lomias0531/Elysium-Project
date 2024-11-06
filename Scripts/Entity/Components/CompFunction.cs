@@ -224,11 +224,7 @@ public class CompFunction : BaseComponent
             isFunctionProgressing = true;
             for (int i = 1; i < func.functionStringVal.Length; i++)
             {
-                ItemData item = new ItemData();
-                item.itemID = func.functionStringVal[i];
-                item.stackCount = (int)func.functionFloatVal[i];
-
-                thisObj.RemoveItem(item);
+                thisObj.RemoveItem(func.functionStringVal[i], (int)func.functionFloatVal[i]);
             }
             valueTimeElapsed = 0;
             valueTimeRequired = func.functionFloatVal[0];
@@ -290,11 +286,7 @@ public class CompFunction : BaseComponent
             isFunctionProgressing = true;
             for (int i = 1; i < func.functionStringVal.Length; i++)
             {
-                ItemData item = new ItemData();
-                item.itemID = func.functionStringVal[i];
-                item.stackCount = func.functionIntVal[i];
-
-                thisObj.RemoveItem(item);
+                thisObj.RemoveItem(func.functionStringVal[i], func.functionIntVal[i]);
             }
             valueTimeElapsed = 0;
             valueTimeRequired = func.functionValue;
@@ -355,10 +347,10 @@ public class CompFunction : BaseComponent
                     {
                         for (int i = 0; i < thisObj.Components[0].thisCompData.functions[0].functionStringVal.Length; i++)
                         {
-                            ItemData data = new ItemData();
-                            data.itemID = thisObj.Components[0].thisCompData.functions[0].functionStringVal[i];
-                            data.stackCount = thisObj.Components[0].thisCompData.functions[0].functionIntVal[i];
-                            ((BaseObj)obj[0]).ReceiveItem(data);
+                            //ItemData data = new ItemData();
+                            //data.itemID = thisObj.Components[0].thisCompData.functions[0].functionStringVal[i];
+                            //data.stackCount = thisObj.Components[0].thisCompData.functions[0].functionIntVal[i];
+                            ((BaseObj)obj[0]).ReceiveItem(thisObj.Components[0].thisCompData.functions[0].functionStringVal[i], thisObj.Components[0].thisCompData.functions[0].functionIntVal[i]);
                         }
 
                         GenerateParticle(thisObj);
@@ -441,11 +433,11 @@ public class CompFunction : BaseComponent
                         }
                     case ComponentFunctionType.Production:
                         {
-                            ItemData item = new ItemData();
-                            item.itemID = thisCompData.functions[curSelectedIndex].functionStringVal[0];
-                            item.stackCount = (int)thisCompData.functions[curSelectedIndex].functionIntVal[0];
+                            //ItemData item = new ItemData();
+                            //item.itemID = thisCompData.functions[curSelectedIndex].functionStringVal[0];
+                            //item.stackCount = (int)thisCompData.functions[curSelectedIndex].functionIntVal[0];
 
-                            thisObj.ReceiveItem(item);
+                            thisObj.ReceiveItem(thisCompData.functions[curSelectedIndex].functionStringVal[0], thisCompData.functions[curSelectedIndex].functionIntVal[0]);
                             break;
                         }
                 }

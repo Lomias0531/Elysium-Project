@@ -81,6 +81,11 @@ public class CompConstructTemp : BaseComponent
         } while (!checkResources);
 
         startConstruct = true;
+
+        for(int i = 0;i< func.functionStringVal.Length;i++)
+        {
+            thisObj.RemoveItem(func.functionStringVal[i], (int)func.functionFloatVal[i]);
+        }
     }
 
     // Update is called once per frame
