@@ -37,6 +37,10 @@ public class MapController : Singletion<MapController>
 
     public Transform tsf_ProjectileContainer;
     public Transform tsf_ParticlesConatiner;
+
+    public Light theSun;
+    public float curTimeTick = 0;
+    public float DayLength = 3600;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,6 +60,7 @@ public class MapController : Singletion<MapController>
             var value = 0.25f + (Mathf.Sin(Mathf.PI * 0.5f * waveTime) * 0.5f + 0.5f * Mathf.Sin(2f * Mathf.PI * waveTime)) * 0.05f;
             water.transform.position = new Vector3(25, value, 25);
         }
+        SimSunLight();
     }
     #region Generation
     public void GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
@@ -461,9 +466,11 @@ public class MapController : Singletion<MapController>
             Destroy(obj.gameObject);
         }
     }
-    public void Test()
+    void SimSunLight()
     {
-        //Debug.Log("Test");
+        curTimeTick += Time.deltaTime;
+        if (curTimeTick > DayLength) curTimeTick = 0;
+        theSun.gameObject.transform.eulerAngles = new Vector3((curTimeTick / DayLength) * 360, -30, 0);
     }
     #endregion
 }
