@@ -28,7 +28,7 @@ public class CameraController : Singletion<CameraController>
     float camAngleY = 60f;
     float camDistance = 10f;
 
-    bool isFocusing = false;
+    public bool isFocusing = false;
     BaseTile curLookingTile;
     public BaseObj focusingTarget;
 
@@ -234,6 +234,7 @@ public class CameraController : Singletion<CameraController>
     {
         obj_Maintenance.SetActive(true);
         cam_Origin.gameObject.SetActive(false);
+        isFocusing = true;
     }
     public void FocusCamToTarget(GameObject target)
     {

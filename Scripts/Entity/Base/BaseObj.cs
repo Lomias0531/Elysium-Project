@@ -33,6 +33,8 @@ public abstract class BaseObj : MonoBehaviour
     float recoilTime;
     float recoilRadius;
 
+    public GameObject ReceivePost;
+
     public Dictionary<string,LogisticsRequestModel> itemsRequested = new Dictionary<string, LogisticsRequestModel>();
 
     [HideInInspector]
@@ -748,14 +750,14 @@ public abstract class BaseObj : MonoBehaviour
             id = this.EntityID;
         }
         LogisticsRequestModel model = new LogisticsRequestModel();
-        model.RequestID = id;
+        model.RequestID = EntityID;
         model.RequestedItems = new List<ItemData>();
 
         foreach (var item in items)
         {
             ItemData thisItem = new ItemData();
             thisItem.itemID = item.itemID;
-            int count = GetItemCount(id);
+            int count = GetItemCount(item.itemID);
             thisItem.stackCount = item.stackCount - count;
 
             model.RequestedItems.Add(thisItem);

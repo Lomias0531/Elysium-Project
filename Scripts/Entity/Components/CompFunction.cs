@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
@@ -150,6 +151,41 @@ public class CompFunction : BaseComponent
                 }
             case ComponentFunctionType.Logistics:
                 {
+                    //var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
+                    //foreach (var tile in tiles)
+                    //{
+                    //    var obj = tile.curObj;
+                    //    if(obj != null)
+                    //    {
+                    //        if(obj.itemsRequested.Count > 0)
+                    //        {
+                    //            List<string> list = obj.itemsRequested.Keys.ToList();
+                    //            for (int t = 0;t< list.Count;t++)
+                    //            {
+                    //                bool itemTransfered = false;
+                    //                for (int i = 0; i < obj.itemsRequested[list[t]].RequestedItems.Count; i++)
+                    //                {
+                    //                    if (thisObj.GetItemCount(obj.itemsRequested[list[t]].RequestedItems[i].itemID) > 0)
+                    //                    {
+                    //                        if (this.EP < func.functionFloatVal[0]) break;
+                    //                        thisObj.TransferItem(obj, obj.itemsRequested[list[t]].RequestedItems[i].itemID, 1);
+                    //                        this.EP -= func.functionFloatVal[0];
+                    //                        itemTransfered = true;
+                    //                    }
+                    //                }
+                    //                thisObj.SetRequest(obj.itemsRequested[list[t]].RequestedItems, obj.EntityID);
+                    //                if (itemTransfered)
+                    //                {
+                    //                    DisplayLogisticLine(obj);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //}
+
+                    //Key as destination, id as next stop
+                    Dictionary<string, LogisticsRequestModel> logisticsOrders = new Dictionary<string, LogisticsRequestModel>();
+
                     var tiles = Tools.GetTileWithinRange(thisObj.curTile, (int)func.functionValue, Tools.IgnoreType.All);
                     foreach (var tile in tiles)
                     {
@@ -158,27 +194,53 @@ public class CompFunction : BaseComponent
                         {
                             if(obj.itemsRequested.Count > 0)
                             {
-                                List<string> list = obj.itemsRequested.Keys.ToList();
-                                for(int t = 0;t< list.Count;t++)
+                                foreach (var item in obj.itemsRequested)
                                 {
-                                    bool itemTransfered = false;
-                                    for (int i = 0; i < obj.itemsRequested[list[t]].RequestedItems.Count; i++)
+                                    var target = MapController.Instance.entityDic[item.Key];
+
+                                    if (logisticsOrders.ContainsKey(item.Key))
                                     {
-                                        if (thisObj.GetItemCount(obj.itemsRequested[list[t]].RequestedItems[i].itemID) > 0)
+                                        var origin = MapController.Instance.entityDic[logisticsOrders[item.Key].RequestID];
+
+                                        var distance = Tools.GetDistance(origin.Pos, target.Pos);
+                                        var distanceNew = Tools.GetDistance(obj.Pos,target.Pos);
+                                        if (distanceNew < distance)
                                         {
-                                            if (this.EP < func.functionFloatVal[0]) break;
-                                            thisObj.TransferItem(obj, obj.itemsRequested[list[t]].RequestedItems[i].itemID, 1);
-                                            this.EP -= func.functionFloatVal[0];
-                                            itemTransfered = true;
+                                            LogisticsRequestModel model = new LogisticsRequestModel();
+                                            model.RequestID = obj.EntityID;
+                                            model.RequestedItems = item.Value.RequestedItems;
+                                            logisticsOrders[item.Key] = model;
                                         }
-                                    }
-                                    if(itemTransfered)
+                                    }else
                                     {
-                                        DisplayLogisticLine(obj);
+                                        LogisticsRequestModel model = new LogisticsRequestModel();
+                                        model.RequestID = obj.EntityID;
+                                        model.RequestedItems = item.Value.RequestedItems;
+                                        logisticsOrders.Add(item.Key, model);
                                     }
-                                    thisObj.SetRequest(obj.itemsRequested[list[t]].RequestedItems, obj.EntityID);
                                 }
                             }
+                        }
+                    }
+
+                    foreach (var logistic in logisticsOrders)
+                    {
+                        bool itemTransfered = false;
+                        for(int i = 0;i< logisticsOrders[logistic.Key].RequestedItems.Count;i++)
+                        {
+                            if (this.EP < func.functionFloatVal[0]) break;
+                            if (thisObj.GetItemCount(logisticsOrders[logistic.Key].RequestedItems[i].itemID) > 0)
+                            {
+                                thisObj.TransferItem(MapController.Instance.entityDic[logistic.Value.RequestID], logistic.Value.RequestedItems[i].itemID, 1);
+                                itemTransfered = true;
+                            }
+                        }
+
+                        thisObj.SetRequest(logistic.Value.RequestedItems,logistic.Key);
+
+                        if(itemTransfered)
+                        {
+                            DisplayLogisticLine(MapController.Instance.entityDic[logistic.Value.RequestID]);
                         }
                     }
                     break;
@@ -364,6 +426,7 @@ public class CompFunction : BaseComponent
     public override void Start()
     {
         base.Start();
+        if (CameraController.Instance.isFocusing) return;
         for(int i = 0;i<thisCompData.functions.Length;i++)
         {
             thisCompData.functions[i].isAuto = thisCompData.functions[i].canBeAuto;
@@ -374,6 +437,7 @@ public class CompFunction : BaseComponent
     public override void Update()
     {
         base.Update();
+        if (CameraController.Instance.isFocusing) return;
         if (thisObj.isUniderConstruction) return;
         
         for(int i = 0;i<thisCompData.functions.Length;i++)
@@ -737,7 +801,16 @@ public class CompFunction : BaseComponent
         {
             var laserBeam = ObjectPool.Instance.CreateObject("LaserBeam", laserInstance, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_LaerBeam>();
 
-            laserBeam.TriggerThis(tsf_InstalledSlot.position, target.gameObject.transform.position, new Color(0, 0, 1, 0.75f));
+            Vector3 targetPos;
+            if(target.ReceivePost == null)
+            {
+                targetPos = target.gameObject.transform.position;
+            }else
+            {
+                targetPos = target.ReceivePost.transform.position;
+            }
+
+            laserBeam.TriggerThis(tsf_InstalledSlot.position, targetPos, new Color(0, 0, 1, 0.75f));
         }
     }
     #endregion
@@ -756,7 +829,17 @@ public class CompFunction : BaseComponent
         {
             var laserBeam = ObjectPool.Instance.CreateObject("LaserBeam", laserInstance, this.gameObject.transform.position, this.gameObject.transform.rotation).GetComponent<Proj_LaerBeam>();
 
-            laserBeam.TriggerThis(tsf_InstalledSlot.position, target.gameObject.transform.position, new Color(0.4156f, 0.7019f, 0, 0.75f));
+            Vector3 targetPos;
+            if (target.ReceivePost == null)
+            {
+                targetPos = target.gameObject.transform.position;
+            }
+            else
+            {
+                targetPos = target.ReceivePost.transform.position;
+            }
+
+            laserBeam.TriggerThis(tsf_InstalledSlot.position, targetPos, new Color(0.4156f, 0.7019f, 0, 0.75f));
         }
     }
     #endregion

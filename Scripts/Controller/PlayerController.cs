@@ -646,12 +646,16 @@ public class PlayerController : Singletion<PlayerController>
                 if(!construct.isUniderConstruction)
                 {
                     var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), (int)radRange, Tools.IgnoreType.All);
-                    foreach (var tile in gridList)
+                    //foreach (var tile in gridList)
+                    //{
+                    //    if (!powerGridIndicator.Contains(tile))
+                    //    {
+                    //        powerGridIndicator.Add(tile);
+                    //    }
+                    //}
+                    if(gridList.Contains(hoveredTile))
                     {
-                        if (!powerGridIndicator.Contains(tile))
-                        {
-                            powerGridIndicator.Add(tile);
-                        }
+                        powerGridIndicator = gridList;
                     }
                 }else
                 {
@@ -776,12 +780,16 @@ public class PlayerController : Singletion<PlayerController>
                 if (!construct.isUniderConstruction)
                 {
                     var gridList = Tools.GetTileWithinRange(construct.GetTileWhereUnitIs(), (int)radRange, Tools.IgnoreType.All);
-                    foreach (var tile in gridList)
+                    //foreach (var tile in gridList)
+                    //{
+                    //    if (!LogisticsIndicator.Contains(tile))
+                    //    {
+                    //        LogisticsIndicator.Add(tile);
+                    //    }
+                    //}
+                    if(gridList.Contains(hoveredTile))
                     {
-                        if (!LogisticsIndicator.Contains(tile))
-                        {
-                            LogisticsIndicator.Add(tile);
-                        }
+                        LogisticsIndicator = gridList;
                     }
                 }
                 else

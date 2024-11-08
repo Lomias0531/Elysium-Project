@@ -151,6 +151,9 @@ MonoBehaviour:
   componentBasements: []
   WallBottomPoint: {fileID: 0}
   WallTopPoint: {fileID: 0}
+  isAimedAtTarget: 0
+  targetTile: {fileID: 0}
+  ReceivePost: {fileID: 7290361189932075828}
   objName: "\u53D1\u7535\u7AD9"
   Faction: Elysium
   curSelectedComp: {fileID: 0}

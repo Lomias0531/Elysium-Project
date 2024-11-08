@@ -835,8 +835,15 @@ public class DataEditorMain : MonoBehaviour
                     ipt_BulletsCount.text = func.functionIntVal[4].ToString();
                     ipt_BulletsInterval.text = func.functionFloatVal[0].ToString();
                     ipt_BulletSpeed.text = func.functionFloatVal[1].ToString();
-                    ipt_BlastParticle.text = func.functionStringVal[0];
-                    ipt_TrailParticle.text = func.functionStringVal[1];
+                    try
+                    {
+                        ipt_BlastParticle.text = func.functionStringVal[0];
+                        ipt_TrailParticle.text = func.functionStringVal[1];
+                    }
+                    catch
+                    {
+
+                    }
 
                     break;
                 }
