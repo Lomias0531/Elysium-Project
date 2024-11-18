@@ -116,7 +116,7 @@ Material:
     - _bubblefilter2: 10
     - _bubblespeed: 0.04
     - _depthstrength: 1
-    - _normalstrength: 0.2
+    - _normalstrength: 0.82
     - _reflectionstrength: 0.3
     - _substractdepth: 1
     m_Colors:
