@@ -110,6 +110,8 @@ Material:
     - _Float0: 0.8
     - _Float1: 1.13
     - _Float3: 3
+    - _Float4: 0.3
+    - _Float5: 2.2
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -124,6 +126,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _TessValue: 32
     - _WaveScale: 1
     - _WaveSpeed: 0.2
     - _WorkflowMode: 1

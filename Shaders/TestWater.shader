@@ -10,6 +10,7 @@ Shader "TestWater"
 		_WaveScale("WaveScale", Float) = 1
 		_Float0("Float 0", Float) = 0
 		_Float3("Float 3", Float) = 3
+		_Float4("Float 4", Range( 0 , 1)) = 0
 
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
@@ -20,7 +21,7 @@ Shader "TestWater"
 		//_TransAmbient( "Trans Ambient", Range( 0, 1 ) ) = 0.1
 		//_TransShadow( "Trans Shadow", Range( 0, 1 ) ) = 0.5
 		//_TessPhongStrength( "Tess Phong Strength", Range( 0, 1 ) ) = 0.5
-		//_TessValue( "Tess Max Tessellation", Range( 1, 32 ) ) = 16
+		_TessValue( "Max Tessellation", Range( 1, 32 ) ) = 16
 		//_TessMin( "Tess Min Distance", Float ) = 10
 		//_TessMax( "Tess Max Distance", Float ) = 25
 		//_TessEdgeLength ( "Tess Edge length", Range( 2, 50 ) ) = 16
@@ -170,7 +171,7 @@ Shader "TestWater"
 		{
 			
 			Name "Forward"
-			Tags { "LightMode"="UniversalForward" }
+			Tags { "LightMode"="UniversalForwardOnly" }
 
 			Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
 			ZWrite On
@@ -188,10 +189,15 @@ Shader "TestWater"
 			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
 			#define _SURFACE_TYPE_TRANSPARENT 1
 			#define _SPECULAR_SETUP 1
 			#pragma shader_feature_local_fragment _SPECULAR_SETUP
 			#define _RECEIVE_SHADOWS_OFF 1
+			#define ASE_TESSELLATION 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 120113
 			#define REQUIRE_DEPTH_TEXTURE 1
@@ -240,7 +246,6 @@ Shader "TestWater"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_SCREEN_POSITION
@@ -288,10 +293,11 @@ Shader "TestWater"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float _Float3;
-			float _Float0;
 			float _WaveSpeed;
 			float _WaveScale;
+			float _Float4;
+			float _Float3;
+			float _Float0;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -334,29 +340,6 @@ Shader "TestWater"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
-			
-			float4 SampleGradient( Gradient gradient, float time )
-			{
-				float3 color = gradient.colors[0].rgb;
-				UNITY_UNROLL
-				for (int c = 1; c < 8; c++)
-				{
-				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
-				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-				}
-				#ifndef UNITY_COLORSPACE_GAMMA
-				color = SRGBToLinear(color);
-				#endif
-				float alpha = gradient.alphas[0].x;
-				UNITY_UNROLL
-				for (int a = 1; a < 8; a++)
-				{
-				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
-				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
-				}
-				return float4(color, alpha);
-			}
-			
 			float3 mod3D289( float3 x ) { return x - floor( x / 289.0 ) * 289.0; }
 			float4 mod3D289( float4 x ) { return x - floor( x / 289.0 ) * 289.0; }
 			float4 permute( float4 x ) { return mod3D289( ( x * 34.0 + 1.0 ) * x ); }
@@ -412,6 +395,14 @@ Shader "TestWater"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float mulTime66 = _TimeParameters.x * _WaveSpeed;
+				float3 appendResult67 = (float3(ase_worldPos.x , mulTime66 , ase_worldPos.z));
+				float simplePerlin3D65 = snoise( appendResult67*_WaveScale );
+				simplePerlin3D65 = simplePerlin3D65*0.5 + 0.5;
+				float3 appendResult130 = (float3(0.0 , simplePerlin3D65 , 0.0));
+				
+				float3 temp_cast_0 = (simplePerlin3D65).xxx;
 				
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
@@ -420,14 +411,14 @@ Shader "TestWater"
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( appendResult130 * _Float4 );
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = temp_cast_0;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 positionVS = TransformWorldToView( positionWS );
@@ -610,13 +601,14 @@ Shader "TestWater"
 
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				Gradient gradient114 = NewGradient( 0, 4, 3, float4( 1, 1, 1, 0 ), float4( 0, 0.7563188, 1, 0.1441215 ), float4( 0, 0.5346618, 0.8301887, 0.4705882 ), float4( 0, 0.5103893, 0.8207547, 1 ), 0, 0, 0, 0, float2( 0, 0 ), float2( 0.4862745, 0.3147021 ), float2( 1, 1 ), 0, 0, 0, 0, 0 );
 				float fresnelNdotV111 = dot( WorldNormal, WorldViewDirection );
 				float fresnelNode111 = ( 0.0 + 1.0 * pow( 1.0 - fresnelNdotV111, _Float3 ) );
 				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
 				float eyeDepth104 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
 				float smoothstepResult108 = smoothstep( 0.2 , 1.0 , ( _Float0 - ( eyeDepth104 - ScreenPos.w ) ));
+				float temp_output_113_0 = ( fresnelNode111 + smoothstepResult108 );
+				float3 temp_cast_0 = (temp_output_113_0).xxx;
 				
 				float mulTime66 = _TimeParameters.x * _WaveSpeed;
 				float3 appendResult67 = (float3(WorldPosition.x , mulTime66 , WorldPosition.z));
@@ -625,7 +617,7 @@ Shader "TestWater"
 				float3 temp_cast_1 = (simplePerlin3D65).xxx;
 				
 
-				float3 BaseColor = SampleGradient( gradient114, ( 1.0 - ( fresnelNode111 + smoothstepResult108 ) ) ).rgb;
+				float3 BaseColor = temp_cast_0;
 				float3 Normal = temp_cast_1;
 				float3 Emission = 0;
 				float3 Specular = 0.5;
@@ -845,9 +837,14 @@ Shader "TestWater"
 			#pragma multi_compile_instancing
 			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
 			#define _SURFACE_TYPE_TRANSPARENT 1
 			#define _SPECULAR_SETUP 1
 			#define _RECEIVE_SHADOWS_OFF 1
+			#define ASE_TESSELLATION 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 120113
 
@@ -900,10 +897,11 @@ Shader "TestWater"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float _Float3;
-			float _Float0;
 			float _WaveSpeed;
 			float _WaveScale;
+			float _Float4;
+			float _Float3;
+			float _Float0;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -945,7 +943,54 @@ Shader "TestWater"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
+			float3 mod3D289( float3 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 mod3D289( float4 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 permute( float4 x ) { return mod3D289( ( x * 34.0 + 1.0 ) * x ); }
+			float4 taylorInvSqrt( float4 r ) { return 1.79284291400159 - r * 0.85373472095314; }
+			float snoise( float3 v )
+			{
+				const float2 C = float2( 1.0 / 6.0, 1.0 / 3.0 );
+				float3 i = floor( v + dot( v, C.yyy ) );
+				float3 x0 = v - i + dot( i, C.xxx );
+				float3 g = step( x0.yzx, x0.xyz );
+				float3 l = 1.0 - g;
+				float3 i1 = min( g.xyz, l.zxy );
+				float3 i2 = max( g.xyz, l.zxy );
+				float3 x1 = x0 - i1 + C.xxx;
+				float3 x2 = x0 - i2 + C.yyy;
+				float3 x3 = x0 - 0.5;
+				i = mod3D289( i);
+				float4 p = permute( permute( permute( i.z + float4( 0.0, i1.z, i2.z, 1.0 ) ) + i.y + float4( 0.0, i1.y, i2.y, 1.0 ) ) + i.x + float4( 0.0, i1.x, i2.x, 1.0 ) );
+				float4 j = p - 49.0 * floor( p / 49.0 );  // mod(p,7*7)
+				float4 x_ = floor( j / 7.0 );
+				float4 y_ = floor( j - 7.0 * x_ );  // mod(j,N)
+				float4 x = ( x_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 y = ( y_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 h = 1.0 - abs( x ) - abs( y );
+				float4 b0 = float4( x.xy, y.xy );
+				float4 b1 = float4( x.zw, y.zw );
+				float4 s0 = floor( b0 ) * 2.0 + 1.0;
+				float4 s1 = floor( b1 ) * 2.0 + 1.0;
+				float4 sh = -step( h, 0.0 );
+				float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+				float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+				float3 g0 = float3( a0.xy, h.x );
+				float3 g1 = float3( a0.zw, h.y );
+				float3 g2 = float3( a1.xy, h.z );
+				float3 g3 = float3( a1.zw, h.w );
+				float4 norm = taylorInvSqrt( float4( dot( g0, g0 ), dot( g1, g1 ), dot( g2, g2 ), dot( g3, g3 ) ) );
+				g0 *= norm.x;
+				g1 *= norm.y;
+				g2 *= norm.z;
+				g3 *= norm.w;
+				float4 m = max( 0.6 - float4( dot( x0, x0 ), dot( x1, x1 ), dot( x2, x2 ), dot( x3, x3 ) ), 0.0 );
+				m = m* m;
+				m = m* m;
+				float4 px = float4( dot( x0, g0 ), dot( x1, g1 ), dot( x2, g2 ), dot( x3, g3 ) );
+				return 42.0 * dot( m, px);
+			}
 			
+
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -953,6 +998,14 @@ Shader "TestWater"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float mulTime66 = _TimeParameters.x * _WaveSpeed;
+				float3 appendResult67 = (float3(ase_worldPos.x , mulTime66 , ase_worldPos.z));
+				float simplePerlin3D65 = snoise( appendResult67*_WaveScale );
+				simplePerlin3D65 = simplePerlin3D65*0.5 + 0.5;
+				float3 appendResult130 = (float3(0.0 , simplePerlin3D65 , 0.0));
+				
+				float3 temp_cast_0 = (simplePerlin3D65).xxx;
 				
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
@@ -961,7 +1014,7 @@ Shader "TestWater"
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( appendResult130 * _Float4 );
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -969,7 +1022,7 @@ Shader "TestWater"
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = temp_cast_0;
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
@@ -1131,10 +1184,15 @@ Shader "TestWater"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
 			#define _SURFACE_TYPE_TRANSPARENT 1
 			#define _SPECULAR_SETUP 1
 			#pragma shader_feature_local_fragment _SPECULAR_SETUP
 			#define _RECEIVE_SHADOWS_OFF 1
+			#define ASE_TESSELLATION 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 120113
 			#define REQUIRE_DEPTH_TEXTURE 1
@@ -1157,7 +1215,6 @@ Shader "TestWater"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
-			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_VERT_NORMAL
 
@@ -1193,10 +1250,11 @@ Shader "TestWater"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float _Float3;
-			float _Float0;
 			float _WaveSpeed;
 			float _WaveScale;
+			float _Float4;
+			float _Float3;
+			float _Float0;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1239,27 +1297,51 @@ Shader "TestWater"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
-			
-			float4 SampleGradient( Gradient gradient, float time )
+			float3 mod3D289( float3 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 mod3D289( float4 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 permute( float4 x ) { return mod3D289( ( x * 34.0 + 1.0 ) * x ); }
+			float4 taylorInvSqrt( float4 r ) { return 1.79284291400159 - r * 0.85373472095314; }
+			float snoise( float3 v )
 			{
-				float3 color = gradient.colors[0].rgb;
-				UNITY_UNROLL
-				for (int c = 1; c < 8; c++)
-				{
-				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
-				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-				}
-				#ifndef UNITY_COLORSPACE_GAMMA
-				color = SRGBToLinear(color);
-				#endif
-				float alpha = gradient.alphas[0].x;
-				UNITY_UNROLL
-				for (int a = 1; a < 8; a++)
-				{
-				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
-				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
-				}
-				return float4(color, alpha);
+				const float2 C = float2( 1.0 / 6.0, 1.0 / 3.0 );
+				float3 i = floor( v + dot( v, C.yyy ) );
+				float3 x0 = v - i + dot( i, C.xxx );
+				float3 g = step( x0.yzx, x0.xyz );
+				float3 l = 1.0 - g;
+				float3 i1 = min( g.xyz, l.zxy );
+				float3 i2 = max( g.xyz, l.zxy );
+				float3 x1 = x0 - i1 + C.xxx;
+				float3 x2 = x0 - i2 + C.yyy;
+				float3 x3 = x0 - 0.5;
+				i = mod3D289( i);
+				float4 p = permute( permute( permute( i.z + float4( 0.0, i1.z, i2.z, 1.0 ) ) + i.y + float4( 0.0, i1.y, i2.y, 1.0 ) ) + i.x + float4( 0.0, i1.x, i2.x, 1.0 ) );
+				float4 j = p - 49.0 * floor( p / 49.0 );  // mod(p,7*7)
+				float4 x_ = floor( j / 7.0 );
+				float4 y_ = floor( j - 7.0 * x_ );  // mod(j,N)
+				float4 x = ( x_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 y = ( y_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 h = 1.0 - abs( x ) - abs( y );
+				float4 b0 = float4( x.xy, y.xy );
+				float4 b1 = float4( x.zw, y.zw );
+				float4 s0 = floor( b0 ) * 2.0 + 1.0;
+				float4 s1 = floor( b1 ) * 2.0 + 1.0;
+				float4 sh = -step( h, 0.0 );
+				float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+				float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+				float3 g0 = float3( a0.xy, h.x );
+				float3 g1 = float3( a0.zw, h.y );
+				float3 g2 = float3( a1.xy, h.z );
+				float3 g3 = float3( a1.zw, h.w );
+				float4 norm = taylorInvSqrt( float4( dot( g0, g0 ), dot( g1, g1 ), dot( g2, g2 ), dot( g3, g3 ) ) );
+				g0 *= norm.x;
+				g1 *= norm.y;
+				g2 *= norm.z;
+				g3 *= norm.w;
+				float4 m = max( 0.6 - float4( dot( x0, x0 ), dot( x1, x1 ), dot( x2, x2 ), dot( x3, x3 ) ), 0.0 );
+				m = m* m;
+				m = m* m;
+				float4 px = float4( dot( x0, g0 ), dot( x1, g1 ), dot( x2, g2 ), dot( x3, g3 ) );
+				return 42.0 * dot( m, px);
 			}
 			
 
@@ -1270,6 +1352,15 @@ Shader "TestWater"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float mulTime66 = _TimeParameters.x * _WaveSpeed;
+				float3 appendResult67 = (float3(ase_worldPos.x , mulTime66 , ase_worldPos.z));
+				float simplePerlin3D65 = snoise( appendResult67*_WaveScale );
+				simplePerlin3D65 = simplePerlin3D65*0.5 + 0.5;
+				float3 appendResult130 = (float3(0.0 , simplePerlin3D65 , 0.0));
+				
+				float3 temp_cast_0 = (simplePerlin3D65).xxx;
+				
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
 				o.ase_texcoord4.xyz = ase_worldNormal;
 				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
@@ -1286,7 +1377,7 @@ Shader "TestWater"
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( appendResult130 * _Float4 );
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -1294,7 +1385,7 @@ Shader "TestWater"
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = temp_cast_0;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 
@@ -1429,7 +1520,6 @@ Shader "TestWater"
 					#endif
 				#endif
 
-				Gradient gradient114 = NewGradient( 0, 4, 3, float4( 1, 1, 1, 0 ), float4( 0, 0.7563188, 1, 0.1441215 ), float4( 0, 0.5346618, 0.8301887, 0.4705882 ), float4( 0, 0.5103893, 0.8207547, 1 ), 0, 0, 0, 0, float2( 0, 0 ), float2( 0.4862745, 0.3147021 ), float2( 1, 1 ), 0, 0, 0, 0, 0 );
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
 				float3 ase_worldNormal = IN.ase_texcoord4.xyz;
@@ -1440,9 +1530,11 @@ Shader "TestWater"
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
 				float eyeDepth104 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
 				float smoothstepResult108 = smoothstep( 0.2 , 1.0 , ( _Float0 - ( eyeDepth104 - screenPos.w ) ));
+				float temp_output_113_0 = ( fresnelNode111 + smoothstepResult108 );
+				float3 temp_cast_0 = (temp_output_113_0).xxx;
 				
 
-				float3 BaseColor = SampleGradient( gradient114, ( 1.0 - ( fresnelNode111 + smoothstepResult108 ) ) ).rgb;
+				float3 BaseColor = temp_cast_0;
 				float3 Emission = 0;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
@@ -1481,9 +1573,14 @@ Shader "TestWater"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
 			#define _SURFACE_TYPE_TRANSPARENT 1
 			#define _SPECULAR_SETUP 1
 			#define _RECEIVE_SHADOWS_OFF 1
+			#define ASE_TESSELLATION 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 120113
 			#define REQUIRE_DEPTH_TEXTURE 1
@@ -1503,7 +1600,6 @@ Shader "TestWater"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
-			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_VERT_NORMAL
 
@@ -1532,10 +1628,11 @@ Shader "TestWater"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float _Float3;
-			float _Float0;
 			float _WaveSpeed;
 			float _WaveScale;
+			float _Float4;
+			float _Float3;
+			float _Float0;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1578,27 +1675,51 @@ Shader "TestWater"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
-			
-			float4 SampleGradient( Gradient gradient, float time )
+			float3 mod3D289( float3 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 mod3D289( float4 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 permute( float4 x ) { return mod3D289( ( x * 34.0 + 1.0 ) * x ); }
+			float4 taylorInvSqrt( float4 r ) { return 1.79284291400159 - r * 0.85373472095314; }
+			float snoise( float3 v )
 			{
-				float3 color = gradient.colors[0].rgb;
-				UNITY_UNROLL
-				for (int c = 1; c < 8; c++)
-				{
-				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
-				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-				}
-				#ifndef UNITY_COLORSPACE_GAMMA
-				color = SRGBToLinear(color);
-				#endif
-				float alpha = gradient.alphas[0].x;
-				UNITY_UNROLL
-				for (int a = 1; a < 8; a++)
-				{
-				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
-				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
-				}
-				return float4(color, alpha);
+				const float2 C = float2( 1.0 / 6.0, 1.0 / 3.0 );
+				float3 i = floor( v + dot( v, C.yyy ) );
+				float3 x0 = v - i + dot( i, C.xxx );
+				float3 g = step( x0.yzx, x0.xyz );
+				float3 l = 1.0 - g;
+				float3 i1 = min( g.xyz, l.zxy );
+				float3 i2 = max( g.xyz, l.zxy );
+				float3 x1 = x0 - i1 + C.xxx;
+				float3 x2 = x0 - i2 + C.yyy;
+				float3 x3 = x0 - 0.5;
+				i = mod3D289( i);
+				float4 p = permute( permute( permute( i.z + float4( 0.0, i1.z, i2.z, 1.0 ) ) + i.y + float4( 0.0, i1.y, i2.y, 1.0 ) ) + i.x + float4( 0.0, i1.x, i2.x, 1.0 ) );
+				float4 j = p - 49.0 * floor( p / 49.0 );  // mod(p,7*7)
+				float4 x_ = floor( j / 7.0 );
+				float4 y_ = floor( j - 7.0 * x_ );  // mod(j,N)
+				float4 x = ( x_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 y = ( y_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 h = 1.0 - abs( x ) - abs( y );
+				float4 b0 = float4( x.xy, y.xy );
+				float4 b1 = float4( x.zw, y.zw );
+				float4 s0 = floor( b0 ) * 2.0 + 1.0;
+				float4 s1 = floor( b1 ) * 2.0 + 1.0;
+				float4 sh = -step( h, 0.0 );
+				float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+				float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+				float3 g0 = float3( a0.xy, h.x );
+				float3 g1 = float3( a0.zw, h.y );
+				float3 g2 = float3( a1.xy, h.z );
+				float3 g3 = float3( a1.zw, h.w );
+				float4 norm = taylorInvSqrt( float4( dot( g0, g0 ), dot( g1, g1 ), dot( g2, g2 ), dot( g3, g3 ) ) );
+				g0 *= norm.x;
+				g1 *= norm.y;
+				g2 *= norm.z;
+				g3 *= norm.w;
+				float4 m = max( 0.6 - float4( dot( x0, x0 ), dot( x1, x1 ), dot( x2, x2 ), dot( x3, x3 ) ), 0.0 );
+				m = m* m;
+				m = m* m;
+				float4 px = float4( dot( x0, g0 ), dot( x1, g1 ), dot( x2, g2 ), dot( x3, g3 ) );
+				return 42.0 * dot( m, px);
 			}
 			
 
@@ -1609,6 +1730,15 @@ Shader "TestWater"
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
+				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float mulTime66 = _TimeParameters.x * _WaveSpeed;
+				float3 appendResult67 = (float3(ase_worldPos.x , mulTime66 , ase_worldPos.z));
+				float simplePerlin3D65 = snoise( appendResult67*_WaveScale );
+				simplePerlin3D65 = simplePerlin3D65*0.5 + 0.5;
+				float3 appendResult130 = (float3(0.0 , simplePerlin3D65 , 0.0));
+				
+				float3 temp_cast_0 = (simplePerlin3D65).xxx;
+				
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
 				o.ase_texcoord2.xyz = ase_worldNormal;
 				float4 ase_clipPos = TransformObjectToHClip((v.vertex).xyz);
@@ -1625,7 +1755,7 @@ Shader "TestWater"
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( appendResult130 * _Float4 );
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -1633,7 +1763,7 @@ Shader "TestWater"
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = temp_cast_0;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float4 positionCS = TransformWorldToHClip( positionWS );
@@ -1752,7 +1882,6 @@ Shader "TestWater"
 					#endif
 				#endif
 
-				Gradient gradient114 = NewGradient( 0, 4, 3, float4( 1, 1, 1, 0 ), float4( 0, 0.7563188, 1, 0.1441215 ), float4( 0, 0.5346618, 0.8301887, 0.4705882 ), float4( 0, 0.5103893, 0.8207547, 1 ), 0, 0, 0, 0, float2( 0, 0 ), float2( 0.4862745, 0.3147021 ), float2( 1, 1 ), 0, 0, 0, 0, 0 );
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
 				float3 ase_worldNormal = IN.ase_texcoord2.xyz;
@@ -1763,9 +1892,11 @@ Shader "TestWater"
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
 				float eyeDepth104 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
 				float smoothstepResult108 = smoothstep( 0.2 , 1.0 , ( _Float0 - ( eyeDepth104 - screenPos.w ) ));
+				float temp_output_113_0 = ( fresnelNode111 + smoothstepResult108 );
+				float3 temp_cast_0 = (temp_output_113_0).xxx;
 				
 
-				float3 BaseColor = SampleGradient( gradient114, ( 1.0 - ( fresnelNode111 + smoothstepResult108 ) ) ).rgb;
+				float3 BaseColor = temp_cast_0;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 
@@ -1785,7 +1916,7 @@ Shader "TestWater"
 		{
 			
 			Name "DepthNormals"
-			Tags { "LightMode"="DepthNormals" }
+			Tags { "LightMode"="DepthNormalsOnly" }
 
 			ZWrite On
 			Blend One Zero
@@ -1798,9 +1929,14 @@ Shader "TestWater"
 			#pragma multi_compile_instancing
 			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
 			#define _SURFACE_TYPE_TRANSPARENT 1
 			#define _SPECULAR_SETUP 1
 			#define _RECEIVE_SHADOWS_OFF 1
+			#define ASE_TESSELLATION 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 120113
 
@@ -1857,10 +1993,11 @@ Shader "TestWater"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float _Float3;
-			float _Float0;
 			float _WaveSpeed;
 			float _WaveScale;
+			float _Float4;
+			float _Float3;
+			float _Float0;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -1957,6 +2094,14 @@ Shader "TestWater"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float mulTime66 = _TimeParameters.x * _WaveSpeed;
+				float3 appendResult67 = (float3(ase_worldPos.x , mulTime66 , ase_worldPos.z));
+				float simplePerlin3D65 = snoise( appendResult67*_WaveScale );
+				simplePerlin3D65 = simplePerlin3D65*0.5 + 0.5;
+				float3 appendResult130 = (float3(0.0 , simplePerlin3D65 , 0.0));
+				
+				float3 temp_cast_0 = (simplePerlin3D65).xxx;
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
@@ -1964,7 +2109,7 @@ Shader "TestWater"
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( appendResult130 * _Float4 );
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -1972,7 +2117,7 @@ Shader "TestWater"
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = temp_cast_0;
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 normalWS = TransformObjectToWorldNormal( v.ase_normal );
 				float4 tangentWS = float4(TransformObjectToWorldDir( v.ase_tangent.xyz), v.ase_tangent.w);
@@ -2180,10 +2325,15 @@ Shader "TestWater"
 			#pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
 			#pragma multi_compile_fog
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
 			#define _SURFACE_TYPE_TRANSPARENT 1
 			#define _SPECULAR_SETUP 1
 			#pragma shader_feature_local_fragment _SPECULAR_SETUP
 			#define _RECEIVE_SHADOWS_OFF 1
+			#define ASE_TESSELLATION 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 120113
 			#define REQUIRE_DEPTH_TEXTURE 1
@@ -2228,7 +2378,6 @@ Shader "TestWater"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#include "Packages/com.unity.shadergraph/ShaderGraphLibrary/Functions.hlsl"
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_SCREEN_POSITION
@@ -2276,10 +2425,11 @@ Shader "TestWater"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float _Float3;
-			float _Float0;
 			float _WaveSpeed;
 			float _WaveScale;
+			float _Float4;
+			float _Float3;
+			float _Float0;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2319,29 +2469,6 @@ Shader "TestWater"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 			//#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/PBRGBufferPass.hlsl"
 
-			
-			float4 SampleGradient( Gradient gradient, float time )
-			{
-				float3 color = gradient.colors[0].rgb;
-				UNITY_UNROLL
-				for (int c = 1; c < 8; c++)
-				{
-				float colorPos = saturate((time - gradient.colors[c-1].w) / ( 0.00001 + (gradient.colors[c].w - gradient.colors[c-1].w)) * step(c, gradient.colorsLength-1));
-				color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
-				}
-				#ifndef UNITY_COLORSPACE_GAMMA
-				color = SRGBToLinear(color);
-				#endif
-				float alpha = gradient.alphas[0].x;
-				UNITY_UNROLL
-				for (int a = 1; a < 8; a++)
-				{
-				float alphaPos = saturate((time - gradient.alphas[a-1].y) / ( 0.00001 + (gradient.alphas[a].y - gradient.alphas[a-1].y)) * step(a, gradient.alphasLength-1));
-				alpha = lerp(alpha, gradient.alphas[a].x, lerp(alphaPos, step(0.01, alphaPos), gradient.type));
-				}
-				return float4(color, alpha);
-			}
-			
 			float3 mod3D289( float3 x ) { return x - floor( x / 289.0 ) * 289.0; }
 			float4 mod3D289( float4 x ) { return x - floor( x / 289.0 ) * 289.0; }
 			float4 permute( float4 x ) { return mod3D289( ( x * 34.0 + 1.0 ) * x ); }
@@ -2397,6 +2524,14 @@ Shader "TestWater"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float mulTime66 = _TimeParameters.x * _WaveSpeed;
+				float3 appendResult67 = (float3(ase_worldPos.x , mulTime66 , ase_worldPos.z));
+				float simplePerlin3D65 = snoise( appendResult67*_WaveScale );
+				simplePerlin3D65 = simplePerlin3D65*0.5 + 0.5;
+				float3 appendResult130 = (float3(0.0 , simplePerlin3D65 , 0.0));
+				
+				float3 temp_cast_0 = (simplePerlin3D65).xxx;
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
@@ -2404,7 +2539,7 @@ Shader "TestWater"
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( appendResult130 * _Float4 );
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -2412,7 +2547,7 @@ Shader "TestWater"
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = temp_cast_0;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 positionVS = TransformWorldToView( positionWS );
@@ -2591,13 +2726,14 @@ Shader "TestWater"
 
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				Gradient gradient114 = NewGradient( 0, 4, 3, float4( 1, 1, 1, 0 ), float4( 0, 0.7563188, 1, 0.1441215 ), float4( 0, 0.5346618, 0.8301887, 0.4705882 ), float4( 0, 0.5103893, 0.8207547, 1 ), 0, 0, 0, 0, float2( 0, 0 ), float2( 0.4862745, 0.3147021 ), float2( 1, 1 ), 0, 0, 0, 0, 0 );
 				float fresnelNdotV111 = dot( WorldNormal, WorldViewDirection );
 				float fresnelNode111 = ( 0.0 + 1.0 * pow( 1.0 - fresnelNdotV111, _Float3 ) );
 				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
 				float eyeDepth104 = LinearEyeDepth(SHADERGRAPH_SAMPLE_SCENE_DEPTH( ase_screenPosNorm.xy ),_ZBufferParams);
 				float smoothstepResult108 = smoothstep( 0.2 , 1.0 , ( _Float0 - ( eyeDepth104 - ScreenPos.w ) ));
+				float temp_output_113_0 = ( fresnelNode111 + smoothstepResult108 );
+				float3 temp_cast_0 = (temp_output_113_0).xxx;
 				
 				float mulTime66 = _TimeParameters.x * _WaveSpeed;
 				float3 appendResult67 = (float3(WorldPosition.x , mulTime66 , WorldPosition.z));
@@ -2606,7 +2742,7 @@ Shader "TestWater"
 				float3 temp_cast_1 = (simplePerlin3D65).xxx;
 				
 
-				float3 BaseColor = SampleGradient( gradient114, ( 1.0 - ( fresnelNode111 + smoothstepResult108 ) ) ).rgb;
+				float3 BaseColor = temp_cast_0;
 				float3 Normal = temp_cast_1;
 				float3 Emission = 0;
 				float3 Specular = 0.5;
@@ -2729,9 +2865,14 @@ Shader "TestWater"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
 			#define _SURFACE_TYPE_TRANSPARENT 1
 			#define _SPECULAR_SETUP 1
 			#define _RECEIVE_SHADOWS_OFF 1
+			#define ASE_TESSELLATION 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 120113
 
@@ -2773,10 +2914,11 @@ Shader "TestWater"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float _Float3;
-			float _Float0;
 			float _WaveSpeed;
 			float _WaveScale;
+			float _Float4;
+			float _Float3;
+			float _Float0;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -2818,7 +2960,54 @@ Shader "TestWater"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
+			float3 mod3D289( float3 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 mod3D289( float4 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 permute( float4 x ) { return mod3D289( ( x * 34.0 + 1.0 ) * x ); }
+			float4 taylorInvSqrt( float4 r ) { return 1.79284291400159 - r * 0.85373472095314; }
+			float snoise( float3 v )
+			{
+				const float2 C = float2( 1.0 / 6.0, 1.0 / 3.0 );
+				float3 i = floor( v + dot( v, C.yyy ) );
+				float3 x0 = v - i + dot( i, C.xxx );
+				float3 g = step( x0.yzx, x0.xyz );
+				float3 l = 1.0 - g;
+				float3 i1 = min( g.xyz, l.zxy );
+				float3 i2 = max( g.xyz, l.zxy );
+				float3 x1 = x0 - i1 + C.xxx;
+				float3 x2 = x0 - i2 + C.yyy;
+				float3 x3 = x0 - 0.5;
+				i = mod3D289( i);
+				float4 p = permute( permute( permute( i.z + float4( 0.0, i1.z, i2.z, 1.0 ) ) + i.y + float4( 0.0, i1.y, i2.y, 1.0 ) ) + i.x + float4( 0.0, i1.x, i2.x, 1.0 ) );
+				float4 j = p - 49.0 * floor( p / 49.0 );  // mod(p,7*7)
+				float4 x_ = floor( j / 7.0 );
+				float4 y_ = floor( j - 7.0 * x_ );  // mod(j,N)
+				float4 x = ( x_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 y = ( y_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 h = 1.0 - abs( x ) - abs( y );
+				float4 b0 = float4( x.xy, y.xy );
+				float4 b1 = float4( x.zw, y.zw );
+				float4 s0 = floor( b0 ) * 2.0 + 1.0;
+				float4 s1 = floor( b1 ) * 2.0 + 1.0;
+				float4 sh = -step( h, 0.0 );
+				float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+				float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+				float3 g0 = float3( a0.xy, h.x );
+				float3 g1 = float3( a0.zw, h.y );
+				float3 g2 = float3( a1.xy, h.z );
+				float3 g3 = float3( a1.zw, h.w );
+				float4 norm = taylorInvSqrt( float4( dot( g0, g0 ), dot( g1, g1 ), dot( g2, g2 ), dot( g3, g3 ) ) );
+				g0 *= norm.x;
+				g1 *= norm.y;
+				g2 *= norm.z;
+				g3 *= norm.w;
+				float4 m = max( 0.6 - float4( dot( x0, x0 ), dot( x1, x1 ), dot( x2, x2 ), dot( x3, x3 ) ), 0.0 );
+				m = m* m;
+				m = m* m;
+				float4 px = float4( dot( x0, g0 ), dot( x1, g1 ), dot( x2, g2 ), dot( x3, g3 ) );
+				return 42.0 * dot( m, px);
+			}
 			
+
 			struct SurfaceDescription
 			{
 				float Alpha;
@@ -2834,6 +3023,14 @@ Shader "TestWater"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float mulTime66 = _TimeParameters.x * _WaveSpeed;
+				float3 appendResult67 = (float3(ase_worldPos.x , mulTime66 , ase_worldPos.z));
+				float simplePerlin3D65 = snoise( appendResult67*_WaveScale );
+				simplePerlin3D65 = simplePerlin3D65*0.5 + 0.5;
+				float3 appendResult130 = (float3(0.0 , simplePerlin3D65 , 0.0));
+				
+				float3 temp_cast_0 = (simplePerlin3D65).xxx;
 				
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
@@ -2842,7 +3039,7 @@ Shader "TestWater"
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( appendResult130 * _Float4 );
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -2850,7 +3047,7 @@ Shader "TestWater"
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = temp_cast_0;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 
@@ -2980,9 +3177,14 @@ Shader "TestWater"
 
 			#define _NORMAL_DROPOFF_TS 1
 			#define ASE_FOG 1
+			#define ASE_FIXED_TESSELLATION
 			#define _SURFACE_TYPE_TRANSPARENT 1
 			#define _SPECULAR_SETUP 1
 			#define _RECEIVE_SHADOWS_OFF 1
+			#define ASE_TESSELLATION 1
+			#pragma require tessellation tessHW
+			#pragma hull HullFunction
+			#pragma domain DomainFunction
 			#define _NORMALMAP 1
 			#define ASE_SRP_VERSION 120113
 
@@ -3024,10 +3226,11 @@ Shader "TestWater"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float _Float3;
-			float _Float0;
 			float _WaveSpeed;
 			float _WaveScale;
+			float _Float4;
+			float _Float3;
+			float _Float0;
 			#ifdef ASE_TRANSMISSION
 				float _TransmissionShadow;
 			#endif
@@ -3069,7 +3272,54 @@ Shader "TestWater"
 			//#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/VisualEffectVertex.hlsl"
 			//#endif
 
+			float3 mod3D289( float3 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 mod3D289( float4 x ) { return x - floor( x / 289.0 ) * 289.0; }
+			float4 permute( float4 x ) { return mod3D289( ( x * 34.0 + 1.0 ) * x ); }
+			float4 taylorInvSqrt( float4 r ) { return 1.79284291400159 - r * 0.85373472095314; }
+			float snoise( float3 v )
+			{
+				const float2 C = float2( 1.0 / 6.0, 1.0 / 3.0 );
+				float3 i = floor( v + dot( v, C.yyy ) );
+				float3 x0 = v - i + dot( i, C.xxx );
+				float3 g = step( x0.yzx, x0.xyz );
+				float3 l = 1.0 - g;
+				float3 i1 = min( g.xyz, l.zxy );
+				float3 i2 = max( g.xyz, l.zxy );
+				float3 x1 = x0 - i1 + C.xxx;
+				float3 x2 = x0 - i2 + C.yyy;
+				float3 x3 = x0 - 0.5;
+				i = mod3D289( i);
+				float4 p = permute( permute( permute( i.z + float4( 0.0, i1.z, i2.z, 1.0 ) ) + i.y + float4( 0.0, i1.y, i2.y, 1.0 ) ) + i.x + float4( 0.0, i1.x, i2.x, 1.0 ) );
+				float4 j = p - 49.0 * floor( p / 49.0 );  // mod(p,7*7)
+				float4 x_ = floor( j / 7.0 );
+				float4 y_ = floor( j - 7.0 * x_ );  // mod(j,N)
+				float4 x = ( x_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 y = ( y_ * 2.0 + 0.5 ) / 7.0 - 1.0;
+				float4 h = 1.0 - abs( x ) - abs( y );
+				float4 b0 = float4( x.xy, y.xy );
+				float4 b1 = float4( x.zw, y.zw );
+				float4 s0 = floor( b0 ) * 2.0 + 1.0;
+				float4 s1 = floor( b1 ) * 2.0 + 1.0;
+				float4 sh = -step( h, 0.0 );
+				float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+				float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+				float3 g0 = float3( a0.xy, h.x );
+				float3 g1 = float3( a0.zw, h.y );
+				float3 g2 = float3( a1.xy, h.z );
+				float3 g3 = float3( a1.zw, h.w );
+				float4 norm = taylorInvSqrt( float4( dot( g0, g0 ), dot( g1, g1 ), dot( g2, g2 ), dot( g3, g3 ) ) );
+				g0 *= norm.x;
+				g1 *= norm.y;
+				g2 *= norm.z;
+				g3 *= norm.w;
+				float4 m = max( 0.6 - float4( dot( x0, x0 ), dot( x1, x1 ), dot( x2, x2 ), dot( x3, x3 ) ), 0.0 );
+				m = m* m;
+				m = m* m;
+				float4 px = float4( dot( x0, g0 ), dot( x1, g1 ), dot( x2, g2 ), dot( x3, g3 ) );
+				return 42.0 * dot( m, px);
+			}
 			
+
 			struct SurfaceDescription
 			{
 				float Alpha;
@@ -3085,6 +3335,14 @@ Shader "TestWater"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldPos = TransformObjectToWorld( (v.vertex).xyz );
+				float mulTime66 = _TimeParameters.x * _WaveSpeed;
+				float3 appendResult67 = (float3(ase_worldPos.x , mulTime66 , ase_worldPos.z));
+				float simplePerlin3D65 = snoise( appendResult67*_WaveScale );
+				simplePerlin3D65 = simplePerlin3D65*0.5 + 0.5;
+				float3 appendResult130 = (float3(0.0 , simplePerlin3D65 , 0.0));
+				
+				float3 temp_cast_0 = (simplePerlin3D65).xxx;
 				
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
@@ -3093,7 +3351,7 @@ Shader "TestWater"
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
 
-				float3 vertexValue = defaultVertexValue;
+				float3 vertexValue = ( appendResult130 * _Float4 );
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
@@ -3101,7 +3359,7 @@ Shader "TestWater"
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = temp_cast_0;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				o.clipPos = TransformWorldToHClip(positionWS);
@@ -3233,7 +3491,7 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;57;152.1,-16.9;Float;False;
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;58;152.1,-16.9;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;59;152.1,-16.9;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;60;152.1,-16.9;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=Universal2D;False;False;0;;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;61;152.1,-16.9;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormals;False;False;0;;0;0;Standard;0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;61;152.1,-16.9;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=DepthNormalsOnly;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;62;152.1,-16.9;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;63;152.1,-16.9;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;64;152.1,-16.9;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;False;0;;0;0;Standard;0;False;0
@@ -3243,41 +3501,61 @@ Node;AmplifyShaderEditor.RangedFloatNode;72;-1555.098,321.6469;Inherit;False;Pro
 Node;AmplifyShaderEditor.RangedFloatNode;71;-1147.098,220.6469;Inherit;False;Property;_WaveScale;WaveScale;1;0;Create;True;0;0;0;False;0;False;1;1;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.DynamicAppendNode;67;-1154.098,302.6469;Inherit;False;FLOAT3;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.NoiseGeneratorNode;65;-934.0981,169.6469;Inherit;True;Simplex3D;True;False;2;0;FLOAT3;0,0,0;False;1;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;56;-452.8054,47.45163;Float;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;TestWater;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;20;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;;0;0;Standard;41;Workflow;0;638672503384388743;Surface;1;638672501720709690;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Forward Only;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;0;638672518159171680;  Use Shadow Threshold;0;0;Receive Shadows;0;638675171166747423;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;0;10;False;True;False;True;True;True;True;True;True;True;False;;False;0
-Node;AmplifyShaderEditor.GradientSampleNode;116;-760.0574,-78.13678;Inherit;True;2;0;OBJECT;;False;1;FLOAT;0;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ScreenPosInputsNode;102;-1950.782,-113.5738;Float;False;1;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ScreenDepthNode;104;-1980.19,-192.4524;Inherit;False;0;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleSubtractOpNode;105;-1745.19,-189.4524;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;107;-1563.19,-225.4524;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SmoothstepOpNode;108;-1353.19,-201.4525;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;110;-1570.19,-37.45234;Inherit;False;Constant;_Float2;Float 2;3;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.FresnelNode;111;-1386.19,-414.4524;Inherit;False;Standard;WorldNormal;ViewDir;False;False;5;0;FLOAT3;0,0,1;False;4;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;5;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;109;-1567.19,-120.4524;Inherit;False;Constant;_Float1;Float 1;3;0;Create;True;0;0;0;False;0;False;0.2;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;112;-1579.19,-414.4524;Inherit;False;Property;_Float3;Float 3;3;0;Create;True;0;0;0;False;0;False;3;3;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;113;-1132.837,-277.6765;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.OneMinusNode;117;-965.0434,-78.65462;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GradientNode;114;-984.3762,-182.9746;Inherit;False;0;4;3;1,1,1,0;0,0.7563188,1,0.1441215;0,0.5346618,0.8301887,0.4705882;0,0.5103893,0.8207547,1;0,0;0.4862745,0.3147021;1,1;0;1;OBJECT;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;56;-452.8054,47.45163;Float;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;TestWater;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;20;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Transparent=RenderType;Queue=Transparent=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;5;False;;10;False;;1;1;False;;10;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForwardOnly;False;False;0;;0;0;Standard;41;Workflow;0;638672503384388743;Surface;1;638672501720709690;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Forward Only;1;0;Transmission;0;638675775514470294;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;0;638672518159171680;  Use Shadow Threshold;0;0;Receive Shadows;0;638675171166747423;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;638675775111674931;Tessellation;1;638675776726638650;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;32,False,;638675781162574597;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;638675772291668956;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;0;10;False;True;False;True;True;True;True;True;True;True;False;;False;0
+Node;AmplifyShaderEditor.DynamicAppendNode;130;-686.4816,300.0132;Inherit;False;FLOAT3;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;131;-661.4816,439.0132;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.ScreenPosInputsNode;135;-1280.55,-910.3193;Float;False;0;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleAddOpNode;136;-1009.55,-806.3193;Inherit;False;2;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.ScreenColorNode;132;-878.1684,-804.4973;Inherit;False;Global;_GrabScreen0;Grab Screen 0;5;0;Create;True;0;0;0;False;0;False;Object;-1;False;False;False;False;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;140;-1092.9,-678.0967;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
+Node;AmplifyShaderEditor.FunctionNode;133;-1378.339,-730.7034;Inherit;False;Normal From Height;-1;;3;1942fe2c5f1a1f94881a33d532e4afeb;0;2;20;FLOAT;0;False;110;FLOAT;1;False;2;FLOAT3;40;FLOAT3;0
+Node;AmplifyShaderEditor.RangedFloatNode;139;-1376.463,-631.6277;Inherit;False;Property;_Float5;Float 5;5;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;106;-1744.19,-271.4524;Inherit;False;Property;_Float0;Float 0;2;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.GradientNode;114;-957.0763,-228.4746;Inherit;False;0;4;3;1,1,1,0;0,0.7563188,1,0.1441215;0,0.5346618,0.8301887,0.4705882;0,0.5103893,0.8207547,1;0,0;0.4862745,0.3147021;1,1;0;1;OBJECT;0
+Node;AmplifyShaderEditor.SimpleSubtractOpNode;146;-1745.863,-158.0272;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.GradientSampleNode;116;-730.9324,-196.8367;Inherit;True;2;0;OBJECT;;False;1;FLOAT;0;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleAddOpNode;113;-1148.443,-242.21;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.ScreenPosInputsNode;102;-1954.782,-110.5738;Float;False;1;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ScreenDepthNode;104;-1980.19,-192.4524;Inherit;False;0;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;129;-977.4816,390.0132;Inherit;False;Property;_Float4;Float 4;4;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 WireConnection;66;0;72;0
 WireConnection;67;0;73;1
 WireConnection;67;1;66;0
 WireConnection;67;2;73;3
 WireConnection;65;0;67;0
 WireConnection;65;1;71;0
-WireConnection;56;0;116;0
-WireConnection;56;1;65;0
-WireConnection;116;0;114;0
-WireConnection;116;1;117;0
-WireConnection;105;0;104;0
-WireConnection;105;1;102;4
 WireConnection;107;0;106;0
-WireConnection;107;1;105;0
+WireConnection;107;1;146;0
 WireConnection;108;0;107;0
 WireConnection;108;1;109;0
 WireConnection;108;2;110;0
 WireConnection;111;3;112;0
+WireConnection;117;0;113;0
+WireConnection;56;0;113;0
+WireConnection;56;1;65;0
+WireConnection;56;8;131;0
+WireConnection;56;10;65;0
+WireConnection;130;1;65;0
+WireConnection;131;0;130;0
+WireConnection;131;1;129;0
+WireConnection;136;0;135;0
+WireConnection;136;1;140;0
+WireConnection;132;0;136;0
+WireConnection;140;0;133;0
+WireConnection;140;1;139;0
+WireConnection;133;20;65;0
+WireConnection;146;0;104;0
+WireConnection;146;1;102;4
+WireConnection;116;0;114;0
+WireConnection;116;1;117;0
 WireConnection;113;0;111;0
 WireConnection;113;1;108;0
-WireConnection;117;0;113;0
 ASEEND*/
-//CHKSM=32CCE399790CD6D0E2D6D35466CFD44F91EF4A05
+//CHKSM=9CCAC04F1807744350046864609BC23EAAADCD9D
