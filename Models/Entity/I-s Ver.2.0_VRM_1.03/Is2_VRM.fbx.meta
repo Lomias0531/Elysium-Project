@@ -3,7 +3,37 @@ guid: 9515f8e00e1d0604083e8e7132fb14ab
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Is2_Body_mat
+    second: {fileID: 2100000, guid: d33cf61015992834aa18f2de5093d134, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Is2_ClothesTrance_mat
+    second: {fileID: 2100000, guid: db9fb08822c28b94fb8cd37135a8daa7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Is2_Clothes_mat
+    second: {fileID: 2100000, guid: cf8595d109914234ea91232346ca1ff2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Is2_EX_mat
+    second: {fileID: 2100000, guid: bef7be4878b1eca4b985dc5a90f31a0a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Is2_Hair_mat
+    second: {fileID: 2100000, guid: 4139aa44d8eb5c44cbe3aa8ef0484741, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Is2_Mecha_mat
+    second: {fileID: 2100000, guid: a98a388f2e61f1440a99e54fafb635cc, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
