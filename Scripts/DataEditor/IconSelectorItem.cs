@@ -44,3 +44,4 @@ public class IconSelectorItem : MonoBehaviour
         edit.OnConfirmSelectIconItem(this);
     }
 }
+//wtf
